@@ -6,6 +6,10 @@ import "services.proto";
 
 package cr;
 
+/** Java package for generated classes. */
+option java_multiple_files = true;
+option java_package = "com.cygnus_reach.ahsoka.message";
+
 message ReachTransportIDs {
   enum Ids {
     INVALID = 0;         // No Valid Message
@@ -340,7 +344,7 @@ enum ParameterDataType {
   parameter_type_invalid = 0;
   uint32 = 1;
   int32 = 2;
-  float = 3;
+  float32 = 3;
   bool = 4;
   string = 5; // QUESTIONS - ASCII??? No UTF-8?  Null Terminated?
   enumeration = 6;

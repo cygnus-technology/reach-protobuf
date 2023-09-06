@@ -1,7 +1,12 @@
 syntax = "proto3";
 
 package AhsokaServiceFramework;
+
 option csharp_namespace = "Ahsoka.ServiceFramework";
+
+/** Java package for generated classes. */
+option java_multiple_files = true;
+option java_package = "com.cygnus_reach.ahsoka.message";
 
 //----------------------------
 // Service Routing Message Header
