@@ -1,0 +1,1 @@
+protoc -I=../proto --python_out=. services.proto reach.proto

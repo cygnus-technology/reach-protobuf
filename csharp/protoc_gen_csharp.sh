@@ -1,0 +1,1 @@
+protoc -I=../proto --csharp_out=. services.proto reach.proto
