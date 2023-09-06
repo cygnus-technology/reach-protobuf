@@ -13,30 +13,42 @@ option java_package = "com.cygnus_reach.ahsoka.message";
 message ReachTransportIDs {
   enum Ids {
     INVALID = 0;         // No Valid Message
-    PING = 1;            // ping / ping~
-    GET_DEVICE_INFO = 2; // gdi / gdi~
+    ERROR_REPORT        = 1
+    PING                = 2;    // ping / ping~
+    GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
     // Parameters
-    DISCOVER_PARAMETERS = 3; // dp / dp~
-    READ_PARAMETERS = 4;     // rp / rp~
-    WRITE_PARAMETERS = 5;    // wp / wp~
-    NOTIFY_PARAMETERS = 6;   // pnr/ pnr~
+    DISCOVER_PARAMETERS = 4;   // dp / dp~
+    READ_PARAMETERS     = 5;   // rp / rp~
+    WRITE_PARAMETERS    = 6;   // wp / wp~
+    NOTIFY_PARAMETERS   = 7;   // pnr/ pnr~
 
     // File Transfers
-    DISCOVER_FILES = 7; // gfd / gfd~
-    TRANSFER_INIT = 8;  // Begins a Transfer
-    TRANSFER_DATA = 9;  // Sends Data
-    TRANSFER_DATA_NOTIFICATION =
-        10; // Clears Sender (Client / Service) to Send More Data
+    DISCOVER_FILES      = 8;    // gfd / gfd~
+    TRANSFER_INIT       = 9;    // Begins a Transfer
+    TRANSFER_DATA       = 10;   // Sends Data
+    // Clears Sender (Client / Service) to Send More Data:
+    TRANSFER_DATA_NOTIFICATION = 11; 
 
-    // Draft
-    DISCOVER_STREAMS = 11;         // gsd / gsd~
-    MANAGE_STREAM = 12;            // gsd / gsd~
-    STREAM_DATA_NOTIFICATION = 13; // stream-
+    // Streams
+    DISCOVER_STREAMS    = 12;    // gsd / gsd~
+    OPEN_STREAM         = 13;
+    CLOSE_STREAM        = 14;
+    STREAM_DATA_NOTIFICATION = 15;
 
-    DISCOVER_COMMANDS = 14; // gcd / gcd~
-    SEND_COMMAND = 15;      // sc / sc~
+    DISCOVER_COMMANDS   = 16;    // gcd / gcd~
+    SEND_COMMAND        = 17;    // sc / sc~
+
+    // Command Line Interface
+    DISCOVER_CLI        = 20;
+    CLI_NOTIFICATION    = 21;
   }
+}
+
+// ERROR_REPORT: Could be sent asynchronously to indicate an error.
+message ErrorReport {
+  bool result_value = 1;    // Error Result
+  string result_string = 2; // Error String
 }
 
 // Request Object used to Echo Data for testing the Device Communication
@@ -52,8 +64,9 @@ message PingResponse {
 }
 
 // ------------------------------------------------------
-// Device Information Request / Resposne
-// // gdi : gdi~
+// Device Information Request / Response
+// GET_DEVICE_INFO
+// gdi : gdi~
 // ------------------------------------------------------
 message DeviceInfoRequest {
   // (Optional) Value to Display Prior to Sharing Device Info.
@@ -70,7 +83,9 @@ message DeviceInfoResponse {
   string device_name = 4;        // n : Name, Typically Model Name
   string device_description = 5; // d : Decription
 
-  // TODO: Temporarily replace map with the string until we can figure out how
+  // TODO: Use a map for firmware versions.
+  // A map is desireable because a device can have multiple firmware versions.
+  // Temporarily replace map with the string until we can figure out how
   // to handle this
   // map<string, string> version_info = 6; // fw : Replaces Firmware Version
   string firmware_version = 6; // fw : Replaces Firmware Version
@@ -80,7 +95,8 @@ message DeviceInfoResponse {
   uint32 parameter_metadata_hash = 9; // hash : Parameter Metadata Hash
   bytes application_indentifier = 10; // uuid : Custom UI Remote Key
 
-  // TODO: Temporarily removed map until we can figure out how
+  // TODO: Use a map to list endpoints.
+  // Temporarily removed map until we can figure out how
   // to handle this
   // map<uint32, string> available_endpoints =
   //     11; // ep : EndPoints - Returns a list of endpoints available on this
@@ -89,7 +105,8 @@ message DeviceInfoResponse {
 
 // ------------------------------------------------------
 // Discover ParameterInfo
-// // dp / dp~
+// DISCOVER_PARAMETERS
+// dp / dp~
 // ------------------------------------------------------
 message ParameterInfoRequest {
   uint32 parameter_key = 1;          // Unlock Key
@@ -123,11 +140,10 @@ message ParameterInfo {
 // // rp : rp~
 // ------------------------------------------------------
 message ParameterRead {
-  uint32 parameter_key = 1;          //		Suggestion: Optional Key for Unlocking
+  uint32 parameter_key = 1;          //	Optional Key for Unlocking
                                      // Private Parameters
   repeated uint32 parameter_ids = 2; // i: ID -  Leave Empty to Retreive All
-  uint32 read_after_timestamp =
-      3; // Allows for retreival of only new / changed values.
+  uint32 read_after_timestamp = 3; // Allows for retreival of only new / changed values.
 }
 
 message ParameterReadResult {
@@ -203,9 +219,10 @@ message ParameterValue {
 
 // ------------------------------------------------------
 // Discover Files
-// // gfd : gfd~
+// DISCOVER_FILES
+// gfd : gfd~
 // ------------------------------------------------------
-message DiscoverFiles { StorageLocation storage_location = 1; }
+message DiscoverFiles { }
 
 message DiscoverFilesReply {
   repeated FileInfo file_infos = 1; // Array of File Infos
@@ -215,8 +232,9 @@ message FileInfo {
   int32 file_id = 1;      // i: ID
   string file_name = 2;   // n: Name
   AccessLevel access = 3; // a: Access Level (Read / Write)
-  int32 current_size_bytes =
-      4; // l: size in bytes (currently...may change over time.
+  // l: size in bytes (currently...may change over time.
+  int32 current_size_bytes = 4; 
+  StorageLocation storage_location = 5; 
 }
 
 // ------------------------------------------------------
@@ -224,18 +242,19 @@ message FileInfo {
 // ------------------------------------------------------
 message TransferInit {
 
-  // TODO: Change file id to int32 to make it consistent with
-  // DiscoveryFilesReply/FileInfo Ahsoha message for testing, to be finalized
-  int32 file_id = 1; // i: File ID
-  // string file_id = 1; // i: File ID
-  int32 timeout_in_ms =
-      2; // Time afterwhich the Reciever (Client / Service) should abandon the
-         // transfer abandoned due to after inactivity.
-  uint32 request_offset =
-      3; // o: Offset Into "File" to Read / Write used for Reading / Writing a
-         // partial file or restarting a transfer
-  uint32 transfer_length =
-      4; //	  Length of file requested for partial reads / writes
+  int32 file_id         = 1; // i: File ID
+
+  // Time afterwhich the Reciever (Client / Service) should abandon the
+  // transfer abandoned due to after inactivity.
+  int32 timeout_in_ms   = 2; 
+
+  // Offset Into "File" to Read / Write used for Reading / Writing a
+  // partial file or restarting a transfer
+  uint32 request_offset = 3; 
+
+  // Length of file requested for partial reads / writes
+  uint32 transfer_length = 4; 
+
   FileTransferType file_transfer_type = 5; // Direction of Transfer
 }
 
@@ -268,13 +287,13 @@ message TransferDataNotification {
 }
 
 // ------------------------------------------------------
-// Discovery Streams Request and Response
-//		Returns a list of StreamID & Descriptions available on this
-// endpoint
+// Discover Streams
+// DISCOVER_STREAMS
+// gsd / gsd~
 // ------------------------------------------------------
-message StreamsRequest {}
+message DiscoverStreams {}
 
-message StreamsResponse { repeated StreamInfo streams = 1; }
+message DiscoverStreamsResponse { repeated StreamInfo streams = 1; }
 
 message StreamInfo {
   int32 stream_id = 1;
@@ -298,6 +317,7 @@ message StreamClose {
 }
 
 // Bi-Directional Message
+// STREAM_DATA_NOTIFICATION
 message StreamData {
   int32 stream_id = 1;    // Stream ID
   uint32 roll_count = 2;  // Message Number (Roll Count)
@@ -308,7 +328,8 @@ message StreamData {
 
 // ------------------------------------------------------
 // Discover Commands
-// // gcd : gcd~
+// DISCOVER_COMMANDS
+// gcd : gcd~
 // ------------------------------------------------------
 message DiscoverCommands {}
 
@@ -316,10 +337,9 @@ message DiscoverCommandsResult {
   repeated CommandInfo available_commands = 1; // Array of v:n    Values : Names
 }
 
-// TODO: Add CommandInfo for testing, to be finalized
 message CommandInfo {
-  uint32 id = 1;                   // i: Id
-  string name = 2;                 // n: Name
+  uint32 id     = 1;
+  string name   = 2;    // Descriptive name
 }
 
 // ------------------------------------------------------
@@ -331,6 +351,40 @@ message SendCommand { uint32 command = 1; }
 message SendCommandResult {
   MessageResult result = 1; // Carries Success / Result
 }
+
+// ------------------------------------------------------
+// Discover Command Line Info
+// DISCOVER_CLI
+// gcli : gcli~
+// ------------------------------------------------------
+message DiscoverCLI {}
+
+message DiscoverCLIResult {
+  repeated CLIInfo available_streams = 1; // Array of v:n    Values : Names
+}
+
+message CLIInfo {
+  uint32 CLI_id     = 1;
+  uint32 streamId   = 2;    // ID of the stream used
+  uint8  direction  = 3;    // 0 for device to client
+  string name       = 4;    // Descriptive name
+}
+
+// Bi-Directional Message
+// CLI_NOTIFICATION
+message CLIData {
+  int32 CLI_id = 1;         // ID of command line entry
+  string message_data = 3;
+}
+
+
+
+
+// ------------------------------------------------------
+// ------------------------------------------------------
+// Shared Types:
+// ------------------------------------------------------
+// ------------------------------------------------------
 
 // ------------------------------------------------------
 // Result Structure used by all Messages for Returning Errors. err~
