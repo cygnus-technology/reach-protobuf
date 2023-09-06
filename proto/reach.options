@@ -1,0 +1,64 @@
+# This file defines the nanopb-specific options for the messages defined
+# in message.proto.
+#
+# If you come from high-level programming background, the hardcoded
+# maximum lengths may disgust you. However, if your microcontroller only
+# has a few kB of ram to begin with, setting reasonable limits for
+# filenames is ok.
+#
+# On the other hand, using the callback interface, it is not necessary
+# to set a limit on the number of files in the response.
+
+* include:"sys/types.h"
+* include:"dirent.h"
+#cr.AhsokaMessage.data 	max_size:128
+#cr.AhsokaMessage.responses 	max_count:4
+MessageResult.result_string 	max_size:128
+
+cr.PingRequest.echo_data max_size: 128
+cr.PingResponse.echo_data max_size: 128
+
+cr.DeviceInfoResponse.device_name max_size: 32
+cr.DeviceInfoResponse.device_description max_size: 32
+cr.DeviceInfoResponse.firmware_version max_size: 16
+#cr.DeviceInfoResponse.service_list max_count: 8
+#cr.DeviceInfoResponse.application_indentifier max_size: 37
+
+cr.DiscoverFilesReply.file_name max_size: 32
+cr.DiscoverFilesReply.file_name max_size: 32
+
+cr.FileDescriptionResponse.descriptions max_count: 8
+cr.ReadFileResponse.data max_size: 128
+cr.WriteFileRequest.data max_size: 128
+
+cr.ParameterInfo.name max_size: 32
+cr.ParameterInfo.description max_size: 32
+cr.ParameterInfo.unit max_size: 32
+
+cr.ParameterInfoRequest.parameter_ids max_count: 16
+cr.ParameterInfoResponse.parameter_infos max_count: 16
+cr.ParameterRead.parameter_ids max_count: 8
+cr.ParameterReadResult.values    max_count:8
+cr.ParameterWrite.values    max_count:8
+cr.ParameterWriteResult.values    max_count:8
+cr.MessageResult.result_string    max_size:32
+
+cr.ParameterValue.value.string_value max_size:32
+cr.ParameterValue.string_value max_size:32
+ParameterInfo.enumeration_values max_count:8
+ParameterInfo_EnumerationValuesEntry.value max_length: 32
+
+
+cr.FileInfo.file_name            max_size: 32
+cr.DiscoverFilesReply.file_infos   max_count: 8
+cr.TransferInit.file_id            max_size: 32
+cr.TransferData.message_data        max_size: 128
+
+cr.StreamsResponse.streams          max_count: 8
+
+cr.CommandInfo.name                 max_size: 32
+cr.DiscoverCommandsResult.available_commands   max_count: 8
+
+cr.AhsokaMessage.payload            max_size: 256
+
+cr.FileTransferStateMachine.message_data max_size: 1024 
