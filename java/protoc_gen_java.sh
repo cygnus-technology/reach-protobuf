@@ -1,0 +1,1 @@
+protoc -I=../proto --java_out=. services.proto reach.proto
