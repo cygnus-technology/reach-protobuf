@@ -13,7 +13,7 @@ option java_package = "com.cygnus_reach.ahsoka.message";
 message ReachTransportIDs {
   enum Ids {
     INVALID = 0;         // No Valid Message
-    ERROR_REPORT        = 1
+    ERROR_REPORT        = 1;
     PING                = 2;    // ping / ping~
     GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
@@ -78,10 +78,10 @@ message DeviceInfoRequest {
 }
 
 message DeviceInfoResponse {
-  MessageResult result = 1;      // err~ : Replaces Error Result
+  // MessageResult result = 1;      // err~ : Replaces Error Result
   int32 protocol_version = 3;    // pv : Supported Protocol Version
   string device_name = 4;        // n : Name, Typically Model Name
-  string device_description = 5; // d : Decription
+  string device_description = 5; // d : Description
 
   // TODO: Use a map for firmware versions.
   // A map is desireable because a device can have multiple firmware versions.
@@ -366,7 +366,7 @@ message DiscoverCLIResult {
 message CLIInfo {
   uint32 CLI_id     = 1;
   uint32 streamId   = 2;    // ID of the stream used
-  uint8  direction  = 3;    // 0 for device to client
+  uint32 direction  = 3;    // 0 for device to client (could be enum)
   string name       = 4;    // Descriptive name
 }
 
@@ -398,7 +398,7 @@ enum ParameterDataType {
   parameter_type_invalid = 0;
   uint32 = 1;
   int32 = 2;
-  float32 = 3;
+  float = 3;
   bool = 4;
   string = 5; // QUESTIONS - ASCII??? No UTF-8?  Null Terminated?
   enumeration = 6;
