@@ -1,0 +1,1 @@
+protoc -I=../proto --cpp_out=. services.proto reach.proto

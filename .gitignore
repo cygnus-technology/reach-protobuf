@@ -66,5 +66,8 @@ csharp/Services.cs
 python/reach_pb2.py
 python/services_pb2.py
 
+# TypeScript
+ts/reach.ts
+ts/services.ts
 
 
