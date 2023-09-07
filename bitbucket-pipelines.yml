@@ -2,8 +2,8 @@ image: python:3.8
 
 definitions:
     steps:
-      - step: &generate-java-csharp-proto
-          name: Generate Java & C# code from .proto files
+      - step: &generate-java-kotlin-csharp-cpp-python-proto
+          name: Generate Java, Kotlin, C#, C++ and Python code from .proto files
           caches:
             - node
             - pip
@@ -11,11 +11,20 @@ definitions:
             - apt-get update && apt-get install -y protobuf-compiler  # Install protobuf-compiler
             - mkdir ./java/generated
             - protoc -I=./proto --java_out=./java/generated services.proto reach.proto
+            - mkdir ./kotlin/generated
+            - protoc -I=./proto --kotlin_out=./kotlin/generated services.proto reach.proto
             - mkdir ./csharp/generated
-            - protoc -I=./proto --csharp_out=./csharp/generated services.proto reach.proto 
+            - protoc -I=./proto --csharp_out=./csharp/generated services.proto reach.proto
+            - mkdir ./cpp/generated
+            - protoc -I=./proto --cpp_out=./cpp/generated services.proto reach.proto 
+            - mkdir ./python/generated
+            - protoc -I=./proto --python_out=./python/generated services.proto reach.proto
           artifacts:
             - 'java/generated/**'
+            - 'kotlin/generated/**'
             - 'csharp/generated/**'
+            - 'cpp/generated/**'
+            - 'python/generated/**'
       - step: &generate-ansic-nanopb
           name: Generate C code from .proto files
           script:
@@ -42,14 +51,14 @@ pipelines:
   branches:
     development:
       - step:
-          <<: *generate-java-csharp-proto
+          <<: *generate-java-kotlin-csharp-cpp-python-proto
       - step:
           <<: *generate-ansic-nanopb
       - step:
           <<: *generate-ts-nanopb
     master:
       - step:
-          <<: *generate-java-csharp-proto
+          <<: *generate-java-kotlin-csharp-cpp-python-proto
       - step:
           <<: *generate-ansic-nanopb
       - step:
