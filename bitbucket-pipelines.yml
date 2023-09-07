@@ -1,11 +1,12 @@
-image: openjdk:11  # Use an appropriate Java base image
+image: python:3.8
 
 definitions:
     steps:
       - step: &generate-java-proto
           name: Generate Java & C# code from .proto files
           caches:
-            - maven
+            - node
+            - pip
           script:
             - apt-get update && apt-get install -y protobuf-compiler  # Install protobuf-compiler
             - mkdir ./java/generated
@@ -19,7 +20,6 @@ definitions:
           name: Generate C code from .proto files
           script:
             - echo "Generating C code with nanopb ..."
-            - apt-get update && apt-get install -y make python3-pip
             - pip install protobuf grpcio-tools
             - git clone https://github.com/nanopb/nanopb.git
             - mkdir ./ansic/generated
