@@ -12,16 +12,16 @@ option java_package = "com.cygnus_reach.ahsoka.message";
 
 message ReachTransportIDs {
   enum Ids {
-    INVALID = 0;         // No Valid Message
+    INVALID             = 0;    // No Valid Message
     ERROR_REPORT        = 1;
     PING                = 2;    // ping / ping~
     GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
     // Parameters
-    DISCOVER_PARAMETERS = 4;   // dp / dp~
-    READ_PARAMETERS     = 5;   // rp / rp~
-    WRITE_PARAMETERS    = 6;   // wp / wp~
-    NOTIFY_PARAMETERS   = 7;   // pnr/ pnr~
+    DISCOVER_PARAMETERS = 4;    // dp / dp~
+    READ_PARAMETERS     = 5;    // rp / rp~
+    WRITE_PARAMETERS    = 6;    // wp / wp~
+    NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
 
     // File Transfers
     DISCOVER_FILES      = 8;    // gfd / gfd~
@@ -47,20 +47,19 @@ message ReachTransportIDs {
 
 // ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
-  bool result_value = 1;    // Error Result
-  string result_string = 2; // Error String
+  bool result_value       = 1;    // Error Result
+  string result_string    = 2;    // Error String
 }
 
 // Request Object used to Echo Data for testing the Device Communication
 message PingRequest {
-  bytes echo_data = 1; // d : Data
+  bytes echo_data         = 1;    // d : Data
 }
 
 // Response Object used to Echo Data for testing the Device Communication
 message PingResponse {
-  bytes echo_data = 1; // d : Data
-  uint32 signal_strength =
-      2; // rssi : Rssi express in strength so clients don't have to interepret
+  bytes echo_data         = 1;   // d : Data
+  uint32 signal_strength  = 2;   // rssi : Rssi express in strength so clients don't have to interepret
 }
 
 // ------------------------------------------------------
@@ -74,26 +73,26 @@ message DeviceInfoRequest {
   //
   // Used when native transport does not include security features and local
   // verification is needed.
-  uint32 challenge_key = 1;
+  uint32 challenge_key  = 1;
 }
 
 message DeviceInfoResponse {
-  // MessageResult result = 1;      // err~ : Replaces Error Result
-  int32 protocol_version = 3;    // pv : Supported Protocol Version
-  string device_name = 4;        // n : Name, Typically Model Name
-  string device_description = 5; // d : Description
+  // MessageResult result         = 1;    // err~ : Replaces Error Result
+  int32 protocol_version          = 3;    // pv : Supported Protocol Version
+  string device_name              = 4;    // n : Name, Typically Model Name
+  string device_description       = 5;    // d : Description
 
   // TODO: Use a map for firmware versions.
   // A map is desireable because a device can have multiple firmware versions.
   // Temporarily replace map with the string until we can figure out how
   // to handle this
   // map<string, string> version_info = 6; // fw : Replaces Firmware Version
-  string firmware_version = 6; // fw : Replaces Firmware Version
+  string firmware_version         = 6;    // fw : Replaces Firmware Version
 
-  uint32 max_message_size = 7; // mml : Max Message Length
-  // repeated string service_list = 8;   // svc : List of Supported Services
-  uint32 parameter_metadata_hash = 9; // hash : Parameter Metadata Hash
-  bytes application_indentifier = 10; // uuid : Custom UI Remote Key
+  uint32 max_message_size         = 7;    // mml : Max Message Length
+  // repeated string service_list = 8;    // svc : List of Supported Services
+  uint32 parameter_metadata_hash  = 9;    // hash : Parameter Metadata Hash
+  bytes application_indentifier   = 10;   // uuid : Custom UI Remote Key
 
   // TODO: Use a map to list endpoints.
   // Temporarily removed map until we can figure out how
@@ -109,7 +108,7 @@ message DeviceInfoResponse {
 // dp / dp~
 // ------------------------------------------------------
 message ParameterInfoRequest {
-  uint32 parameter_key = 1;          // Unlock Key
+  uint32 parameter_key          = 1; // Unlock Key
   repeated uint32 parameter_ids = 2; // i: ID's to Fetch (Empty to Get All)
 }
 
@@ -118,19 +117,18 @@ message ParameterInfoResponse {
 }
 
 message ParameterInfo {
-  uint32 id = 1;                   // i: Id
-  ParameterDataType data_type = 2; // t: DataType
-  uint32 size_in_bytes = 3;        // l: Byte Length for Variable Length Items.
-  string name = 4;                 // n: Name
-  AccessLevel access = 5;          // a: Access
-  string description = 6; // d: Description - Suggestion - Move this to a UI
-                          // Specific Type Extension Object?
-  string unit = 7;        // u: Units
-  double range_min = 8;   // rmi: Range Max
-  double range_max = 9;   // rma: Range Max
-  double default_value =
-      10; //		Suggestion - Show instead of value if no value.
-  StorageLocation storage_location = 11; // s: Storage Location
+  uint32 id                   = 1;        // i: Id
+  ParameterDataType data_type = 2;        // t: DataType
+  uint32 size_in_bytes        = 3;        // l: Byte Length for Variable Length Items.
+  string name                 = 4;        // n: Name
+  AccessLevel access          = 5;        // a: Access
+  string description          = 6;        // d: Description - Suggestion - Move this to a UI
+                                          // Specific Type Extension Object?
+  string unit                 = 7;        // u: Units
+  double range_min            = 8;        // rmi: Range Max
+  double range_max            = 9;        // rma: Range Max
+  double default_value        = 10;       // Suggestion - Show instead of value if no value.
+  StorageLocation storage_location = 11;  // s: Storage Location
   // map<uint32, string> enumeration_values =
   //     12; // map: Array of Enumeration Values
 }
@@ -140,17 +138,17 @@ message ParameterInfo {
 // // rp : rp~
 // ------------------------------------------------------
 message ParameterRead {
-  uint32 parameter_key = 1;          //	Optional Key for Unlocking
-                                     // Private Parameters
-  repeated uint32 parameter_ids = 2; // i: ID -  Leave Empty to Retreive All
-  uint32 read_after_timestamp = 3; // Allows for retreival of only new / changed values.
+  uint32 parameter_key          = 1;        //	Optional Key for Unlocking
+                                            // Private Parameters
+  repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retreive All
+  uint32 read_after_timestamp   = 3;        // Allows for retreival of only new / changed values.
 }
 
 message ParameterReadResult {
-  MessageResult result = 1;  // err~
-  uint32 read_timestamp = 2; // Returns timestamp of last read...usefull for
-                             // polling large variable lists.
-  repeated ParameterValue values = 3; // Array of Result Values
+  MessageResult result            = 1;      // err~
+  uint32 read_timestamp           = 2;      // Returns timestamp of last read...usefull for
+                                            // polling large variable lists.
+  repeated ParameterValue values  = 3;      // Array of Result Values
 }
 
 // ------------------------------------------------------
@@ -158,13 +156,12 @@ message ParameterReadResult {
 // // wp : wp~
 // ------------------------------------------------------
 message ParameterWrite {
-  uint32 parameter_key =
-      1; // Suggestion: Optional Key for Unlocking Private Parameters
-  repeated ParameterValue values = 3; // Array of Write Values
+  uint32 parameter_key            = 1;      // Suggestion: Optional Key for Unlocking Private Parameters
+  repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
 message ParameterWriteResult {
-  MessageResult result = 1; // err~
+  MessageResult result            = 1;      // err~
 }
 
 // ------------------------------------------------------
@@ -172,14 +169,11 @@ message ParameterWriteResult {
 // // pnr : pnr~
 // ------------------------------------------------------
 message ParameterNotify {
-  uint32 parameter_key =
-      1;            // Suggestion: Optional Key for Unlocking Private Parameters
-  bool enabled = 2; // Enabled or Disabled
-  repeated uint32 parameter_ids = 3; // i: ID -  Leave Empty to Retreive All
-  uint32 mininum_notification_period =
-      4; // min_ms: Minimum Notification Interval (ms)
-  uint32 maximum_notification_period =
-      5; // max_ms: Minimum Notification Interval (ms)
+  uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
+  bool enabled                       = 2;    // Enabled or Disabled
+  repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retreive All
+  uint32 mininum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
+  uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
 }
 
 // ------------------------------------------------------
@@ -187,14 +181,13 @@ message ParameterNotify {
 // // pn : pn~
 // ------------------------------------------------------
 message ParameterNotification {
-  uint32 parameter_key =
-      1; // Suggestion: Optional Key for Unlocking Private Parameters
-  repeated ParameterValue values = 2; // Array of Result Values
+  uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
+  repeated ParameterValue values     = 2;    // Array of Result Values
 }
 
 message ParameterNotifyResult {
-  MessageResult result = 1;                  // err~
-  repeated ParameterValue failed_values = 3; // Array of Write Values
+  MessageResult result                  = 1; // err~
+  repeated ParameterValue failed_values = 2; // Array of Write Values
 }
 
 // --------------------------------------------------------
@@ -202,19 +195,19 @@ message ParameterNotifyResult {
 // Uses OnOf (Union) for Values
 // --------------------------------------------------------
 message ParameterValue {
-  uint32 parameter_id = 1; // i: ID
-  oneof value              // v: Typed Values Union
+  uint32 parameter_id         = 1;    // i: ID
+  oneof value                         // v: Typed Values Union
   {
-    sint32 sint_value = 2;   // Int / Uint / BitField   Signed
-    uint32 uint_value = 3;   // Int / Uint / BitField
-    double float_value = 4;  // Float
-    string string_value = 5; // String Values (UTF8?)
-    bytes data_value = 6;    // Byte Array Values
+    sint32 sint_value         = 2;    // Int / Uint / BitField   Signed
+    uint32 uint_value         = 3;    // Int / Uint / BitField
+    double float_value        = 4;    // Float
+    string string_value       = 5;    // String Values (UTF8?)
+    bytes data_value          = 6;    // Byte Array Values
 
     // TODO - Added bool for testing, to be finalized
-    bool bool_value = 7; // Bool
+    bool bool_value           = 7;    // Bool
   }
-  uint32 timestamp = 8; // ts: Time Stamp for Notification
+  uint32 timestamp            = 8;    // ts: Time Stamp for Notification
 }
 
 // ------------------------------------------------------
@@ -229,12 +222,12 @@ message DiscoverFilesReply {
 }
 
 message FileInfo {
-  int32 file_id = 1;      // i: ID
-  string file_name = 2;   // n: Name
-  AccessLevel access = 3; // a: Access Level (Read / Write)
+  int32 file_id                       = 1;    // i: ID
+  string file_name                    = 2;    // n: Name
+  AccessLevel access                  = 3;    // a: Access Level (Read / Write)
   // l: size in bytes (currently...may change over time.
-  int32 current_size_bytes = 4; 
-  StorageLocation storage_location = 5; 
+  int32 current_size_bytes            = 4; 
+  StorageLocation storage_location    = 5; 
 }
 
 // ------------------------------------------------------
@@ -259,31 +252,27 @@ message TransferInit {
 }
 
 message TransferInitReply {
-  MessageResult result = 1; // err~
-  int32 transfer_id = 2;    // Service Sends a TansferID that will be used to
-                            // manage this specific transfer.
-  int32 max_bytes_per_message =
-      3; // Service Communicates the Max Size of Messages.
+  MessageResult result          = 1;    // err~
+  int32 transfer_id             = 2;    // Service Sends a TansferID that will be used to
+                                        // manage this specific transfer.
+  int32 max_bytes_per_message   = 3;    // Service Communicates the Max Size of Messages.
 }
 
 // Bi-Directional Message
 message TransferData {
-  int32 transfer_id = 1; // Transfer ID
-  uint32 message_number =
-      2; // Message Number (Message Number used for Roll Counting and Batching)
-  bytes message_data = 3; // Data
-  int32 crc32 = 4; // Optional crc for integrity checking when native transport
-                   // doesn't ensure integrity (most do so mostly serial data)
+  int32 transfer_id             = 1;    // Transfer ID
+  uint32 message_number         = 2;    // Message Number (Message Number used for Roll Counting and Batching)
+  bytes message_data            = 3;    // Data
+  int32 crc32                   = 4;    // Optional crc for integrity checking when native transport
+                                        // doesn't ensure integrity (most do so mostly serial data)
 }
 
 message TransferDataNotification {
-  MessageResult result = 1; // err~
-  int32 transfer_id = 2;
-  uint32 messages_to_send =
-      3; // Returns number of messages that are clear to send.
-  uint32 bytes_transfered =
-      4; // Note that this MAY be < has been Sent...Information Only.
-  bool is_complete = 5;
+  MessageResult result          = 1;    // err~
+  int32 transfer_id             = 2;
+  uint32 messages_to_send       = 3;    // Returns number of messages that are clear to send.
+  uint32 bytes_transfered       = 4;    // Note that this MAY be < has been Sent...Information Only.
+  bool is_complete              = 5;
 }
 
 // ------------------------------------------------------
@@ -296,34 +285,34 @@ message DiscoverStreams {}
 message DiscoverStreamsResponse { repeated StreamInfo streams = 1; }
 
 message StreamInfo {
-  int32 stream_id = 1;
-  AccessLevel access = 2; // Access Level for Stream  Read / Write.
-  string name = 3;        // Name of Stream / CLI.
-  int32 max_bytes_per_message = 4; // Max Size of Messages.
+  int32 stream_id             = 1;
+  AccessLevel access          = 2;    // Access Level for Stream  Read / Write.
+  string name                 = 3;    // Name of Stream / CLI.
+  int32 max_bytes_per_message = 4;    // Max Size of Messages.
 }
 
 message StreamOpen {
-  int32 stream_id = 1;    // Stream ID
-  AccessLevel access = 2; // Read or Write.
+  int32 stream_id             = 1;    // Stream ID
+  AccessLevel access          = 2;    // Read or Write.
 }
 
 message StreamOpenReply {
-    int32 stream_id = 1;    // Stream ID
-    MessageResult result = 2; // Carries Success / Result
+    int32 stream_id           = 1;    // Stream ID
+    MessageResult result      = 2;    // Carries Success / Result
 }
 
 message StreamClose {
-    int32 stream_id = 1;    // Stream ID
+    int32 stream_id           = 1;    // Stream ID
 }
 
 // Bi-Directional Message
 // STREAM_DATA_NOTIFICATION
 message StreamData {
-  int32 stream_id = 1;    // Stream ID
-  uint32 roll_count = 2;  // Message Number (Roll Count)
-  bytes message_data = 3; // Data
-  int32 crc32 = 4; // Optional crc for integrity checking when native transport
-                   // doesn't ensure integrity (most do so mostly serial data)
+  int32 stream_id             = 1;    // Stream ID
+  uint32 roll_count           = 2;    // Message Number (Roll Count)
+  bytes message_data          = 3;    // Data
+  int32 crc32                 = 4;    // Optional crc for integrity checking when native transport
+                                      // doesn't ensure integrity (most do so mostly serial data)
 }
 
 // ------------------------------------------------------
@@ -373,7 +362,7 @@ message CLIInfo {
 // Bi-Directional Message
 // CLI_NOTIFICATION
 message CLIData {
-  int32 CLI_id = 1;         // ID of command line entry
+  int32 CLI_id        = 1;  // ID of command line entry
   string message_data = 3;
 }
 
@@ -390,56 +379,56 @@ message CLIData {
 // Result Structure used by all Messages for Returning Errors. err~
 // ------------------------------------------------------
 message MessageResult {
-  bool result_value = 1;    // Error Result
-  string result_string = 2; // Error String
+  bool result_value       = 1;    // Error Result
+  string result_string    = 2;    // Error String
 }
 
 enum ParameterDataType {
-  parameter_type_invalid = 0;
-  uint32 = 1;
-  int32 = 2;
-  float = 3;
-  bool = 4;
-  string = 5; // QUESTIONS - ASCII??? No UTF-8?  Null Terminated?
-  enumeration = 6;
-  bit_field = 7;
-  byte_array = 8;
+  parameter_type_invalid  = 0;
+  uint32                  = 1;
+  int32                   = 2;
+  float32                 = 3;
+  bool                    = 4;
+  string                  = 5;     // QUESTIONS - ASCII??? No UTF-8?  Null Terminated?
+  enumeration             = 6;
+  bit_field               = 7;
+  byte_array              = 8;
 }
 
 enum StreamType {
-  stream_type_invalid = 0;
-  stream_binary = 1;
-  stream_string = 2;
+  stream_type_invalid     = 0;
+  stream_binary           = 1;
+  stream_string           = 2;
 }
 
 enum StreamCommands {
-  command_invalid = 0;
-  start = 1;
-  stop = 2;
+  command_invalid         = 0;
+  start                   = 1;
+  stop                    = 2;
 }
 
 enum StreamState {
-  stopped = 0;
-  starting = 1;
-  stopping = 2;
+  stopped                 = 0;
+  starting                = 1;
+  stopping                = 2;
 }
 
 enum AccessLevel {
-  read = 0;
-  write = 1;
+  read                    = 0;
+  write                   = 1;
 }
 
 enum FileTransferType {
-  client_upload = 0;
-  client_download = 1;
+  client_upload           = 0;
+  client_download         = 1;
 }
 
 enum StorageLocation {
-  storage_location_invalid = 0;
-  ram = 1;
-  nonvolitile = 2;
-  ram_extended = 3;
-  nonvolitile_extended = 4;
+  storage_location_invalid  = 0;
+  ram                       = 1;
+  nonvolitile               = 2;
+  ram_extended              = 3;
+  nonvolitile_extended      = 4;
 }
 
 // TODO: Reach message for testing, to be finalized
@@ -447,29 +436,3 @@ message AhsokaMessage {
   AhsokaServiceFramework.AhsokaMessageHeader header = 1;
   bytes payload = 2;
 }
-
-// TODO: File tranfer state machine for testing, to be finalized
-// enum FileTransferState {
-//   invalid = 0;
-//   idle = 1;
-//   init = 2;
-//   data = 3;
-//   complete = 4;
-// }
-
-// message FileTransferStateMachine {
-//   FileTransferState state = 1;
-//   int32 transfer_id = 2;
-//   int32 file_id = 3;
-//   int32 timeout_in_ms = 4;
-//   uint32 request_offset = 5;
-//   uint32 transfer_length = 6;
-//   FileTransferType file_transfer_type = 7;
-//   uint32 message_number = 8;
-//   bytes message_data = 9;
-//   int32 crc32 = 10;
-//   uint32 messages_to_send = 11;
-//   uint32 bytes_transfered = 12;
-//   bool is_complete = 13;
-//   int32 max_bytes_per_message = 14;
-// }
