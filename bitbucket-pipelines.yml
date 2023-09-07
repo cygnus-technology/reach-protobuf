@@ -36,6 +36,6 @@ pipelines:
           <<: *generate-ansic-nanopb
     master:
       - step:
-          name: Our Very First Pipeline!
-          script:
-            - echo "Hello World Master!"
+          <<: *generate-java-proto
+      - step:
+          <<: *generate-ansic-nanopb
