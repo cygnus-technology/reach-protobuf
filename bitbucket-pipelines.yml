@@ -1,0 +1,41 @@
+image: openjdk:11  # Use an appropriate Java base image
+
+definitions:
+    steps:
+      - step: &generate-java-proto
+          name: Generate Java & C# code from .proto files
+          caches:
+            - maven
+          script:
+            - apt-get update && apt-get install -y protobuf-compiler  # Install protobuf-compiler
+            - mkdir ./java/generated
+            - protoc -I=./proto --java_out=./java/generated services.proto reach.proto
+            - mkdir ./csharp/generated
+            - protoc -I=./proto --csharp_out=./csharp/generated services.proto reach.proto 
+          artifacts:
+            - 'java/generated/**'
+            - 'csharp/generated/**'
+      - step: &generate-ansic-nanopb
+          name: Generate C code from .proto files
+          script:
+            - echo "Generating C code with nanopb ..."
+            - apt-get update && apt-get install -y make python3-pip
+            - pip install protobuf grpcio-tools
+            - git clone https://github.com/nanopb/nanopb.git
+            - mkdir ./ansic/generated
+            - ./nanopb/generator/nanopb_generator.py -I=./proto --output-dir=./ansic/generated services.proto reach.proto
+          artifacts:
+            - 'ansic/generated/**'
+      
+pipelines:
+  branches:
+    development:
+      - step:
+          <<: *generate-java-proto
+      - step:
+          <<: *generate-ansic-nanopb
+    master:
+      - step:
+          name: Our Very First Pipeline!
+          script:
+            - echo "Hello World Master!"
