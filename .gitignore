@@ -58,5 +58,13 @@ Makefile
 *.pb.c
 *.pb.h
 
+# CSharp
+csharp/Reach.cs
+csharp/Services.cs
+
+# Python
+python/reach_pb2.py
+python/services_pb2.py
+
 
 
