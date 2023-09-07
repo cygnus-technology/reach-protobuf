@@ -10,14 +10,19 @@ definitions:
           script:
             - apt-get update && apt-get install -y protobuf-compiler  # Install protobuf-compiler
             - mkdir ./java/generated
+            - cp ./proto/* ./java/generated/
             - protoc -I=./proto --java_out=./java/generated services.proto reach.proto
             - mkdir ./kotlin/generated
+            - cp ./proto/* ./kotlin/generated/
             - protoc -I=./proto --kotlin_out=./kotlin/generated services.proto reach.proto
             - mkdir ./csharp/generated
+            - cp ./proto/* ./csharp/generated/
             - protoc -I=./proto --csharp_out=./csharp/generated services.proto reach.proto
             - mkdir ./cpp/generated
+            - cp ./proto/* ./cpp/generated/
             - protoc -I=./proto --cpp_out=./cpp/generated services.proto reach.proto 
             - mkdir ./python/generated
+            - cp ./proto/* ./python/generated/
             - protoc -I=./proto --python_out=./python/generated services.proto reach.proto
           artifacts:
             - 'java/generated/**'
@@ -31,6 +36,7 @@ definitions:
             - pip install protobuf grpcio-tools
             - git clone https://github.com/nanopb/nanopb.git
             - mkdir ./ansic/generated
+            - cp ./proto/* ./ansic/generated/
             - ./nanopb/generator/nanopb_generator.py -I=./proto --output-dir=./ansic/generated services.proto reach.proto
           artifacts:
             - 'ansic/generated/**'
@@ -43,6 +49,7 @@ definitions:
             - npm ci
             - mkdir ./generated
             - cd ../
+            - cp ./proto/* ./ts/generated/
             - protoc --plugin=./ts/node_modules/.bin/protoc-gen-ts_proto -I=./proto --ts_proto_out=./ts/generated services.proto reach.proto
           artifacts:
             - 'ts/generated/**'
