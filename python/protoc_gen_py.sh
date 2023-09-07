@@ -1,1 +1,2 @@
-protoc -I=../proto --python_out=. services.proto reach.proto
+mkdir generated
+protoc -I=../proto --python_out=./generated services.proto reach.proto
