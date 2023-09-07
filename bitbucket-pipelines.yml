@@ -56,17 +56,13 @@ definitions:
       
 pipelines:
   branches:
-    development:
-      - step:
-          <<: *generate-java-kotlin-csharp-cpp-python-proto
-      - step:
-          <<: *generate-ansic-nanopb
-      - step:
-          <<: *generate-ts-nanopb
+    dev:
+      - parallel:
+          - step: *generate-java-kotlin-csharp-cpp-python-proto
+          - step: *generate-ansic-nanopb
+          - step: *generate-ts-nanopb
     master:
-      - step:
-          <<: *generate-java-kotlin-csharp-cpp-python-proto
-      - step:
-          <<: *generate-ansic-nanopb
-      - step:
-          <<: *generate-ts-nanopb
+      - parallel:
+          - step: *generate-java-kotlin-csharp-cpp-python-proto
+          - step: *generate-ansic-nanopb
+          - step: *generate-ts-nanopb
