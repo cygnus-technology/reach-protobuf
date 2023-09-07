@@ -58,11 +58,10 @@ pipelines:
   branches:
     development:
       - step:
-          <<: *generate-java-kotlin-csharp-cpp-python-proto
-      - step:
-          <<: *generate-ansic-nanopb
-      - step:
-          <<: *generate-ts-nanopb
+        script: 
+          - <<: *generate-java-kotlin-csharp-cpp-python-proto
+          - <<: *generate-ansic-nanopb
+          - <<: *generate-ts-nanopb
     master:
       - step:
           <<: *generate-java-kotlin-csharp-cpp-python-proto
