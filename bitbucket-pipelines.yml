@@ -2,7 +2,7 @@ image: python:3.8
 
 definitions:
     steps:
-      - step: &generate-java-proto
+      - step: &generate-java-csharp-proto
           name: Generate Java & C# code from .proto files
           caches:
             - node
@@ -19,23 +19,38 @@ definitions:
       - step: &generate-ansic-nanopb
           name: Generate C code from .proto files
           script:
-            - echo "Generating C code with nanopb ..."
             - pip install protobuf grpcio-tools
             - git clone https://github.com/nanopb/nanopb.git
             - mkdir ./ansic/generated
             - ./nanopb/generator/nanopb_generator.py -I=./proto --output-dir=./ansic/generated services.proto reach.proto
           artifacts:
             - 'ansic/generated/**'
+      - step: &generate-ts-nanopb
+          name: Generate TS code from .proto files
+          script:
+            - apt-get update && apt-get install -y protobuf-compiler nodejs npm
+            - npm install -g ts-proto
+            - cd ts
+            - npm ci
+            - mkdir ./generated
+            - cd ../
+            - protoc --plugin=./ts/node_modules/.bin/protoc-gen-ts_proto -I=./proto --ts_proto_out=./ts/generated services.proto reach.proto
+          artifacts:
+            - 'ts/generated/**'
       
 pipelines:
   branches:
     development:
       - step:
-          <<: *generate-java-proto
+          <<: *generate-java-csharp-proto
       - step:
           <<: *generate-ansic-nanopb
+      - step:
+          <<: *generate-ts-nanopb
     master:
       - step:
-          <<: *generate-java-proto
+          <<: *generate-java-csharp-proto
       - step:
           <<: *generate-ansic-nanopb
+      - step:
+          <<: *generate-ts-nanopb
