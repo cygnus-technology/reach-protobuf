@@ -50,3 +50,24 @@ Thumbs.db
 *.mov
 *.wmv
 
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+*.a
+*.pb.c
+*.pb.h
+
+# CSharp
+csharp/Reach.cs
+csharp/Services.cs
+
+# Python
+python/reach_pb2.py
+python/services_pb2.py
+
+# TypeScript
+ts/reach.ts
+ts/services.ts
+
+
