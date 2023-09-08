@@ -22,7 +22,7 @@ cr.DeviceInfoResponse.device_name max_size: 32
 cr.DeviceInfoResponse.device_description max_size: 32
 cr.DeviceInfoResponse.firmware_version max_size: 16
 #cr.DeviceInfoResponse.service_list max_count: 8
-#cr.DeviceInfoResponse.application_indentifier max_size: 37
+cr.DeviceInfoResponse.application_indentifier max_size: 37
 
 cr.DiscoverFilesReply.file_name max_size: 32
 cr.DiscoverFilesReply.file_name max_size: 32

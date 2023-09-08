@@ -37,7 +37,7 @@ definitions:
             - git clone https://github.com/nanopb/nanopb.git
             - mkdir ./ansic/generated
             - cp ./proto/* ./ansic/generated/
-            - ./nanopb/generator/nanopb_generator.py -I=./proto --output-dir=./ansic/generated services.proto reach.proto
+            - ./nanopb/generator/nanopb_generator.py -I./proto --output-dir=./ansic/generated services.proto reach.proto
           artifacts:
             - 'ansic/generated/**'
       - step: &generate-ts-nanopb

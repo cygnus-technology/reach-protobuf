@@ -3,7 +3,7 @@ syntax = "proto3";
 package AhsokaServiceFramework;
 
 /** C# namespace for generated classes. */
-option csharp_namespace = "Ahsoka.ServiceFramework";
+option csharp_namespace = "Cygnus.Reach";
 
 /** Java package for generated classes. */
 option java_multiple_files = true;
