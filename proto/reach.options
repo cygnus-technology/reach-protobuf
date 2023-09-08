@@ -1,5 +1,5 @@
 # This file defines the nanopb-specific options for the messages defined
-# in message.proto.
+# in reach.proto.  It sets compile time sizes for the C language.
 #
 # If you come from high-level programming background, the hardcoded
 # maximum lengths may disgust you. However, if your microcontroller only
@@ -11,48 +11,48 @@
 
 * include:"sys/types.h"
 * include:"dirent.h"
-cr.ErrorReport.result_string    max_size : 200
+cr.ErrorReport.result_string        max_size: 200
 
-cr.PingRequest.echo_data max_size: 128
-cr.PingResponse.echo_data max_size: 128
+cr.PingRequest.echo_data            max_size: 200
+cr.PingResponse.echo_data           max_size: 200
 
 #
 # DeviceInfoResponse 
 #
-cr.DeviceInfoResponse.device_name max_size: 24
-cr.DeviceInfoResponse.manufacturer max_size: 24
+cr.DeviceInfoResponse.device_name       max_size: 24
+cr.DeviceInfoResponse.manufacturer      max_size: 24
 cr.DeviceInfoResponse.device_description max_size: 48
-cr.DeviceInfoResponse.firmware_version max_size: 16
+cr.DeviceInfoResponse.firmware_version  max_size: 16
 # application_identifier is a UUID.
 cr.DeviceInfoResponse.application_indentifier max_size: 16
 
 #
 # ParameterInfo {
 #
-cr.ParameterInfo.name max_size: 24
-cr.ParameterInfo.description max_size: 32
-cr.ParameterInfo.unit max_size: 16
+cr.ParameterInfo.name                   max_size: 24
+cr.ParameterInfo.description            max_size: 32
+cr.ParameterInfo.unit                   max_size: 16
 
-cr.ParameterInfoRequest.parameter_ids max_count: 25
+cr.ParameterInfoRequest.parameter_ids   max_count: 25
 cr.ParameterInfoResponse.parameter_infos max_count: 2
 
-cr.ParameterRead.parameter_ids      max_count: 7
-cr.ParameterReadResult.values       max_count: 4
-cr.ParameterWrite.values            max_count: 4
-cr.ParameterWriteResult.values      max_count: 8
+cr.ParameterRead.parameter_ids          max_count: 7
+cr.ParameterReadResult.values           max_count: 4
+cr.ParameterWrite.values                max_count: 4
+cr.ParameterWriteResult.values          max_count: 8
 
 cr.ParameterInfoEnumeration.emumerations max_count: 15
-cr.EnumerationKey.name max_size:16
+cr.EnumerationKey.name                  max_size:16
 
-cr.ParameterValue.value.string_value max_size:32
-cr.ParameterValue.string_value max_size:32
+cr.ParameterValue.value.string_value    max_size:32
+cr.ParameterValue.string_value          max_size:32
 
 #
 # Files
 #
 cr.DiscoverFilesReply.file_infos        max_count: 8
 cr.FileInfo.file_name                   max_size: 24
-cr.TransferData.message_data            max_size: 200
+cr.FileTransferData.message_data        max_size: 200
 
 #
 # Streams

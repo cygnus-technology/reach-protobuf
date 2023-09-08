@@ -246,7 +246,7 @@ message FileInfo {
 // ------------------------------------------------------
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
-message TransferInit {
+message FileTransferInit {
 
   int32 file_id         = 1; // i: File ID
 
@@ -264,7 +264,7 @@ message TransferInit {
   uint32 read_write      = 5; // 0 for read, 1 for write.
 }
 
-message TransferInitReply {
+message FileTransferInitReply {
   int32 result                  = 1;    // err~
   int32 transfer_id             = 2;    // Service Sends a TansferID that will be used to
                                         // manage this specific transfer.
@@ -272,7 +272,7 @@ message TransferInitReply {
 }
 
 // Bi-Directional Message
-message TransferData {
+message FileTransferData {
   int32 transfer_id             = 1;    // Transfer ID
   uint32 message_number         = 2;    // Message Number (Message Number used for Roll Counting and Batching)
   bytes message_data            = 3;    // Data
@@ -280,7 +280,7 @@ message TransferData {
                                         // doesn't ensure integrity (most do so mostly serial data)
 }
 
-message TransferDataNotification {
+message FileTransferDataNotification {
   int32  result                 = 1;    // err~
   int32  transfer_id            = 2;
   uint32 messages_to_send       = 3;    // Returns number of messages that are clear to send.
