@@ -114,9 +114,7 @@ message ParameterInfoRequest {
 }
 
 message ParameterInfoResponse {
-  uint32 total_num_params     = 1;
-  uint32 params_remaining     = 2;  // becomes zero on the last packet.
-  repeated ParameterInfo parameter_infos = 3; // Array of Param Infos
+  repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
 }
 
 message ParameterDesecription {
@@ -234,9 +232,7 @@ message ParameterValue {
 message DiscoverFiles { }
 
 message DiscoverFilesReply {
-  uint32   number_of_files     = 1;
-  uint32   number_remaining    = 2; // zero when all files have been described
-  repeated FileInfo file_infos = 3; // Array of File Infos
+  repeated FileInfo file_infos = 1; // Array of File Infos
 }
 
 message FileInfo {
@@ -300,9 +296,7 @@ message TransferDataNotification {
 message DiscoverStreams {}
 
 message DiscoverStreamsResponse { 
-  uint32   number_of_streams  = 1;
-  uint32   streams_remaining  = 2;  // zero when all streams have been described
-  repeated StreamInfo streams = 3; 
+  repeated StreamInfo streams = 1; 
 }
 
 message StreamInfo {
@@ -343,9 +337,7 @@ message StreamData {
 message DiscoverCommands {}
 
 message DiscoverCommandsResult {
-  uint32   number_of_commands  = 1;
-  uint32   commands_remaining  = 2;  // zero when all commands have been described
-  repeated CommandInfo available_commands = 3; // Array of v:n    Values : Names
+  repeated CommandInfo available_commands = 1; // Array of v:n    Values : Names
 }
 
 message CommandInfo {

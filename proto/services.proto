@@ -43,6 +43,10 @@ message AhsokaMessageHeader {
   // Architecture
   bool is_message_compressed = 6;
 
+  // To handle sequences of messages required to complete a request
+  uint32   number_of_objects    = 7;
+  uint32   remaining_objects    = 8; // zero when all files have been described
+
 }
 
 //----------------------------
