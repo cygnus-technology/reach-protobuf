@@ -6,6 +6,9 @@ import "services.proto";
 
 package cr;
 
+/** C# namespace for generated classes. */
+option csharp_namespace = "Cygnus.Reach";
+
 /** Java package for generated classes. */
 option java_multiple_files = true;
 option java_package = "com.cygnus_reach.ahsoka.message";
