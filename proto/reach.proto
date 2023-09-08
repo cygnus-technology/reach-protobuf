@@ -370,7 +370,7 @@ message DiscoverCLIResult {
 // CLI_DATA
 message CLI_Data {
   int32 cli_stream_id         = 1;    // command or report
-  bytes message_data          = 2;    // Data
+  string message_data         = 2;    // Data
 }
 
 enum CLI_id {
@@ -378,15 +378,6 @@ enum CLI_id {
   command = 1;
   report  = 2;
 }
-
-
-// Bi-Directional Message
-// CLI_NOTIFICATION
-message CLIData {
-  int32 CLI_id        = 1;  // ID of command line entry
-  string message_data = 2;
-}
-
 
 
 

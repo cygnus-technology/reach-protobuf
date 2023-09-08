@@ -33,7 +33,7 @@ cr.ParameterInfo.name                   max_size: 24
 cr.ParameterInfo.description            max_size: 32
 cr.ParameterInfo.unit                   max_size: 16
 
-cr.ParameterInfoRequest.parameter_ids   max_count: 25
+cr.ParameterInfoRequest.parameter_ids   max_count: 32
 cr.ParameterInfoResponse.parameter_infos max_count: 2
 
 cr.ParameterRead.parameter_ids          max_count: 7
@@ -65,12 +65,12 @@ cr.StreamData.message_data              max_size: 200
 # Commands
 #
 cr.CommandInfo.name                     max_size: 24
-cr.DiscoverCommandsResult.available_commands   max_count: 8
+cr.DiscoverCommandsResult.available_commands   max_count: 6
 
 #
 # CLI
 #
-cr.CLI_Data.message_data                max_size: 200
+cr.CLI_Data.message_data                 max_size: 200
 
 #
 # Other / Test ? To be deleted
