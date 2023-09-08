@@ -98,7 +98,7 @@ message DeviceInfoResponse {
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_indentifier   = 10;   // A UUID to find a Custom firmware_version
+  bytes application_identifier   = 10;   // A UUID to find a Custom firmware_version
 
   uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
 }
@@ -126,7 +126,7 @@ message ParameterInfoResponse {
   repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
 }
 
-message ParameterDesecription {
+message ParameterDescription {
   uint32 id                           = 1;  // Id
   oneof data {
     ParameterInfo basic_info          = 2;
@@ -197,7 +197,7 @@ message ParameterNotify {
   uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
   bool enabled                       = 2;    // Enabled or Disabled
   repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retrieve All
-  uint32 mininum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
+  uint32 minimum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
   uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
 }
 
@@ -293,7 +293,7 @@ message FileTransferDataNotification {
   int32  result                 = 1;    // err~
   int32  transfer_id            = 2;
   uint32 messages_to_send       = 3;    // Returns number of messages that are clear to send.
-  uint32 bytes_transfered       = 4;    // Note that this MAY be < has been Sent...Information Only.
+  uint32 bytes_transferred       = 4;    // Note that this MAY be < has been Sent...Information Only.
   bool is_complete              = 5;
 }
 
@@ -419,9 +419,9 @@ enum AccessLevel {
 enum StorageLocation {
   storage_location_invalid  = 0;
   ram                       = 1;
-  nonvolitile               = 2;
+  nonvolatile               = 2;
   ram_extended              = 3;
-  nonvolitile_extended      = 4;
+  nonvolatile_extended      = 4;
 }
 
 // TODO: Reach message for testing, to be finalized
