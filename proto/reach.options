@@ -18,47 +18,64 @@ MessageResult.result_string 	max_size:128
 cr.PingRequest.echo_data max_size: 128
 cr.PingResponse.echo_data max_size: 128
 
-cr.DeviceInfoResponse.device_name max_size: 32
-cr.DeviceInfoResponse.device_description max_size: 32
+#
+# message DeviceInfoResponse 
+#
+cr.DeviceInfoResponse.device_name max_size: 24
+cr.DeviceInfoResponse.manufacturer max_size: 24
+cr.DeviceInfoResponse.device_description max_size: 48
 cr.DeviceInfoResponse.firmware_version max_size: 16
-#cr.DeviceInfoResponse.service_list max_count: 8
-cr.DeviceInfoResponse.application_indentifier max_size: 37
+# application_identifier is a UUID.
+cr.DeviceInfoResponse.application_indentifier max_size: 16
 
-cr.DiscoverFilesReply.file_name max_size: 32
-cr.DiscoverFilesReply.file_name max_size: 32
-
-cr.FileDescriptionResponse.descriptions max_count: 8
-cr.ReadFileResponse.data max_size: 128
-cr.WriteFileRequest.data max_size: 128
-
-cr.ParameterInfo.name max_size: 32
+#
+# message ParameterInfo {
+#
+cr.ParameterInfo.name max_size: 24
 cr.ParameterInfo.description max_size: 32
-cr.ParameterInfo.unit max_size: 32
+cr.ParameterInfo.unit max_size: 16
 
-cr.ParameterInfoRequest.parameter_ids max_count: 16
-cr.ParameterInfoResponse.parameter_infos max_count: 16
-cr.ParameterRead.parameter_ids max_count: 8
-cr.ParameterReadResult.values    max_count:8
-cr.ParameterWrite.values    max_count:8
-cr.ParameterWriteResult.values    max_count:8
-cr.MessageResult.result_string    max_size:32
+cr.ParameterInfoRequest.parameter_ids max_count: 50
+cr.ParameterInfoResponse.parameter_infos max_count: 2
+
+cr.ParameterRead.parameter_ids      max_count: 7
+cr.ParameterReadResult.values       max_count: 8
+cr.ParameterWrite.values            max_count: 8
+cr.ParameterWriteResult.values      max_count: 8
+
+cr.ParameterInfoEnumeration.emumerations max_count: 15
+cr.EnumerationKey.name max_size:16
 
 cr.ParameterValue.value.string_value max_size:32
 cr.ParameterValue.string_value max_size:32
-ParameterInfo.enumeration_values max_count:8
-ParameterInfo_EnumerationValuesEntry.value max_length: 32
 
+#
+# Files
+#
+cr.DiscoverFilesReply.file_infos        max_count: 8
+cr.FileInfo.file_name                   max_size: 24
+cr.TransferData.message_data            max_size: 200
 
-cr.FileInfo.file_name            max_size: 32
-cr.DiscoverFilesReply.file_infos   max_count: 8
-cr.TransferInit.file_id            max_size: 32
-cr.TransferData.message_data        max_size: 128
+#
+# Streams
+#
+cr.DiscoverStreamsResponse.streams      max_count: 8
+cr.StreamInfo.name                      max_size: 24
+cr.StreamData.message_data              max_size: 200
 
-cr.StreamsResponse.streams          max_count: 8
-
-cr.CommandInfo.name                 max_size: 32
+#
+# Commands
+#
+cr.CommandInfo.name                     max_size: 24
 cr.DiscoverCommandsResult.available_commands   max_count: 8
 
-cr.AhsokaMessage.payload            max_size: 256
+#
+# CLI
+#
+cr.CLI_Data.message_data                max_size: 200
 
+#
+# Other / Test ? To be deleted
+#
+cr.AhsokaMessage.payload                max_size: 256
 cr.FileTransferStateMachine.message_data max_size: 1024 
