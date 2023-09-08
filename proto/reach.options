@@ -25,6 +25,7 @@ cr.DeviceInfoResponse.device_description max_size: 48
 cr.DeviceInfoResponse.firmware_version  max_size: 16
 # application_identifier is a UUID.
 cr.DeviceInfoResponse.application_indentifier max_size: 16
+cr.DeviceInfoResponse.service_list      max_count: 8
 
 #
 # ParameterInfo {
