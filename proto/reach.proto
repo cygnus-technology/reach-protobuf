@@ -216,7 +216,7 @@ message ParameterNotifyResult {
 }
 
 // --------------------------------------------------------
-// Message for Sending / Recieving a Single Parameter Value
+// Message for Sending / Receiving a Single Parameter Value
 // Uses OnOf (Union) for Values
 // --------------------------------------------------------
 message ParameterValue {
