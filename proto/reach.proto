@@ -62,7 +62,7 @@ message PingRequest {
 // Response Object used to Echo Data for testing the Device Communication
 message PingResponse {
   bytes echo_data         = 1;   // d : Data
-  uint32 signal_strength  = 2;   // rssi : Rssi express in strength so clients don't have to interepret
+  uint32 signal_strength  = 2;   // rssi : Rssi express in strength so clients don't have to interpret
 }
 
 // ------------------------------------------------------
@@ -116,7 +116,7 @@ message ParameterInfoRequest {
 message ParameterInfoResponse {
   uint32 total_num_params     = 1;
   uint32 params_remaining     = 2;  // becomes zero on the last packet.
-  repeated ParameterInfo parameter_infos = 3; // Array of Param Infos
+  repeated ParameterInfo parameter_infos = 3; // Array of ParamInfo instances
 }
 
 message ParameterDesecription {
@@ -141,7 +141,7 @@ message ParameterInfo {
 }
  
 message ParameterInfoEnumeration {
-  repeated EnumerationKey enumerations = 12; // ALlows UI to name enumerations
+  repeated EnumerationKey enumerations = 12; // Allows UI to name enumerations
 }
  
 message EnumerationKey {
@@ -156,15 +156,15 @@ message EnumerationKey {
 message ParameterRead {
   uint32 parameter_key          = 1;        //	Optional Key for Unlocking
                                             // Private Parameters
-  repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retreive All
-  uint32 read_after_timestamp   = 3;        // Allows for retreival of only new / changed values.
+  repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retrieve All
+  uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
 }
 
 message ParameterReadResult {
   // The read_timestamp indicates when this param was last read.  
   // Reading resets this value to now.
   // 
-  uint32 read_timestamp           = 1;      // Returns timestamp of last read...usefull for
+  uint32 read_timestamp           = 1;      // Returns timestamp of last read...useful for
                                             // polling large variable lists.
   repeated ParameterValue values  = 3;      // Array of Result Values
 }
@@ -189,7 +189,7 @@ message ParameterWriteResult {
 message ParameterNotify {
   uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
   bool enabled                       = 2;    // Enabled or Disabled
-  repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retreive All
+  repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retrieve All
   uint32 mininum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
   uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
 }
@@ -236,7 +236,7 @@ message DiscoverFiles { }
 message DiscoverFilesReply {
   uint32   number_of_files     = 1;
   uint32   number_remaining    = 2; // zero when all files have been described
-  repeated FileInfo file_infos = 3; // Array of File Infos
+  repeated FileInfo file_infos = 3; // Array of File Info instances
 }
 
 message FileInfo {
@@ -254,7 +254,7 @@ message TransferInit {
 
   int32 file_id         = 1; // i: File ID
 
-  // Time afterwhich the Reciever (Client / Service) should abandon the
+  // Time after which the Receiver (Client / Service) should abandon the
   // transfer abandoned due to after inactivity.
   int32 timeout_in_ms   = 2; 
 
@@ -270,7 +270,7 @@ message TransferInit {
 
 message TransferInitReply {
   int32 result                  = 1;    // err~
-  int32 transfer_id             = 2;    // Service Sends a TansferID that will be used to
+  int32 transfer_id             = 2;    // Service Sends a TransferID that will be used to
                                         // manage this specific transfer.
   int32 max_bytes_per_message   = 3;    // Service Communicates the Max Size of Messages.
 }
