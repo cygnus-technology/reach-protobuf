@@ -1,3 +1,2 @@
-rm -rf generated
-mkdir generated
-protoc -I=../proto --kotlin_out=./generated services.proto reach.proto
+rm -rf ../../reachprotocol/src/main/java/com/cygnusreach/reachprotocol/proto
+protoc -I=../proto --kotlin_out=../../reachprotocol/src/main/java --java_out=../../reachprotocol/src/main/java services.proto reach.proto
