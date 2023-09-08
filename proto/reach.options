@@ -11,15 +11,13 @@
 
 * include:"sys/types.h"
 * include:"dirent.h"
-#cr.AhsokaMessage.data 	max_size:128
-#cr.AhsokaMessage.responses 	max_count:4
-MessageResult.result_string 	max_size:128
+cr.ErrorReport.result_string    max_size : 200
 
 cr.PingRequest.echo_data max_size: 128
 cr.PingResponse.echo_data max_size: 128
 
 #
-# message DeviceInfoResponse 
+# DeviceInfoResponse 
 #
 cr.DeviceInfoResponse.device_name max_size: 24
 cr.DeviceInfoResponse.manufacturer max_size: 24
@@ -29,18 +27,18 @@ cr.DeviceInfoResponse.firmware_version max_size: 16
 cr.DeviceInfoResponse.application_indentifier max_size: 16
 
 #
-# message ParameterInfo {
+# ParameterInfo {
 #
 cr.ParameterInfo.name max_size: 24
 cr.ParameterInfo.description max_size: 32
 cr.ParameterInfo.unit max_size: 16
 
-cr.ParameterInfoRequest.parameter_ids max_count: 50
+cr.ParameterInfoRequest.parameter_ids max_count: 25
 cr.ParameterInfoResponse.parameter_infos max_count: 2
 
 cr.ParameterRead.parameter_ids      max_count: 7
-cr.ParameterReadResult.values       max_count: 8
-cr.ParameterWrite.values            max_count: 8
+cr.ParameterReadResult.values       max_count: 4
+cr.ParameterWrite.values            max_count: 4
 cr.ParameterWriteResult.values      max_count: 8
 
 cr.ParameterInfoEnumeration.emumerations max_count: 15
@@ -59,14 +57,14 @@ cr.TransferData.message_data            max_size: 200
 #
 # Streams
 #
-cr.DiscoverStreamsResponse.streams      max_count: 8
+cr.DiscoverStreamsResponse.streams      max_count: 4
 cr.StreamInfo.name                      max_size: 24
 cr.StreamData.message_data              max_size: 200
 
 #
 # Commands
 #
-cr.CommandInfo.name                     max_size: 24
+cr.CommandInfo.name                     max_size: 8
 cr.DiscoverCommandsResult.available_commands   max_count: 8
 
 #
