@@ -93,14 +93,23 @@ message DeviceInfoResponse {
   uint32 max_message_size         = 7;
 
   // A bit mask, allowing support for up to 32 services
-  uint32 service_list             = 8;
+  repeated service_ids service_list = 8;
 
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_indentifier   = 10;   // A UUID to find a Custom firmware_version
+  bytes application_identifier   = 10;   // A UUID to find a Custom firmware_version
 
   uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
+}
+
+enum service_ids {
+  sid_none            = 0;
+  sid_Parameter_Repo  = 1;
+  sid_Files           = 2;
+  sid_Streams         = 3;
+  sid_Commands        = 4;
+  sid_CLI             = 5;
 }
 
 // ------------------------------------------------------
@@ -114,12 +123,10 @@ message ParameterInfoRequest {
 }
 
 message ParameterInfoResponse {
-  uint32 total_num_params     = 1;
-  uint32 params_remaining     = 2;  // becomes zero on the last packet.
-  repeated ParameterInfo parameter_infos = 3; // Array of ParamInfo instances
+  repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
 }
 
-message ParameterDesecription {
+message ParameterDescription {
   uint32 id                           = 1;  // Id
   oneof data {
     ParameterInfo basic_info          = 2;
@@ -190,7 +197,7 @@ message ParameterNotify {
   uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
   bool enabled                       = 2;    // Enabled or Disabled
   repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retrieve All
-  uint32 mininum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
+  uint32 minimum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
   uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
 }
 
@@ -209,7 +216,7 @@ message ParameterNotifyResult {
 }
 
 // --------------------------------------------------------
-// Message for Sending / Recieving a Single Parameter Value
+// Message for Sending / Receiving a Single Parameter Value
 // Uses OnOf (Union) for Values
 // --------------------------------------------------------
 message ParameterValue {
@@ -234,9 +241,7 @@ message ParameterValue {
 message DiscoverFiles { }
 
 message DiscoverFilesReply {
-  uint32   number_of_files     = 1;
-  uint32   number_remaining    = 2; // zero when all files have been described
-  repeated FileInfo file_infos = 3; // Array of File Info instances
+  repeated FileInfo file_infos = 1; // Array of File Infos
 }
 
 message FileInfo {
@@ -250,7 +255,7 @@ message FileInfo {
 // ------------------------------------------------------
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
-message TransferInit {
+message FileTransferInit {
 
   int32 file_id         = 1; // i: File ID
 
@@ -268,7 +273,7 @@ message TransferInit {
   uint32 read_write      = 5; // 0 for read, 1 for write.
 }
 
-message TransferInitReply {
+message FileTransferInitReply {
   int32 result                  = 1;    // err~
   int32 transfer_id             = 2;    // Service Sends a TransferID that will be used to
                                         // manage this specific transfer.
@@ -276,7 +281,7 @@ message TransferInitReply {
 }
 
 // Bi-Directional Message
-message TransferData {
+message FileTransferData {
   int32 transfer_id             = 1;    // Transfer ID
   uint32 message_number         = 2;    // Message Number (Message Number used for Roll Counting and Batching)
   bytes message_data            = 3;    // Data
@@ -284,11 +289,11 @@ message TransferData {
                                         // doesn't ensure integrity (most do so mostly serial data)
 }
 
-message TransferDataNotification {
+message FileTransferDataNotification {
   int32  result                 = 1;    // err~
   int32  transfer_id            = 2;
   uint32 messages_to_send       = 3;    // Returns number of messages that are clear to send.
-  uint32 bytes_transfered       = 4;    // Note that this MAY be < has been Sent...Information Only.
+  uint32 bytes_transferred       = 4;    // Note that this MAY be < has been Sent...Information Only.
   bool is_complete              = 5;
 }
 
@@ -300,9 +305,7 @@ message TransferDataNotification {
 message DiscoverStreams {}
 
 message DiscoverStreamsResponse { 
-  uint32   number_of_streams  = 1;
-  uint32   streams_remaining  = 2;  // zero when all streams have been described
-  repeated StreamInfo streams = 3; 
+  repeated StreamInfo streams = 1; 
 }
 
 message StreamInfo {
@@ -343,9 +346,7 @@ message StreamData {
 message DiscoverCommands {}
 
 message DiscoverCommandsResult {
-  uint32   number_of_commands  = 1;
-  uint32   commands_remaining  = 2;  // zero when all commands have been described
-  repeated CommandInfo available_commands = 3; // Array of v:n    Values : Names
+  repeated CommandInfo available_commands = 1; // Array of v:n    Values : Names
 }
 
 message CommandInfo {
@@ -378,7 +379,7 @@ message DiscoverCLIResult {
 // CLI_DATA
 message CLI_Data {
   int32 cli_stream_id         = 1;    // command or report
-  bytes message_data          = 2;    // Data
+  string message_data         = 2;    // Data
 }
 
 enum CLI_id {
@@ -386,15 +387,6 @@ enum CLI_id {
   command = 1;
   report  = 2;
 }
-
-
-// Bi-Directional Message
-// CLI_NOTIFICATION
-message CLIData {
-  int32 CLI_id        = 1;  // ID of command line entry
-  string message_data = 2;
-}
-
 
 
 
@@ -427,13 +419,13 @@ enum AccessLevel {
 enum StorageLocation {
   storage_location_invalid  = 0;
   ram                       = 1;
-  nonvolitile               = 2;
+  nonvolatile               = 2;
   ram_extended              = 3;
-  nonvolitile_extended      = 4;
+  nonvolatile_extended      = 4;
 }
 
 // TODO: Reach message for testing, to be finalized
 message AhsokaMessage {
-  AhsokaServiceFramework.AhsokaMessageHeader header = 1;
+  cr.AhsokaMessageHeader header = 1;
   bytes payload = 2;
 }
