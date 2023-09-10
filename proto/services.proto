@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package AhsokaServiceFramework;
+package cr;
 
 /** C# namespace for generated classes. */
 option csharp_namespace = "Cygnus.Reach";

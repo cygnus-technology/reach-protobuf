@@ -426,6 +426,6 @@ enum StorageLocation {
 
 // TODO: Reach message for testing, to be finalized
 message AhsokaMessage {
-  AhsokaServiceFramework.AhsokaMessageHeader header = 1;
+  cr.AhsokaMessageHeader header = 1;
   bytes payload = 2;
 }
