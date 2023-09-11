@@ -13,7 +13,6 @@ find_package(Nanopb REQUIRED)
 include_directories(${NANOPB_INCLUDE_DIRS})
 
 set(PROTO_FILES
-${CMAKE_CURRENT_SOURCE_DIR}/../proto/services.proto
 ${CMAKE_CURRENT_SOURCE_DIR}/../proto/reach.proto
 )
 set(GENERATED_DIR ${CMAKE_CURRENT_BINARY_DIR}/generated)

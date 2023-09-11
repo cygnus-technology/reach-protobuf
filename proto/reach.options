@@ -11,6 +11,9 @@
 
 * include:"sys/types.h"
 * include:"dirent.h"
+
+cr.ReachMessage.payload             max_size: 240
+
 cr.ErrorReport.result_string        max_size: 200
 
 cr.PingRequest.echo_data            max_size: 200
@@ -24,7 +27,7 @@ cr.DeviceInfoResponse.manufacturer      max_size: 24
 cr.DeviceInfoResponse.device_description max_size: 48
 cr.DeviceInfoResponse.firmware_version  max_size: 16
 # application_identifier is a UUID.
-cr.DeviceInfoResponse.application_indentifier max_size: 16
+cr.DeviceInfoResponse.application_identifier  max_size: 16
 cr.DeviceInfoResponse.service_list      max_count: 8
 
 #
@@ -76,5 +79,5 @@ cr.CLI_Data.message_data                 max_size: 200
 #
 # Other / Test ? To be deleted
 #
-cr.AhsokaMessage.payload                max_size: 256
+
 cr.FileTransferStateMachine.message_data max_size: 1024 
