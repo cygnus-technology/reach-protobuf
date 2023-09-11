@@ -1,3 +1,3 @@
 rm -rf generated
 mkdir generated
-protoc -I=../proto --java_out=./generated services.proto reach.proto
+protoc -I=../proto --java_out=./generated reach.proto
