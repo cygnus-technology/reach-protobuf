@@ -93,7 +93,7 @@ message DeviceInfoResponse {
   uint32 max_message_size         = 7;
 
   // A bit mask, allowing support for up to 32 services
-  repeated service_ids service_list = 8;
+  repeated ServiceIds services = 8;
 
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
@@ -103,7 +103,7 @@ message DeviceInfoResponse {
   uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
 }
 
-enum service_ids {
+enum ServiceIds {
   sid_none            = 0;
   sid_Parameter_Repo  = 1;
   sid_Files           = 2;
