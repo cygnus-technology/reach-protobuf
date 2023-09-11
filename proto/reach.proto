@@ -2,7 +2,6 @@
 // one message.
 
 syntax = "proto3";
-import "services.proto";
 
 package cr;
 
@@ -48,6 +47,37 @@ message ReachTransportIDs {
   }
 }
 
+//----------------------------
+// Service Routing Message Header
+//----------------------------
+message ReachMessageHeader {
+  // This ID defines the Type of Message being carried in the Envelope / Header
+  int32 transport_id          = 1;
+
+  // Size of data in the payload.
+  int32 message_size          = 2;
+
+  // (Optional) Routing for endpoints other than zero.
+  uint32 endpoint_id          = 3;
+
+  // To handle sequences of messages required to complete a request
+  uint32   number_of_objects  = 4;
+
+  // zero when all files have been described
+  uint32   remaining_objects  = 5; 
+
+  // (Optional) This ID defines a unique Message / Response used when out of
+  // order messages are needed. Usually left empty since Reach generates 
+  // messages in order.
+  int32 client_message_id     = 6;
+}
+
+message ReachMessage {
+  ReachMessageHeader header = 1;
+  bytes payload = 2;
+}
+
+
 // ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
   int32  result_value     = 1;    // Error Result
@@ -62,7 +92,7 @@ message PingRequest {
 // Response Object used to Echo Data for testing the Device Communication
 message PingResponse {
   bytes echo_data         = 1;   // d : Data
-  uint32 signal_strength  = 2;   // rssi : Rssi express in strength so clients don't have to interpret
+  int32 signal_strength   = 2;   // rssi : Rssi express in strength so clients don't have to interpret
 }
 
 // ------------------------------------------------------
@@ -98,7 +128,7 @@ message DeviceInfoResponse {
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_identifier   = 10;   // A UUID to find a Custom firmware_version
+  bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
 
   uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
 }
@@ -422,10 +452,4 @@ enum StorageLocation {
   nonvolatile               = 2;
   ram_extended              = 3;
   nonvolatile_extended      = 4;
-}
-
-// TODO: Reach message for testing, to be finalized
-message AhsokaMessage {
-  cr.AhsokaMessageHeader header = 1;
-  bytes payload = 2;
 }
