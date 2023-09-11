@@ -123,23 +123,33 @@ message DeviceInfoResponse {
   uint32 max_message_size         = 7;
 
   // A bit mask, allowing support for up to 32 services
-  repeated ServiceIds services = 8;
+  uint32 services                 = 8;
 
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
   bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
 
-  uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
+  uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
 }
 
+// binary bit masks or'ed together into the DeviceInfoResponse.services
 enum ServiceIds {
-  sid_none            = 0;
-  sid_Parameter_Repo  = 1;
-  sid_Files           = 2;
-  sid_Streams         = 4;
-  sid_Commands        = 8;
-  sid_CLI             = 16;
+  sid_none              = 0;
+  sid_Parameter_Repo    = 1;
+  sid_Files             = 2;
+  sid_Streams           = 4;
+  sid_Commands          = 8;
+  sid_CLI               = 16;
+}
+
+// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
+enum EndpointIds {      
+  epid_none             = 0;
+  epid_one              = 1;
+  epid_two              = 2;
+  epid_three            = 4;
+  epid_four             = 8;
 }
 
 // ------------------------------------------------------
