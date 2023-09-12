@@ -52,10 +52,10 @@ message ReachTransportIDs {
 //----------------------------
 message ReachMessageHeader {
   // This ID defines the Type of Message being carried in the Envelope / Header
-  int32 message_type          = 1;
+  uint32 message_type         = 1;
 
   // Size of data in the payload.
-  int32 message_size          = 2;
+  uint32 message_size         = 2;
 
   // (Optional) Routing for endpoints other than zero.
   uint32 endpoint_id          = 3;
@@ -69,7 +69,7 @@ message ReachMessageHeader {
   uint32   remaining_objects  = 5;
 
   // (Optional) An ID for a series of messages
-  int32 transaction_id        = 6;
+  uint32 transaction_id       = 6;
 }
 
 message ReachMessage {
