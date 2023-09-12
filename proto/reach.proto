@@ -61,15 +61,15 @@ message ReachMessageHeader {
   uint32 endpoint_id          = 3;
 
   // To handle sequences of messages required to complete a request
-  // TODO: Determine objects vs messages
   uint32   number_of_objects  = 4;
 
-  // Zero when transaction is complete
-  // TODO: Determine objects vs messages
-  uint32   remaining_objects  = 5;
+  // zero when all files have been described
+  uint32   remaining_objects  = 5; 
 
-  // (Optional) An ID for a series of messages
-  uint32 transaction_id       = 6;
+  // (Optional) This ID defines a unique Message / Response used when out of
+  // order messages are needed. Usually left empty since Reach generates 
+  // messages in order.
+  uint32 client_message_id     = 6;
 }
 
 message ReachMessage {
