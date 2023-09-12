@@ -52,24 +52,24 @@ message ReachTransportIDs {
 //----------------------------
 message ReachMessageHeader {
   // This ID defines the Type of Message being carried in the Envelope / Header
-  int32 transport_id          = 1;
+  uint32 message_type         = 1;
 
   // Size of data in the payload.
-  int32 message_size          = 2;
+  uint32 message_size         = 2;
 
   // (Optional) Routing for endpoints other than zero.
   uint32 endpoint_id          = 3;
 
   // To handle sequences of messages required to complete a request
+  // TODO: Determine objects vs messages
   uint32   number_of_objects  = 4;
 
-  // zero when all files have been described
-  uint32   remaining_objects  = 5; 
+  // Zero when transaction is complete
+  // TODO: Determine objects vs messages
+  uint32   remaining_objects  = 5;
 
-  // (Optional) This ID defines a unique Message / Response used when out of
-  // order messages are needed. Usually left empty since Reach generates 
-  // messages in order.
-  int32 client_message_id     = 6;
+  // (Optional) An ID for a series of messages
+  uint32 transaction_id       = 6;
 }
 
 message ReachMessage {
@@ -123,23 +123,33 @@ message DeviceInfoResponse {
   uint32 max_message_size         = 7;
 
   // A bit mask, allowing support for up to 32 services
-  repeated service_ids service_list = 8;
+  uint32 services                 = 8;
 
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
   bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
 
-  uint32 available_endpoints      = 11;   // bit mask, non-zero if other endpoints.
+  uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
 }
 
-enum service_ids {
-  sid_none            = 0;
-  sid_Parameter_Repo  = 1;
-  sid_Files           = 2;
-  sid_Streams         = 3;
-  sid_Commands        = 4;
-  sid_CLI             = 5;
+// binary bit masks or'ed together into the DeviceInfoResponse.services
+enum ServiceIds {
+  sid_none              = 0;
+  sid_Parameter_Repo    = 1;
+  sid_Files             = 2;
+  sid_Streams           = 4;
+  sid_Commands          = 8;
+  sid_CLI               = 16;
+}
+
+// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
+enum EndpointIds {      
+  epid_none             = 0;
+  epid_one              = 1;
+  epid_two              = 2;
+  epid_three            = 4;
+  epid_four             = 8;
 }
 
 // ------------------------------------------------------
@@ -453,4 +463,3 @@ enum StorageLocation {
   ram_extended              = 3;
   nonvolatile_extended      = 4;
 }
-
