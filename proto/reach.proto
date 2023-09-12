@@ -52,7 +52,7 @@ message ReachTransportIDs {
 //----------------------------
 message ReachMessageHeader {
   // This ID defines the Type of Message being carried in the Envelope / Header
-  int32 transport_id          = 1;
+  int32 message_type          = 1;
 
   // Size of data in the payload.
   int32 message_size          = 2;
@@ -61,15 +61,15 @@ message ReachMessageHeader {
   uint32 endpoint_id          = 3;
 
   // To handle sequences of messages required to complete a request
+  // TODO: Determine objects vs messages
   uint32   number_of_objects  = 4;
 
-  // zero when all files have been described
-  uint32   remaining_objects  = 5; 
+  // Zero when transaction is complete
+  // TODO: Determine objects vs messages
+  uint32   remaining_objects  = 5;
 
-  // (Optional) This ID defines a unique Message / Response used when out of
-  // order messages are needed. Usually left empty since Reach generates 
-  // messages in order.
-  int32 client_message_id     = 6;
+  // (Optional) An ID for a series of messages
+  int32 transaction_id        = 6;
 }
 
 message ReachMessage {
