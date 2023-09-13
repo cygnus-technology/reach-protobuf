@@ -71,7 +71,7 @@ cr.DiscoverCommandsResult.available_commands   max_count: 6
 #
 # CLI
 #
-cr.CLI_Data.message_data                 max_size: 200
+cr.CLIData.message_data                 max_size: 200
 
 #
 # Other / Test ? To be deleted
