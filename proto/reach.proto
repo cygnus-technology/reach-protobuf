@@ -396,12 +396,12 @@ message DiscoverCLIResult {
 
 // Bi-Directional Message
 // CLI_DATA
-message CLI_Data {
-  int32 cli_stream_id         = 1;    // command or report
-  string message_data         = 2;    // Data
+message CLIData {
+  CLIType cli_stream_type         = 1;    // command or report
+  string message_data             = 2;    // Data
 }
 
-enum CLI_id {
+enum CLIType {
   NO_CLI  = 0;
   COMMAND = 1;
   REPORT  = 2;
