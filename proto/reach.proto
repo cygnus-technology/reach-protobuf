@@ -420,9 +420,9 @@ message CLI_Data {
 }
 
 enum CLI_id {
-  no_CLI  = 0;
-  command = 1;
-  report  = 2;
+  NO_CLI  = 0;
+  COMMAND = 1;
+  REPORT  = 2;
 }
 
 
@@ -434,29 +434,29 @@ enum CLI_id {
 // ------------------------------------------------------
 
 enum ParameterDataType {
-  parameter_type_invalid  = 0;
-  uint32                  = 1;
-  int32                   = 2;
-  float32                 = 3;
-  bool                    = 4;
-  string                  = 5;  // ASCII or No UTF-8. Null Terminated.
-  enumeration             = 6;
-  bit_field               = 7;
-  byte_array              = 8;
+  PARAMETER_TYPE_INVALID  = 0;
+  UINT32                  = 1;
+  INT32                   = 2;
+  FLOAT32                 = 3;
+  BOOL                    = 4;
+  STRING                  = 5;  // ASCII or No UTF-8. Null Terminated.
+  ENUMERATION             = 6;
+  BIT_FIELD               = 7;
+  BYTE_ARRAY              = 8;
 }
 
 
 enum AccessLevel {
-  no_access               = 0;
-  read                    = 1;
-  write                   = 2;
-  read_write              = 3;
+  NO_ACCESS               = 0;
+  READ                    = 1;
+  WRITE                   = 2;
+  READ_WRITE              = 3;
 }
 
 enum StorageLocation {
-  storage_location_invalid  = 0;
-  ram                       = 1;
-  nonvolatile               = 2;
-  ram_extended              = 3;
-  nonvolatile_extended      = 4;
+  STORAGE_LOCATION_INVALID  = 0;
+  RAM                       = 1;
+  NONVOLATILE               = 2;
+  RAM_EXTENDED              = 3;
+  NONVOLATILE_EXTENDED      = 4;
 }
