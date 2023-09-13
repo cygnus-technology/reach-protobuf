@@ -12,39 +12,37 @@ option csharp_namespace = "Cygnus.Reach";
 option java_multiple_files = true;
 option java_package = "com.cygnusreach.reachprotocol.proto";
 
-message ReachTransportIDs {
-  enum Ids {
-    INVALID             = 0;    // No Valid Message
-    ERROR_REPORT        = 1;
-    PING                = 2;    // ping / ping~
-    GET_DEVICE_INFO     = 3;    // gdi / gdi~
+enum ReachMessageTypes {
+  INVALID             = 0;    // No Valid Message
+  ERROR_REPORT        = 1;
+  PING                = 2;    // ping / ping~
+  GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
-    // Parameters
-    DISCOVER_PARAMETERS = 4;    // dp / dp~
-    READ_PARAMETERS     = 5;    // rp / rp~
-    WRITE_PARAMETERS    = 6;    // wp / wp~
-    NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
+  // Parameters
+  DISCOVER_PARAMETERS = 4;    // dp / dp~
+  READ_PARAMETERS     = 5;    // rp / rp~
+  WRITE_PARAMETERS    = 6;    // wp / wp~
+  NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
 
-    // File Transfers
-    DISCOVER_FILES      = 8;    // gfd / gfd~
-    TRANSFER_INIT       = 9;    // Begins a Transfer
-    TRANSFER_DATA       = 10;   // Sends Data
-    // Clears Sender (Client / Service) to Send More Data:
-    TRANSFER_DATA_NOTIFICATION = 11; 
+  // File Transfers
+  DISCOVER_FILES      = 8;    // gfd / gfd~
+  TRANSFER_INIT       = 9;    // Begins a Transfer
+  TRANSFER_DATA       = 10;   // Sends Data
+  // Clears Sender (Client / Service) to Send More Data:
+  TRANSFER_DATA_NOTIFICATION = 11;
 
-    // Streams
-    DISCOVER_STREAMS    = 12;    // gsd / gsd~
-    OPEN_STREAM         = 13;
-    CLOSE_STREAM        = 14;
-    STREAM_DATA_NOTIFICATION = 15;
+  // Streams
+  DISCOVER_STREAMS    = 12;    // gsd / gsd~
+  OPEN_STREAM         = 13;
+  CLOSE_STREAM        = 14;
+  STREAM_DATA_NOTIFICATION = 15;
 
-    DISCOVER_COMMANDS   = 16;    // gcd / gcd~
-    SEND_COMMAND        = 17;    // sc / sc~
+  DISCOVER_COMMANDS   = 16;    // gcd / gcd~
+  SEND_COMMAND        = 17;    // sc / sc~
 
-    // Command Line Interface
-    DISCOVER_CLI        = 20;
-    CLI_NOTIFICATION    = 21;
-  }
+  // Command Line Interface
+  DISCOVER_CLI        = 20;
+  CLI_NOTIFICATION    = 21;
 }
 
 //----------------------------
