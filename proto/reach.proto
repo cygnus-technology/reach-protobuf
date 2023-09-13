@@ -163,14 +163,6 @@ message ParameterInfoResponse {
   repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
 }
 
-message ParameterDescription {
-  uint32 id                           = 1;  // Id
-  oneof data {
-    ParameterInfo basic_info          = 2;
-    ParameterInfoEnumeration enumInfo = 3;
-  }
-}
-
 message ParameterInfo {
   ParameterDataType data_type       = 2;  // DataType
   uint32 size_in_bytes              = 3;  // Byte Length for Variable Length Items.
@@ -184,14 +176,6 @@ message ParameterInfo {
   StorageLocation storage_location  = 11; // RAM or NVM or ?
 }
  
-message ParameterInfoEnumeration {
-  repeated EnumerationKey enumerations = 12; // Allows UI to name enumerations
-}
- 
-message EnumerationKey {
-  uint32 id     = 1;
-  string name   = 2;    // Descriptive name
-}
 
 // ------------------------------------------------------
 // Parameter Reads

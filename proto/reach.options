@@ -12,7 +12,7 @@
 * include:"sys/types.h"
 * include:"dirent.h"
 
-cr.ReachMessage.payload             max_size: 240
+cr.ReachMessage.payload             max_size: 205
 
 cr.ErrorReport.result_string        max_size: 200
 
@@ -45,16 +45,13 @@ cr.ParameterReadResult.values           max_count: 4
 cr.ParameterWrite.values                max_count: 4
 cr.ParameterWriteResult.values          max_count: 8
 
-cr.ParameterInfoEnumeration.emumerations max_count: 15
-cr.EnumerationKey.name                  max_size:16
-
 cr.ParameterValue.value.string_value    max_size:32
 cr.ParameterValue.string_value          max_size:32
 
 #
 # Files
 #
-cr.DiscoverFilesReply.file_infos        max_count: 8
+cr.DiscoverFilesReply.file_infos        max_count: 4
 cr.FileInfo.file_name                   max_size: 24
 cr.FileTransferData.message_data        max_size: 200
 
