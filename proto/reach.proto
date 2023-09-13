@@ -164,7 +164,7 @@ message ParameterInfoResponse {
 message ParameterInfo {
   uint32 id                         = 1;  // Id
   ParameterDataType data_type       = 2;  // DataType
-  uint32 size_in_bytes              = 3;  // Byte Length for Variable Length Items.
+  uint32 size_in_bytes              = 3;  // Unnecessary?
   string name                       = 4;  // Name
   AccessLevel access                = 5;  // Access
   string description                = 6;  // Description
@@ -235,22 +235,38 @@ message ParameterNotifyResult {
   repeated ParameterValue failed_values = 2; // Array of Write Values
 }
 
+enum ParameterDataType {
+  UINT32                  = 0;
+  INT32                   = 1;
+  FLOAT32                 = 2;
+  UINT64                  = 3;
+  INT64                   = 4;
+  FLOAT64                 = 5;
+  BOOL                    = 6;
+  STRING                  = 7;  // ASCII or No UTF-8. Null Terminated.
+  ENUMERATION             = 8;
+  BIT_FIELD               = 9;
+  BYTE_ARRAY              = 10;
+}
+
 // --------------------------------------------------------
 // Message for Sending / Receiving a Single Parameter Value
 // Uses OnOf (Union) for Values
 // --------------------------------------------------------
 message ParameterValue {
-  uint32 parameter_id         = 1;    // i: ID
-  oneof value                         // v: Typed Values Union
-  {
-    sint32 sint_value         = 2;    // Int / Uint / BitField   Signed
-    uint32 uint_value         = 3;    // Int / Uint / BitField
-    double float_value        = 4;    // Float
-    string string_value       = 5;    // String Values (UTF8?)
-    bytes  data_value         = 6;    // Byte Array Values
-    bool   bool_value         = 7;    // Bool
-  }
-  uint32 timestamp            = 8;    // ts: Time Stamp for Notification
+  uint32 parameter_id       = 1;  // i: ID
+  uint32 timestamp          = 2;  // ts: Time Stamp for Notification
+  oneof value                     // v: Typed Values Union
+  {                         
+    uint32 uint32_value     = 3;  // Uint / BitField / Enum
+    sint32 sint32_value     = 4;  // Signed Int
+    float  float_value      = 5;  // Float
+    uint64 uint64_value     = 6;  // Uint / BitField / Enum
+    sint32 sint64_value     = 7;  // Signed Int
+    float  double_value     = 8;  // Float
+    bool   bool_value       = 9;  // Bool
+    string string_value     = 10;  // String/byte array values (UTF8)
+  }                               
 }
 
 // ------------------------------------------------------
@@ -407,27 +423,6 @@ enum CLIType {
   COMMAND = 1;
   REPORT  = 2;
 }
-
-
-
-// ------------------------------------------------------
-// ------------------------------------------------------
-// Shared Types:
-// ------------------------------------------------------
-// ------------------------------------------------------
-
-enum ParameterDataType {
-  PARAMETER_TYPE_INVALID  = 0;
-  UINT32                  = 1;
-  INT32                   = 2;
-  FLOAT32                 = 3;
-  BOOL                    = 4;
-  STRING                  = 5;  // ASCII or No UTF-8. Null Terminated.
-  ENUMERATION             = 6;
-  BIT_FIELD               = 7;
-  BYTE_ARRAY              = 8;
-}
-
 
 enum AccessLevel {
   NO_ACCESS               = 0;

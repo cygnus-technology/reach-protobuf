@@ -54,10 +54,8 @@ cr.ParameterInfoResponse.parameter_infos max_count: 2
 cr.ParameterRead.parameter_ids          max_count: 7
 cr.ParameterReadResult.values           max_count: 4
 cr.ParameterWrite.values                max_count: 4
-cr.ParameterWriteResult.values          max_count: 8
 
-cr.ParameterValue.value.string_value    max_size:32
-cr.ParameterValue.string_value          max_size:32
+cr.ParameterValue.string_value          max_size: 32
 
 #
 # Files
@@ -84,8 +82,3 @@ cr.DiscoverCommandsResult.available_commands   max_count: 6
 #
 cr.CLIData.message_data                 max_size: 200
 
-#
-# Other / Test ? To be deleted
-#
-
-cr.FileTransferStateMachine.message_data max_size: 1024 
