@@ -168,7 +168,7 @@ message ParameterInfo {
   string name                       = 4;  // Name
   AccessLevel access                = 5;  // Access
   string description                = 6;  // Description
-  string unit                       = 7;  // Units
+  string units                      = 7;  // Units
   double range_min                  = 8;  // Range Max
   double range_max                  = 9;  // Range Max
   double default_value              = 10; // Show instead of value if no value.
@@ -260,12 +260,12 @@ message ParameterValue {
   {                         
     uint32 uint32_value     = 3;  // Uint / BitField / Enum
     sint32 sint32_value     = 4;  // Signed Int
-    float  float_value      = 5;  // Float
+    float  float32_value    = 5;  // Float
     uint64 uint64_value     = 6;  // Uint / BitField / Enum
     sint32 sint64_value     = 7;  // Signed Int
-    float  double_value     = 8;  // Float
+    double float64_value    = 8;  // double
     bool   bool_value       = 9;  // Bool
-    string string_value     = 10;  // String/byte array values (UTF8)
+    string string_value     = 10; // String/byte array values (UTF8)
   }                               
 }
 

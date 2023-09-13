@@ -42,7 +42,7 @@ cr.DeviceInfoResponse.application_identifier  max_size: 16
 #
 cr.ParameterInfo.name                   max_size: 24
 cr.ParameterInfo.description            max_size: 32
-cr.ParameterInfo.unit                   max_size: 16
+cr.ParameterInfo.units                  max_size: 16
 
 #define NUM_PARAMS_IN_REQUEST       32
 cr.ParameterInfoRequest.parameter_ids   max_count: 32
@@ -52,7 +52,11 @@ cr.ParameterInfoRequest.parameter_ids   max_count: 32
 cr.ParameterInfoResponse.parameter_infos max_count: 2
 
 cr.ParameterRead.parameter_ids          max_count: 7
+
+#define NUM_PARAM_READ_IN_RESPONSE  4
 cr.ParameterReadResult.values           max_count: 4
+
+#define NUM_PARAM_WRITE_IN_REQUEST  4
 cr.ParameterWrite.values                max_count: 4
 
 cr.ParameterValue.string_value          max_size: 32
