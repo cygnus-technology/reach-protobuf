@@ -162,6 +162,7 @@ message ParameterInfoResponse {
 }
 
 message ParameterInfo {
+  uint32 id                         = 1;  // Id
   ParameterDataType data_type       = 2;  // DataType
   uint32 size_in_bytes              = 3;  // Byte Length for Variable Length Items.
   string name                       = 4;  // Name
