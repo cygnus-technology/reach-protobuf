@@ -12,6 +12,13 @@
 * include:"sys/types.h"
 * include:"dirent.h"
 
+# #define is a comment here with a matching #define in cr_stack.h
+# For example:
+#define NUM_PARAM_DESC_IN_RESPONSE  2
+# The macro apparently can't be used in the .options file.
+# If you change the .options file, search for and change the matching
+# #define in cr_stack.h.
+
 cr.ReachMessage.payload             max_size: 205
 
 cr.ErrorReport.result_string        max_size: 200
@@ -37,7 +44,11 @@ cr.ParameterInfo.name                   max_size: 24
 cr.ParameterInfo.description            max_size: 32
 cr.ParameterInfo.unit                   max_size: 16
 
+#define NUM_PARAMS_IN_REQUEST       32
 cr.ParameterInfoRequest.parameter_ids   max_count: 32
+
+
+#define NUM_PARAM_DESC_IN_RESPONSE  2
 cr.ParameterInfoResponse.parameter_infos max_count: 2
 
 cr.ParameterRead.parameter_ids          max_count: 7
