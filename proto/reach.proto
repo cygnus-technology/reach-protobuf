@@ -126,6 +126,10 @@ message DeviceInfoResponse {
   bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
 
   uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
+
+  uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
+
+  uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.services
