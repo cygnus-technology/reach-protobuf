@@ -130,6 +130,8 @@ message DeviceInfoResponse {
   uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
 
   uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
+
+  uint32 file_data_buffer_size    = 14;   // how many bytes in a file data message
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.services
@@ -297,44 +299,39 @@ message FileInfo {
 // ------------------------------------------------------
 message FileTransferInit {
 
-  int32 file_id         = 1; // i: File ID
+  uint32 file_id                = 1;    // File ID
+  uint32 read_write             = 2;    // 0 for read, 1 for write.
+  uint32 request_offset         = 3;    // where to access in the file
+  uint32 transfer_length        = 4;    // bytes to read or write
+
+  uint32 transfer_id            = 5;    // In case of multiple transfers
+  uint32 max_bytes_per_message  = 6;    // Service Communicates the Max Size of Messages.
+  uint32 messages_per_ack       = 7;    // Returns number of messages that are clear to send.
 
   // Time after which the Receiver (Client / Service) should abandon the
   // transfer abandoned due to after inactivity.
-  int32 timeout_in_ms   = 2; 
-
-  // Offset Into "File" to Read / Write used for Reading / Writing a
-  // partial file or restarting a transfer
-  uint32 request_offset = 3; 
-
-  // Length of file requested for partial reads / writes
-  uint32 transfer_length = 4; 
-
-  uint32 read_write      = 5; // 0 for read, 1 for write.
+  uint32 timeout_in_ms          = 8; 
 }
 
 message FileTransferInitReply {
-  int32 result                  = 1;    // err~
-  int32 transfer_id             = 2;    // Service Sends a TransferID that will be used to
-                                        // manage this specific transfer.
-  int32 max_bytes_per_message   = 3;    // Service Communicates the Max Size of Messages.
+  int32 result                  = 1;    // 0 if OK
+  string fti_error_message      = 2;
 }
 
 // Bi-Directional Message
 message FileTransferData {
-  int32 transfer_id             = 1;    // Transfer ID
-  uint32 message_number         = 2;    // Message Number (Message Number used for Roll Counting and Batching)
-  bytes message_data            = 3;    // Data
-  int32 crc32                   = 4;    // Optional crc for integrity checking when native transport
+  int32 td_result               = 1;    // Transfer ID
+  int32 transfer_id             = 2;    // Transfer ID
+  uint32 message_number         = 3;    // Message Number (Message Number used for Roll Counting and Batching)
+  bytes message_data            = 4;    // Data
+  int32 crc32                   = 5;    // Optional crc for integrity checking when native transport
                                         // doesn't ensure integrity (most do so mostly serial data)
 }
 
 message FileTransferDataNotification {
   int32  result                 = 1;    // err~
-  int32  transfer_id            = 2;
-  uint32 messages_to_send       = 3;    // Returns number of messages that are clear to send.
-  uint32 bytes_transferred       = 4;    // Note that this MAY be < has been Sent...Information Only.
-  bool is_complete              = 5;
+  string ftd_error_message      = 2;
+  bool is_complete              = 3;
 }
 
 // ------------------------------------------------------
