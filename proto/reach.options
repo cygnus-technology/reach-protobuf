@@ -89,6 +89,7 @@ cr.StreamData.message_data                          max_size: 200
 #
 # Commands
 #
+#define NUM_COMMANDS_IN_RESPONSE    6
 cr.CommandInfo.name                                 max_size: 24
 cr.DiscoverCommandsResult.available_commands        max_count: 6
 
