@@ -21,6 +21,7 @@
 
 cr.ReachMessage.payload             max_size: 205
 
+#define ERROR_BUFFER_LEN        200
 cr.ErrorReport.result_string        max_size: 200
 
 cr.PingRequest.echo_data            max_size: 200
