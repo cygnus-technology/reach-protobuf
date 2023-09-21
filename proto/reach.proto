@@ -320,7 +320,7 @@ message FileTransferInitReply {
 
 // Bi-Directional Message
 message FileTransferData {
-  int32 td_result               = 1;    // Transfer ID
+  int32 result                  = 1;    // non-zero for error
   int32 transfer_id             = 2;    // Transfer ID
   uint32 message_number         = 3;    // Message Number (Message Number used for Roll Counting and Batching)
   bytes message_data            = 4;    // Data
@@ -415,7 +415,6 @@ message DiscoverCLIResult {
 // Bi-Directional Message
 // CLI_DATA
 message CLIData {
-  CLIType cli_stream_type         = 1;    // command or report
   string message_data             = 2;    // Data
 }
 
@@ -439,3 +438,23 @@ enum StorageLocation {
   RAM_EXTENDED              = 3;
   NONVOLATILE_EXTENDED      = 4;
 }
+
+enum ErrorCodes {
+    NO_ERROR           = 0;
+    NO_DATA            = 1;  // cr_get_mp_prompt()
+    READ_FAILED        = 2;  //
+    WRITE_FAILED       = 3;  //
+    NOT_IMPLEMENTED    = 4;  // returned by weak implementations
+    MALFORMED_MESSAGE  = 5;  // not yet used
+    NO_SERVICE         = 6;  // not yet used
+    PERMISSION_DENIED  = 7;  //
+    BUFFER_TOO_SMALL   = 8;  //
+    INVALID_PARAMETER  = 9;  //
+    CHECKSUM_MISMATCH  = 10; // not yet used
+    DECODING_FAILED    = 11; //
+    ENCODING_FAILED    = 12; //
+    INVALID_STATE      = 13; //
+    NO_RESPONSE        = 14; // handler signals no response is necessary
+    BAD_FILE           = 15; // bad file ID
+}
+
