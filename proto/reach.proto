@@ -458,3 +458,11 @@ enum ErrorCodes {
     BAD_FILE           = 15; // bad file ID
 }
 
+enum FileTransferState {
+    FILE_TRANSFER_INVALID = 0;
+    IDLE                  = 1;
+    INIT                  = 2;
+    DATA                  = 3;
+    COMPLETE              = 4;
+}
+
