@@ -1,2 +1,4 @@
+rm -rf generated
 mkdir generated
-protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto -I=../proto --ts_proto_out=./generated services.proto reach.proto
+npm i
+npx protoc --ts_out ./generated --proto_path ../proto reach.proto
