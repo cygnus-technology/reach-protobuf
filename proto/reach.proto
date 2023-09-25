@@ -41,7 +41,6 @@ enum ReachMessageTypes {
   SEND_COMMAND        = 17;    // sc / sc~
 
   // Command Line Interface
-  DISCOVER_CLI        = 20;
   CLI_NOTIFICATION    = 21;
 }
 
@@ -406,16 +405,12 @@ message SendCommandResult {
 // DISCOVER_CLI
 // gcli : gcli~
 // ------------------------------------------------------
-message DiscoverCLI {}
-
-message DiscoverCLIResult {
-  uint32   supported_CLI_streams = 1;  // bit mask of CLI_id
-}
 
 // Bi-Directional Message
 // CLI_DATA
 message CLIData {
-  string message_data             = 2;    // Data
+  string message_data = 1;    // Data
+  bool is_complete    = 2;
 }
 
 enum CLIType {
