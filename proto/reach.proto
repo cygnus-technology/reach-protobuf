@@ -321,7 +321,7 @@ message FileTransferInitReply {
 // Bi-Directional Message
 message FileTransferData {
   int32 result                  = 1;    // non-zero for error
-  int32 transfer_id             = 2;    // Transfer ID
+  uint32 transfer_id            = 2;    // Transfer ID
   uint32 message_number         = 3;    // Message Number (Message Number used for Roll Counting and Batching)
   bytes message_data            = 4;    // Data
   int32 crc32                   = 5;    // Optional crc for integrity checking when native transport

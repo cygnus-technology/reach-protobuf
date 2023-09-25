@@ -19,13 +19,13 @@
 # If you change the .options file, search for and change the matching
 # #define in cr_stack.h.
 
-cr.ReachMessage.payload             max_size: 205
+cr.ReachMessage.payload             max_size: 208
 
-#define ERROR_BUFFER_LEN        200
-cr.ErrorReport.result_string        max_size: 200
+#define ERROR_BUFFER_LEN        194
+cr.ErrorReport.result_string        max_size: 194
 
-cr.PingRequest.echo_data            max_size: 200
-cr.PingResponse.echo_data           max_size: 200
+cr.PingRequest.echo_data            max_size: 194
+cr.PingResponse.echo_data           max_size: 194
 
 #
 # DeviceInfoResponse 
@@ -75,8 +75,8 @@ cr.ParameterNotifyResult.failed_values              max_count: 4
 cr.DiscoverFilesReply.file_infos                    max_count: 4
 cr.FileInfo.file_name                               max_size: 24
 
-#define BYTES_IN_A_FILE_PACKET  200
-cr.FileTransferData.message_data                    max_size: 200
+#define BYTES_IN_A_FILE_PACKET  194
+cr.FileTransferData.message_data                    max_size: 194
 cr.FileTransferInitReply.fti_error_message          max_size: 100
 cr.FileTransferDataNotification.ftd_error_message   max_size: 100
 
@@ -85,7 +85,7 @@ cr.FileTransferDataNotification.ftd_error_message   max_size: 100
 #
 cr.DiscoverStreamsResponse.streams                  max_count: 4
 cr.StreamInfo.name                                  max_size: 24
-cr.StreamData.message_data                          max_size: 200
+cr.StreamData.message_data                          max_size: 194
 
 #
 # Commands
@@ -97,5 +97,5 @@ cr.DiscoverCommandsResult.available_commands        max_count: 6
 #
 # CLI
 #
-cr.CLIData.message_data                             max_size: 200
+cr.CLIData.message_data                             max_size: 194
 
