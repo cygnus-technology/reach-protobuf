@@ -63,11 +63,11 @@ cr.ParameterWrite.values                            max_count: 4
 
 cr.ParameterValue.string_value                      max_size: 32
 
-cr.ParameterNotification.values                     max_count: 4
 
 #define NUM_PARAMS_IN_REQUEST       32 (also)
 cr.ParameterNotify.parameter_ids                    max_count: 32
-cr.ParameterNotifyResult.failed_values              max_count: 4
+cr.ParameterNotifyResult.failed_parameter_ids       max_count: 32
+cr.ParameterNotification.values                     max_count: 4
 
 #
 # Files
@@ -77,8 +77,8 @@ cr.FileInfo.file_name                               max_size: 24
 
 #define BYTES_IN_A_FILE_PACKET  194
 cr.FileTransferData.message_data                    max_size: 194
-cr.FileTransferInitReply.fti_error_message          max_size: 100
-cr.FileTransferDataNotification.ftd_error_message   max_size: 100
+cr.FileTransferInitReply.error_message              max_size: 100
+cr.FileTransferDataNotification.error_message       max_size: 100
 
 #
 # Streams
@@ -93,6 +93,7 @@ cr.StreamData.message_data                          max_size: 194
 #define NUM_COMMANDS_IN_RESPONSE    6
 cr.CommandInfo.name                                 max_size: 24
 cr.DiscoverCommandsResult.available_commands        max_count: 6
+cr.SendCommandResult.result_message                 max_size: 194
 
 #
 # CLI

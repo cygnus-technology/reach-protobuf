@@ -55,11 +55,9 @@ message ReachMessageHeader {
   uint32 endpoint_id          = 2;
 
   // To handle sequences of messages required to complete a request
-  // TODO: Determine objects vs messages
   uint32   number_of_objects  = 3;
 
   // Zero when transaction is complete
-  // TODO: Determine objects vs messages
   uint32   remaining_objects  = 4;
 
   // (Optional) An ID for a series of messages
@@ -123,13 +121,9 @@ message DeviceInfoResponse {
   uint32 parameter_metadata_hash  = 9;
 
   bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
-
   uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
-
   uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
-
   uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
-
   uint32 file_data_buffer_size    = 14;   // how many bytes in a file data message
 }
 
@@ -206,7 +200,7 @@ message ParameterReadResult {
 // // wp : wp~
 // ------------------------------------------------------
 message ParameterWrite {
-  uint32 parameter_key            = 1;      // Suggestion: Optional Key for Unlocking Private Parameters
+  uint32 parameter_key            = 1;      // Optional Key for Unlocking Private Parameters
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
@@ -215,30 +209,27 @@ message ParameterWriteResult {
 }
 
 // ------------------------------------------------------
-// Parameter Notification Registration
-// // pnr : pnr~
+// Parameter Notification 
+// Notification can be enabled or disabled
 // ------------------------------------------------------
 message ParameterNotify {
-  uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
+  uint32 parameter_key               = 1;    // Optional Key for Unlocking Private Parameters
   bool enabled                       = 2;    // Enabled or Disabled
-  repeated uint32 parameter_ids      = 3;    // i: ID -  Leave Empty to Retrieve All
+  repeated uint32 parameter_ids      = 3;
   uint32 minimum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
   uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
-}
-
-// ------------------------------------------------------
-// Parameter Notification
-// // pn : pn~
-// ------------------------------------------------------
-message ParameterNotification {
-  uint32 parameter_key               = 1;    // Suggestion: Optional Key for Unlocking Private Parameters
-  repeated ParameterValue values     = 2;    // Array of Result Values
+  float  minimum_delta               = 6;    // notify only if change by this much
 }
 
 message ParameterNotifyResult {
-  int32 result                          = 1; // err~
-  repeated ParameterValue failed_values = 2; // Array of Write Values
+  int32  result                        = 1; // zero if all OK
+  repeated uint32 failed_parameter_ids = 2; // any paramters that could not be configured to notify.
 }
+
+message ParameterNotification {
+  repeated ParameterValue values     = 2;    // Array of Result Values
+}
+
 
 enum ParameterDataType {
   UINT32                  = 0;
@@ -297,40 +288,36 @@ message FileInfo {
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
 message FileTransferInit {
-
   uint32 file_id                = 1;    // File ID
   uint32 read_write             = 2;    // 0 for read, 1 for write.
   uint32 request_offset         = 3;    // where to access in the file
   uint32 transfer_length        = 4;    // bytes to read or write
-
   uint32 transfer_id            = 5;    // In case of multiple transfers
-  uint32 max_bytes_per_message  = 6;    // Service Communicates the Max Size of Messages.
-  uint32 messages_per_ack       = 7;    // Returns number of messages that are clear to send.
-
-  // Time after which the Receiver (Client / Service) should abandon the
-  // transfer abandoned due to after inactivity.
-  uint32 timeout_in_ms          = 8; 
+  uint32 max_bytes_per_message  = 6;    // From GDI
+  uint32 messages_per_ack       = 7;    // number of messages before ACK.
+  uint32 timeout_in_ms          = 8;    // ms before abandonment
 }
 
 message FileTransferInitReply {
   int32 result                  = 1;    // 0 if OK
-  string fti_error_message      = 2;
+  uint32 transfer_id            = 2;    // Transfer ID
+  string error_message          = 3;
 }
 
 // Bi-Directional Message
 message FileTransferData {
   int32 result                  = 1;    // non-zero for error
   uint32 transfer_id            = 2;    // Transfer ID
-  uint32 message_number         = 3;    // Message Number (Message Number used for Roll Counting and Batching)
+  uint32 message_number         = 3;    // counts up
   bytes message_data            = 4;    // Data
-  int32 crc32                   = 5;    // Optional crc for integrity checking when native transport
-                                        // doesn't ensure integrity (most do so mostly serial data)
+  int32 crc32                   = 5;    // Optional crc for integrity checking
 }
 
 message FileTransferDataNotification {
   int32  result                 = 1;    // err~
-  string ftd_error_message      = 2;
-  bool is_complete              = 3;
+  string error_message          = 2;
+  bool   is_complete            = 3;
+  uint32 transfer_id            = 4;    // Transfer ID
 }
 
 // ------------------------------------------------------
@@ -394,10 +381,11 @@ message CommandInfo {
 // Send Command
 // // sc : sc~
 // ------------------------------------------------------
-message SendCommand { uint32 command = 1; }
+message SendCommand { uint32 command_id = 1; }
 
 message SendCommandResult {
-  int32 result = 1; // Carries Success / Result
+  int32 result          = 1; // Carries Success / Result
+  string result_message = 2;
 }
 
 // ------------------------------------------------------
