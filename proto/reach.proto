@@ -293,9 +293,8 @@ message FileTransferInit {
   uint32 request_offset         = 3;    // where to access in the file
   uint32 transfer_length        = 4;    // bytes to read or write
   uint32 transfer_id            = 5;    // In case of multiple transfers
-  uint32 max_bytes_per_message  = 6;    // From GDI
-  uint32 messages_per_ack       = 7;    // number of messages before ACK.
-  uint32 timeout_in_ms          = 8;    // ms before abandonment
+  uint32 messages_per_ack       = 6;    // number of messages before ACK.
+  uint32 timeout_in_ms          = 7;    // ms before abandonment
 }
 
 message FileTransferInitReply {
