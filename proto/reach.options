@@ -10,7 +10,6 @@
 # to set a limit on the number of files in the response.
 
 * include:"sys/types.h"
-* include:"dirent.h"
 
 # #define is a comment here with a matching #define in cr_stack.h
 # For example:
