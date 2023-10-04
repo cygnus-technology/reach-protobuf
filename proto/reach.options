@@ -61,6 +61,7 @@ cr.ParameterReadResult.values                       max_count: 4
 cr.ParameterWrite.values                            max_count: 4
 
 cr.ParameterValue.string_value                      max_size: 32
+cr.ParameterValue.bytes_value                       max_size: 32
 
 
 #define NUM_PARAMS_IN_REQUEST       32 (also)
