@@ -258,7 +258,7 @@ message ParameterValue {
     sint32 sint32_value     = 4;  // Signed Int
     float  float32_value    = 5;  // Float
     uint64 uint64_value     = 6;  // Uint / BitField / Enum
-    sint32 sint64_value     = 7;  // Signed Int
+    sint64 sint64_value     = 7;  // Signed Int
     double float64_value    = 8;  // double
     bool   bool_value       = 9;  // Bool
     string string_value     = 10; // String/byte array values (UTF8)
