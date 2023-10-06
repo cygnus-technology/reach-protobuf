@@ -254,14 +254,17 @@ message ParameterValue {
   uint32 timestamp          = 2;  // ts: Time Stamp for Notification
   oneof value                     // v: Typed Values Union
   {                         
-    uint32 uint32_value     = 3;  // Uint / BitField / Enum
+    uint32 uint32_value     = 3;  // Uint
     sint32 sint32_value     = 4;  // Signed Int
     float  float32_value    = 5;  // Float
-    uint64 uint64_value     = 6;  // Uint / BitField / Enum
-    sint32 sint64_value     = 7;  // Signed Int
+    uint64 uint64_value     = 6;  // Uint64
+    sint64 sint64_value     = 7;  // Signed Int 64
     double float64_value    = 8;  // double
     bool   bool_value       = 9;  // Bool
-    string string_value     = 10; // String/byte array values (UTF8)
+    string string_value     = 10; // String values (UTF8)
+    uint32 enum_value       = 11;
+    uint32 bitfield_value   = 12;
+    bytes  bytes_value      = 13; // byte array values
   }                               
 }
 
