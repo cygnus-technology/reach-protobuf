@@ -120,11 +120,11 @@ message DeviceInfoResponse {
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
-  uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
-  uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
-  uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
-  uint32 file_data_buffer_size    = 14;   // how many bytes in a file data message
+  bytes application_identifier      = 10;   // A UUID to find a Custom firmware_version
+  uint32 endpoints                  = 11;   // bit mask, non-zero if other endpoints.
+  uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
+  uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
+  uint32 big_data_buffer_size       = 14;   // how many bytes in a file data message
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.services
@@ -266,6 +266,16 @@ message ParameterValue {
     uint32 bitfield_value   = 12;
     bytes  bytes_value      = 13; // byte array values
   }                               
+}
+
+// Allow UI to name enumerations
+message EnumerationKey {
+    uint32 id               = 1;
+    string name             = 2;
+}
+
+message ParameterInfoEnumeration {
+    repeated EnumerationKey enumerations = 1;
 }
 
 // ------------------------------------------------------
@@ -426,7 +436,7 @@ enum StorageLocation {
 
 enum ErrorCodes {
     NO_ERROR           = 0;
-    NO_DATA            = 1;  // cr_get_mp_prompt()
+    NO_DATA            = 1;  // 
     READ_FAILED        = 2;  //
     WRITE_FAILED       = 3;  //
     NOT_IMPLEMENTED    = 4;  // returned by weak implementations
@@ -451,3 +461,18 @@ enum FileTransferState {
     COMPLETE              = 4;
 }
 
+// so that the clients can see these numbers.
+enum StaticBufferSize {
+    BUFFER_ZERO                     =   0;
+    MESSAGE_PAYLOAD_MAX             = 208;
+    BIG_DATA_BUFFER_LEN             = 194;
+    DEVICE_INFO_LEN                 =  48;
+    LONG_STRING_LEN                 =  32; 
+    MEDIUM_STRING_LEN               =  24; 
+    SHORT_STRING_LEN                =  16;
+    PARAM_INFO_ENUM_COUNT           =  12;
+    SERVICES_COUNT                  =   8;
+    NUM_COMMANDS_IN_RESPONSE        =   6;
+    NUM_MEDIUM_STRUCTS_IN_MESSAGE   =   4;
+    COUNT_PARAM_DESC_IN_RESPONSE    =   2;
+}

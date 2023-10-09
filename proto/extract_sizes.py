@@ -2,7 +2,7 @@
 # A python script to extract #defines from the .options file.
 
 input_file_path = "reach.options"
-output_file_path = "../ansic/build/proto_sizes.h"
+output_file_path = "../ansic/build/reach_proto_sizes.h"
 
 # Check if the input and output file paths are the same
 if input_file_path == output_file_path:
@@ -12,6 +12,10 @@ else:
     with open(input_file_path, "r") as input_file, open(output_file_path, "w") as output_file:
         # Flag to check if any lines have been written to the output file
         lines_written = False
+
+        output_file.write("// reach_proto_sizes.h\n")
+        output_file.write("// Structure sizes defined in reach.options\n")
+        output_file.write("// (c) 2023 i3pd.com, a Helios company.\n\n")
 
         # Iterate through each line in the input file
         for line in input_file:
