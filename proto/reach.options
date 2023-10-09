@@ -86,8 +86,8 @@ cr.ParameterNotification.values                 max_count: 4
 #define REACH_PI_ENUM_NAME_LEN                  cr_StaticBufferSize_SHORT_STRING_LEN
 cr.EnumerationKey.name                          max_size: 16
 
-#define REACH_PI_ENUM_COUNT                     cr_StaticBufferSize_PARAM_INFO_ENUM_COUNT
-cr.ParameterInfoEnumeration.enumerations        max_count: 12
+#define REACH_PI_ENUM_COUNT                     cr_StaticBufferSize_SERVICES_COUNT
+cr.ParameterInfoEnumeration.enumerations        max_count: 8
 
 #
 # Files

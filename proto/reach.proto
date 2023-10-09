@@ -19,29 +19,30 @@ enum ReachMessageTypes {
   GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
   // Parameters
-  DISCOVER_PARAMETERS = 4;    // dp / dp~
-  READ_PARAMETERS     = 5;    // rp / rp~
-  WRITE_PARAMETERS    = 6;    // wp / wp~
-  NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
+  DISCOVER_PARAMETERS = 5;    // dp / dp~
+  DISCOVER_PARAM_EX   = 6;    // dp / dp~
+  READ_PARAMETERS     = 7;    // rp / rp~
+  WRITE_PARAMETERS    = 8;    // wp / wp~
+  NOTIFY_PARAMETERS   = 9;    // pnr/ pnr~
 
   // File Transfers
-  DISCOVER_FILES      = 8;    // gfd / gfd~
-  TRANSFER_INIT       = 9;    // Begins a Transfer
-  TRANSFER_DATA       = 10;   // Sends Data
+  DISCOVER_FILES      = 12;    // gfd / gfd~
+  TRANSFER_INIT       = 13;    // Begins a Transfer
+  TRANSFER_DATA       = 14;   // Sends Data
   // Clears Sender (Client / Service) to Send More Data:
-  TRANSFER_DATA_NOTIFICATION = 11;
+  TRANSFER_DATA_NOTIFICATION = 15;
 
-  // Streams
-  DISCOVER_STREAMS    = 12;    // gsd / gsd~
-  OPEN_STREAM         = 13;
-  CLOSE_STREAM        = 14;
-  STREAM_DATA_NOTIFICATION = 15;
-
-  DISCOVER_COMMANDS   = 16;    // gcd / gcd~
-  SEND_COMMAND        = 17;    // sc / sc~
+  DISCOVER_COMMANDS   = 17;    // gcd / gcd~
+  SEND_COMMAND        = 18;    // sc / sc~
 
   // Command Line Interface
-  CLI_NOTIFICATION    = 21;
+  CLI_NOTIFICATION    = 20;
+
+  // Streams
+  DISCOVER_STREAMS    = 25;    // gsd / gsd~
+  OPEN_STREAM         = 26;
+  CLOSE_STREAM        = 27;
+  STREAM_DATA_NOTIFICATION = 28;
 }
 
 //----------------------------
@@ -173,6 +174,19 @@ message ParameterInfo {
   double default_value              = 10; // Show instead of value if no value.
   StorageLocation storage_location  = 11; // RAM or NVM or ?
 }
+
+// Give names to enums and bitfields
+message EnumerationKey {
+    uint32 id               = 1;  // the valud of the enum
+    string name             = 2;  // the name of the enum
+}
+
+// also used for bitfields
+message ParameterInfoEnumeration {
+    uint32                  associated_pid = 1;
+    ParameterDataType       data_type      = 2;
+    repeated EnumerationKey enumerations   = 3;
+}
  
 
 // ------------------------------------------------------
@@ -266,16 +280,6 @@ message ParameterValue {
     uint32 bitfield_value   = 12;
     bytes  bytes_value      = 13; // byte array values
   }                               
-}
-
-// Allow UI to name enumerations
-message EnumerationKey {
-    uint32 id               = 1;
-    string name             = 2;
-}
-
-message ParameterInfoEnumeration {
-    repeated EnumerationKey enumerations = 1;
 }
 
 // ------------------------------------------------------
