@@ -316,7 +316,8 @@ message FileTransferInit {
 message FileTransferInitReply {
   int32 result                  = 1;    // 0 if OK
   uint32 transfer_id            = 2;    // Transfer ID
-  string error_message          = 3;
+  uint32 preferred_ack_rate     = 3;    // overrides request
+  string error_message          = 4;
 }
 
 // Bi-Directional Message
