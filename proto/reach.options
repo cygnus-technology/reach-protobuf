@@ -83,11 +83,11 @@ cr.ParameterNotifyResult.failed_parameter_ids   max_count: 32
 #define REACH_COUNT_PARAM_NOTIF_VALUES          cr_StaticBufferSize_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.ParameterNotification.values                 max_count: 4
 
-#define REACH_PI_ENUM_NAME_LEN                  cr_StaticBufferSize_SHORT_STRING_LEN
-cr.EnumerationKey.name                          max_size: 16
+#define REACH_PI_ENUM_NAME_LEN                 cr_StaticBufferSize_SHORT_STRING_LEN
+cr.ParamExKey.name                             max_size: 16
 
-#define REACH_PI_ENUM_COUNT                     cr_StaticBufferSize_SERVICES_COUNT
-cr.ParameterInfoEnumeration.enumerations        max_count: 8
+#define REACH_PI_ENUM_COUNT                    cr_StaticBufferSize_SERVICES_COUNT
+cr.ParamExInfoResponse.enumerations            max_count: 8
 
 #
 # Files

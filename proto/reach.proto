@@ -176,16 +176,16 @@ message ParameterInfo {
 }
 
 // Give names to enums and bitfields
-message EnumerationKey {
+message ParamExKey {
     uint32 id               = 1;  // the valud of the enum
     string name             = 2;  // the name of the enum
 }
 
 // also used for bitfields
-message ParameterInfoEnumeration {
-    uint32                  associated_pid = 1;
-    ParameterDataType       data_type      = 2;
-    repeated EnumerationKey enumerations   = 3;
+message ParamExInfoResponse {
+    uint32              associated_pid = 1;
+    ParameterDataType   data_type      = 2;
+    repeated ParamExKey enumerations   = 3;
 }
  
 
