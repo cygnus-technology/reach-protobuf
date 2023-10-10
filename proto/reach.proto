@@ -333,6 +333,7 @@ message FileTransferDataNotification {
   string error_message          = 2;
   bool   is_complete            = 3;
   uint32 transfer_id            = 4;    // Transfer ID
+  uint32 retry_offset           = 5;    // file offset where error occurred
 }
 
 // ------------------------------------------------------
@@ -454,6 +455,7 @@ enum ErrorCodes {
     INVALID_STATE      = 13; //
     NO_RESPONSE        = 14; // handler signals no response is necessary
     BAD_FILE           = 15; // bad file ID
+    PACKET_COUNT_ERR   = 16;
 }
 
 enum FileTransferState {
