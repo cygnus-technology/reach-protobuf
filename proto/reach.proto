@@ -121,7 +121,7 @@ message DeviceInfoResponse {
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_identifier      = 10;   // A UUID to find a Custom firmware_version
+  optional bytes application_identifier      = 10;   // A UUID to find a Custom firmware_version
   uint32 endpoints                  = 11;   // bit mask, non-zero if other endpoints.
   uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
   uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
@@ -167,11 +167,11 @@ message ParameterInfo {
   uint32 size_in_bytes              = 3;  // Unnecessary?
   string name                       = 4;  // Name
   AccessLevel access                = 5;  // Access
-  string description                = 6;  // Description
+  optional string description       = 6;  // Description
   string units                      = 7;  // Units
-  double range_min                  = 8;  // Range Max
-  double range_max                  = 9;  // Range Max
-  double default_value              = 10; // Show instead of value if no value.
+  optional double range_min         = 8;  // Range Max
+  optional double range_max         = 9;  // Range Max
+  optional double default_value     = 10; // Show instead of value if no value.
   StorageLocation storage_location  = 11; // RAM or NVM or ?
 }
 
@@ -243,7 +243,6 @@ message ParameterNotifyResult {
 message ParameterNotification {
   repeated ParameterValue values     = 2;    // Array of Result Values
 }
-
 
 enum ParameterDataType {
   UINT32                  = 0;
