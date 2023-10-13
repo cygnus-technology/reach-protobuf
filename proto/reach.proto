@@ -446,7 +446,7 @@ enum ErrorCodes {
     WRITE_FAILED       = 3;  //
     NOT_IMPLEMENTED    = 4;  // returned by weak implementations
     MALFORMED_MESSAGE  = 5;  // not yet used
-    NO_SERVICE         = 6;  // not yet used
+    NO_SERVICE         = 6;  // 
     PERMISSION_DENIED  = 7;  //
     BUFFER_TOO_SMALL   = 8;  //
     INVALID_PARAMETER  = 9;  //
