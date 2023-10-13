@@ -60,9 +60,9 @@ pipelines:
       - parallel:
           - step: *generate-java-kotlin-csharp-cpp-python-proto
           - step: *generate-ansic-nanopb
-          - step: *generate-ts-nanopb
+          #- step: *generate-ts-nanopb
     master:
       - parallel:
           - step: *generate-java-kotlin-csharp-cpp-python-proto
           - step: *generate-ansic-nanopb
-          - step: *generate-ts-nanopb
+          #- step: *generate-ts-nanopb
