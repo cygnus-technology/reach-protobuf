@@ -14,7 +14,7 @@ option java_package = "com.cygnusreach.reachprotocol.proto";
 
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 3;   // update this when you change this file.
+    CURRENT_VERSION  = 4;   // update this when you change this file.
 }
 
 enum ReachMessageTypes {
