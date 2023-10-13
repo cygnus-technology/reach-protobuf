@@ -12,6 +12,11 @@ option csharp_namespace = "Cygnus.Reach";
 option java_multiple_files = true;
 option java_package = "com.cygnusreach.reachprotocol.proto";
 
+enum ReachProtoVersion {
+    NOT_USED         = 0;   // Must have a zero
+    CURRENT_VERSION  = 3;   // update this when you change this file.
+}
+
 enum ReachMessageTypes {
   INVALID             = 0;    // No Valid Message
   ERROR_REPORT        = 1;
@@ -103,7 +108,7 @@ message DeviceInfoRequest {
 }
 
 message DeviceInfoResponse {
-  int32 protocol_version          = 1;    // Supported Protocol Version
+  int32  protocol_version         = 1;    // Supported Protocol Version
   string device_name              = 2;    // Name, Typically Model Name
   string manufacturer             = 3;
   string device_description       = 4;    // Description
@@ -446,7 +451,7 @@ enum ErrorCodes {
     WRITE_FAILED       = 3;  //
     NOT_IMPLEMENTED    = 4;  // returned by weak implementations
     MALFORMED_MESSAGE  = 5;  // not yet used
-    NO_SERVICE         = 6;  // 
+    NO_SERVICE         = 6;  // not yet used
     PERMISSION_DENIED  = 7;  //
     BUFFER_TOO_SMALL   = 8;  //
     INVALID_PARAMETER  = 9;  //
