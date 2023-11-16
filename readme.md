@@ -11,7 +11,11 @@ This is a submodule to a Cygnus Reach project.
 * Clone or fork the project that contains this repository.  That might be for an embedded device (reacher-pb) or a mobile app or a web page".
   * Follow any more explicit instructions there.  For instance, the reacher-mp project includes an "update_proto.bat" to rebuild the necessary proto files.
 * The repository contains a prebuilt set of C files in ansic/built.  You can use these directly.  If you need to change the .proto files or otherwise regenerate them you will need to go a little deeper into the world of protobufs.
-* To rebuild the .pb files:
+* You can regenerate the .pb files using the bitbucket pipeline.  
+  * From the reach_proto project, selec pipeline and select the latest.
+  * Choose "Generate C code from proto files".
+  * Select "Artifacts" and download the resulting files.  Use thse to replace those in the built directory.
+* To rebuild the .pb files locally:
   * Install several tools:
     * cmake
     * python
@@ -27,6 +31,7 @@ This is a submodule to a Cygnus Reach project.
     * Build the files:
       * cmake --build ./ builds with what is native, Microsoft on Windows.
       * make builds with Linux Makefiles.
+    * Either copy these to the built directory or exclude the built directory and point at the build directory that the make populates.
 * The file "reach_proto_sizes.h" is created by proto\extract_sizes.py using reach.options.  The C code uses this H file.
 
 ### Contribution guidelines
