@@ -13,7 +13,7 @@
 /* Enum definitions */
 typedef enum _cr_ReachProtoVersion {
     cr_ReachProtoVersion_NOT_USED = 0, /* Must have a zero */
-    cr_ReachProtoVersion_CURRENT_VERSION = 4 /* update this when you change this file. */
+    cr_ReachProtoVersion_CURRENT_VERSION = 5 /* update this when you change this file. */
 } cr_ReachProtoVersion;
 
 typedef enum _cr_ReachMessageTypes {
@@ -126,21 +126,23 @@ typedef enum _cr_FileTransferState {
     cr_FileTransferState_COMPLETE = 4
 } cr_FileTransferState;
 
-/* so that the clients can see these numbers. */
-typedef enum _cr_StaticBufferSize {
-    cr_StaticBufferSize_BUFFER_ZERO = 0,
-    cr_StaticBufferSize_MESSAGE_PAYLOAD_MAX = 208,
-    cr_StaticBufferSize_BIG_DATA_BUFFER_LEN = 194,
-    cr_StaticBufferSize_DEVICE_INFO_LEN = 48,
-    cr_StaticBufferSize_LONG_STRING_LEN = 32,
-    cr_StaticBufferSize_MEDIUM_STRING_LEN = 24,
-    cr_StaticBufferSize_SHORT_STRING_LEN = 16,
-    cr_StaticBufferSize_PARAM_INFO_ENUM_COUNT = 12,
-    cr_StaticBufferSize_SERVICES_COUNT = 8,
-    cr_StaticBufferSize_NUM_COMMANDS_IN_RESPONSE = 6,
-    cr_StaticBufferSize_NUM_MEDIUM_STRUCTS_IN_MESSAGE = 4,
-    cr_StaticBufferSize_COUNT_PARAM_DESC_IN_RESPONSE = 2
-} cr_StaticBufferSize;
+typedef enum _cr_SizesOffsets {
+    cr_SizesOffsets_MAX_MESSAGE_SIZE_OFFSET = 0,
+    cr_SizesOffsets_BIG_DATA_BUFFER_SIZE_OFFSET = 2,
+    cr_SizesOffsets_PARAMETER_BUFFER_COUNT_OFFSET = 4,
+    cr_SizesOffsets_NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET = 5,
+    cr_SizesOffsets_DEVICE_INFO_LEN_OFFSET = 6,
+    cr_SizesOffsets_LONG_STRING_LEN_OFFSET = 7,
+    cr_SizesOffsets_COUNT_PARAM_IDS_OFFSET = 8,
+    cr_SizesOffsets_MEDIUM_STRING_LEN_OFFSET = 9,
+    cr_SizesOffsets_SHORT_STRING_LEN_OFFSET = 10,
+    cr_SizesOffsets_PARAM_INFO_ENUM_COUNT_OFFSET = 11,
+    cr_SizesOffsets_SERVICES_COUNT_OFFSET = 12,
+    cr_SizesOffsets_PI_ENUM_COUNT_OFFSET = 13,
+    cr_SizesOffsets_NUM_COMMANDS_IN_RESPONSE_OFFSET = 14,
+    cr_SizesOffsets_COUNT_PARAM_DESC_IN_RESPONSE_OFFSET = 15,
+    cr_SizesOffsets_STRUCTURE_SIZE = 16
+} cr_SizesOffsets;
 
 /* Struct definitions */
 /* ----------------------------
@@ -200,6 +202,7 @@ typedef struct _cr_DeviceInfoRequest {
 } cr_DeviceInfoRequest;
 
 typedef PB_BYTES_ARRAY_T(16) cr_DeviceInfoResponse_application_identifier_t;
+typedef PB_BYTES_ARRAY_T(16) cr_DeviceInfoResponse_sizes_struct_t;
 typedef struct _cr_DeviceInfoResponse {
     int32_t protocol_version; /* Supported Protocol Version */
     char device_name[24]; /* Name, Typically Model Name */
@@ -208,8 +211,6 @@ typedef struct _cr_DeviceInfoResponse {
     /* Each endpoint advertises a "main" FW version.
  If there are other FW versions, put them in the parameter repo. */
     char firmware_version[16];
-    /* Max Message Length: A characteristic of the communication link. */
-    uint32_t max_message_size;
     /* A bit mask, allowing support for up to 32 services */
     uint32_t services;
     /* Used to avoid reloading the parameter descriptions */
@@ -217,9 +218,8 @@ typedef struct _cr_DeviceInfoResponse {
     bool has_application_identifier;
     cr_DeviceInfoResponse_application_identifier_t application_identifier; /* A UUID to find a Custom firmware_version */
     uint32_t endpoints; /* bit mask, non-zero if other endpoints. */
-    uint32_t parameter_buffer_count; /* how many parameter info or reads can be in one request. */
-    uint32_t num_medium_structs_in_msg; /* how many parameter writes can be in one request. */
-    uint32_t big_data_buffer_size; /* how many bytes in a file data message */
+    uint32_t proto_version;
+    cr_DeviceInfoResponse_sizes_struct_t sizes_struct; /* packed. See SizesOffsets */
 } cr_DeviceInfoResponse;
 
 /* ------------------------------------------------------
@@ -498,6 +498,28 @@ typedef struct _cr_CLIData {
     bool is_complete;
 } cr_CLIData;
 
+/* This data describing the sizes of the structures used
+ in C code is communicated in a packed format in the 
+ device info structure.  Here it's defined in an
+ unpacked (all 32 bit) format.  Use the offsets 
+ defined below (SizesOffsets) to unpack into this. */
+typedef struct _cr_buffer_sizes {
+    uint32_t max_message_size; /* uint16_t */
+    uint32_t big_data_buffer_size; /* uint16_t */
+    uint32_t parameter_buffer_count; /* uint8_t */
+    uint32_t num_medium_structs_in_msg; /* uint8_t */
+    uint32_t device_info_len; /* uint8_t */
+    uint32_t long_string_len; /* uint8_t */
+    uint32_t count_param_ids; /* uint8_t */
+    uint32_t medium_string_len; /* uint8_t */
+    uint32_t short_string_len;
+    uint32_t param_info_enum_count; /* uint8_t */
+    uint32_t services_count; /* uint8_t */
+    uint32_t pi_enum_count; /* uint8_t */
+    uint32_t num_commands_in_response; /* uint8_t */
+    uint32_t count_param_desc_in_response; /* uint8_t */
+} cr_buffer_sizes;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -544,9 +566,9 @@ extern "C" {
 #define _cr_FileTransferState_MAX cr_FileTransferState_COMPLETE
 #define _cr_FileTransferState_ARRAYSIZE ((cr_FileTransferState)(cr_FileTransferState_COMPLETE+1))
 
-#define _cr_StaticBufferSize_MIN cr_StaticBufferSize_BUFFER_ZERO
-#define _cr_StaticBufferSize_MAX cr_StaticBufferSize_MESSAGE_PAYLOAD_MAX
-#define _cr_StaticBufferSize_ARRAYSIZE ((cr_StaticBufferSize)(cr_StaticBufferSize_MESSAGE_PAYLOAD_MAX+1))
+#define _cr_SizesOffsets_MIN cr_SizesOffsets_MAX_MESSAGE_SIZE_OFFSET
+#define _cr_SizesOffsets_MAX cr_SizesOffsets_STRUCTURE_SIZE
+#define _cr_SizesOffsets_ARRAYSIZE ((cr_SizesOffsets)(cr_SizesOffsets_STRUCTURE_SIZE+1))
 
 
 
@@ -597,6 +619,7 @@ extern "C" {
 
 
 
+
 /* Initializer values for message structs */
 #define cr_ReachMessageHeader_init_default       {0, 0, 0, 0, 0}
 #define cr_ReachMessage_init_default             {false, cr_ReachMessageHeader_init_default, {0, {0}}}
@@ -604,7 +627,7 @@ extern "C" {
 #define cr_PingRequest_init_default              {{0, {0}}}
 #define cr_PingResponse_init_default             {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_default        {0}
-#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, 0, false, {0, {0}}, 0, 0, 0, 0}
+#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_default     {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_default    {0, {cr_ParameterInfo_init_default, cr_ParameterInfo_init_default}}
 #define cr_ParameterInfo_init_default            {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -638,13 +661,14 @@ extern "C" {
 #define cr_SendCommand_init_default              {0}
 #define cr_SendCommandResult_init_default        {0, ""}
 #define cr_CLIData_init_default                  {"", 0}
+#define cr_buffer_sizes_init_default             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define cr_ReachMessageHeader_init_zero          {0, 0, 0, 0, 0}
 #define cr_ReachMessage_init_zero                {false, cr_ReachMessageHeader_init_zero, {0, {0}}}
 #define cr_ErrorReport_init_zero                 {0, ""}
 #define cr_PingRequest_init_zero                 {{0, {0}}}
 #define cr_PingResponse_init_zero                {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_zero           {0}
-#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, 0, false, {0, {0}}, 0, 0, 0, 0}
+#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_zero        {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_zero       {0, {cr_ParameterInfo_init_zero, cr_ParameterInfo_init_zero}}
 #define cr_ParameterInfo_init_zero               {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -678,6 +702,7 @@ extern "C" {
 #define cr_SendCommand_init_zero                 {0}
 #define cr_SendCommandResult_init_zero           {0, ""}
 #define cr_CLIData_init_zero                     {"", 0}
+#define cr_buffer_sizes_init_zero                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define cr_ReachMessageHeader_message_type_tag   1
@@ -698,14 +723,12 @@ extern "C" {
 #define cr_DeviceInfoResponse_manufacturer_tag   3
 #define cr_DeviceInfoResponse_device_description_tag 4
 #define cr_DeviceInfoResponse_firmware_version_tag 6
-#define cr_DeviceInfoResponse_max_message_size_tag 7
 #define cr_DeviceInfoResponse_services_tag       8
 #define cr_DeviceInfoResponse_parameter_metadata_hash_tag 9
 #define cr_DeviceInfoResponse_application_identifier_tag 10
 #define cr_DeviceInfoResponse_endpoints_tag      11
-#define cr_DeviceInfoResponse_parameter_buffer_count_tag 12
-#define cr_DeviceInfoResponse_num_medium_structs_in_msg_tag 13
-#define cr_DeviceInfoResponse_big_data_buffer_size_tag 14
+#define cr_DeviceInfoResponse_proto_version_tag  15
+#define cr_DeviceInfoResponse_sizes_struct_tag   20
 #define cr_ParameterInfoRequest_parameter_key_tag 1
 #define cr_ParameterInfoRequest_parameter_ids_tag 2
 #define cr_ParameterInfo_id_tag                  1
@@ -804,6 +827,20 @@ extern "C" {
 #define cr_SendCommandResult_result_message_tag  2
 #define cr_CLIData_message_data_tag              1
 #define cr_CLIData_is_complete_tag               2
+#define cr_buffer_sizes_max_message_size_tag     1
+#define cr_buffer_sizes_big_data_buffer_size_tag 2
+#define cr_buffer_sizes_parameter_buffer_count_tag 3
+#define cr_buffer_sizes_num_medium_structs_in_msg_tag 4
+#define cr_buffer_sizes_device_info_len_tag      5
+#define cr_buffer_sizes_long_string_len_tag      6
+#define cr_buffer_sizes_count_param_ids_tag      7
+#define cr_buffer_sizes_medium_string_len_tag    8
+#define cr_buffer_sizes_short_string_len_tag     9
+#define cr_buffer_sizes_param_info_enum_count_tag 10
+#define cr_buffer_sizes_services_count_tag       11
+#define cr_buffer_sizes_pi_enum_count_tag        12
+#define cr_buffer_sizes_num_commands_in_response_tag 13
+#define cr_buffer_sizes_count_param_desc_in_response_tag 14
 
 /* Struct field encoding specification for nanopb */
 #define cr_ReachMessageHeader_FIELDLIST(X, a) \
@@ -850,14 +887,12 @@ X(a, STATIC,   SINGULAR, STRING,   device_name,       2) \
 X(a, STATIC,   SINGULAR, STRING,   manufacturer,      3) \
 X(a, STATIC,   SINGULAR, STRING,   device_description,   4) \
 X(a, STATIC,   SINGULAR, STRING,   firmware_version,   6) \
-X(a, STATIC,   SINGULAR, UINT32,   max_message_size,   7) \
 X(a, STATIC,   SINGULAR, UINT32,   services,          8) \
 X(a, STATIC,   SINGULAR, UINT32,   parameter_metadata_hash,   9) \
 X(a, STATIC,   OPTIONAL, BYTES,    application_identifier,  10) \
 X(a, STATIC,   SINGULAR, UINT32,   endpoints,        11) \
-X(a, STATIC,   SINGULAR, UINT32,   parameter_buffer_count,  12) \
-X(a, STATIC,   SINGULAR, UINT32,   num_medium_structs_in_msg,  13) \
-X(a, STATIC,   SINGULAR, UINT32,   big_data_buffer_size,  14)
+X(a, STATIC,   SINGULAR, UINT32,   proto_version,    15) \
+X(a, STATIC,   SINGULAR, BYTES,    sizes_struct,     20)
 #define cr_DeviceInfoResponse_CALLBACK NULL
 #define cr_DeviceInfoResponse_DEFAULT NULL
 
@@ -1102,6 +1137,24 @@ X(a, STATIC,   SINGULAR, BOOL,     is_complete,       2)
 #define cr_CLIData_CALLBACK NULL
 #define cr_CLIData_DEFAULT NULL
 
+#define cr_buffer_sizes_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT32,   max_message_size,   1) \
+X(a, STATIC,   SINGULAR, UINT32,   big_data_buffer_size,   2) \
+X(a, STATIC,   SINGULAR, UINT32,   parameter_buffer_count,   3) \
+X(a, STATIC,   SINGULAR, UINT32,   num_medium_structs_in_msg,   4) \
+X(a, STATIC,   SINGULAR, UINT32,   device_info_len,   5) \
+X(a, STATIC,   SINGULAR, UINT32,   long_string_len,   6) \
+X(a, STATIC,   SINGULAR, UINT32,   count_param_ids,   7) \
+X(a, STATIC,   SINGULAR, UINT32,   medium_string_len,   8) \
+X(a, STATIC,   SINGULAR, UINT32,   short_string_len,   9) \
+X(a, STATIC,   SINGULAR, UINT32,   param_info_enum_count,  10) \
+X(a, STATIC,   SINGULAR, UINT32,   services_count,   11) \
+X(a, STATIC,   SINGULAR, UINT32,   pi_enum_count,    12) \
+X(a, STATIC,   SINGULAR, UINT32,   num_commands_in_response,  13) \
+X(a, STATIC,   SINGULAR, UINT32,   count_param_desc_in_response,  14)
+#define cr_buffer_sizes_CALLBACK NULL
+#define cr_buffer_sizes_DEFAULT NULL
+
 extern const pb_msgdesc_t cr_ReachMessageHeader_msg;
 extern const pb_msgdesc_t cr_ReachMessage_msg;
 extern const pb_msgdesc_t cr_ErrorReport_msg;
@@ -1142,6 +1195,7 @@ extern const pb_msgdesc_t cr_CommandInfo_msg;
 extern const pb_msgdesc_t cr_SendCommand_msg;
 extern const pb_msgdesc_t cr_SendCommandResult_msg;
 extern const pb_msgdesc_t cr_CLIData_msg;
+extern const pb_msgdesc_t cr_buffer_sizes_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define cr_ReachMessageHeader_fields &cr_ReachMessageHeader_msg
@@ -1184,12 +1238,13 @@ extern const pb_msgdesc_t cr_CLIData_msg;
 #define cr_SendCommand_fields &cr_SendCommand_msg
 #define cr_SendCommandResult_fields &cr_SendCommandResult_msg
 #define cr_CLIData_fields &cr_CLIData_msg
+#define cr_buffer_sizes_fields &cr_buffer_sizes_msg
 
 /* Maximum encoded size of messages (where known) */
 #define cr_CLIData_size                          198
 #define cr_CommandInfo_size                      31
 #define cr_DeviceInfoRequest_size                6
-#define cr_DeviceInfoResponse_size               187
+#define cr_DeviceInfoResponse_size               188
 #define cr_DiscoverCommandsResult_size           198
 #define cr_DiscoverCommands_size                 0
 #define cr_DiscoverFilesReply_size               212
@@ -1226,6 +1281,7 @@ extern const pb_msgdesc_t cr_CLIData_msg;
 #define cr_StreamInfo_size                       49
 #define cr_StreamOpenReply_size                  22
 #define cr_StreamOpen_size                       13
+#define cr_buffer_sizes_size                     84
 
 #ifdef __cplusplus
 } /* extern "C" */
