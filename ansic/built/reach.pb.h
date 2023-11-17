@@ -218,7 +218,6 @@ typedef struct _cr_DeviceInfoResponse {
     bool has_application_identifier;
     cr_DeviceInfoResponse_application_identifier_t application_identifier; /* A UUID to find a Custom firmware_version */
     uint32_t endpoints; /* bit mask, non-zero if other endpoints. */
-    uint32_t proto_version;
     cr_DeviceInfoResponse_sizes_struct_t sizes_struct; /* packed. See SizesOffsets */
 } cr_DeviceInfoResponse;
 
@@ -627,7 +626,7 @@ extern "C" {
 #define cr_PingRequest_init_default              {{0, {0}}}
 #define cr_PingResponse_init_default             {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_default        {0}
-#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, 0, {0, {0}}}
+#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_default     {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_default    {0, {cr_ParameterInfo_init_default, cr_ParameterInfo_init_default}}
 #define cr_ParameterInfo_init_default            {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -668,7 +667,7 @@ extern "C" {
 #define cr_PingRequest_init_zero                 {{0, {0}}}
 #define cr_PingResponse_init_zero                {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_zero           {0}
-#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, 0, {0, {0}}}
+#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_zero        {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_zero       {0, {cr_ParameterInfo_init_zero, cr_ParameterInfo_init_zero}}
 #define cr_ParameterInfo_init_zero               {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -727,7 +726,6 @@ extern "C" {
 #define cr_DeviceInfoResponse_parameter_metadata_hash_tag 9
 #define cr_DeviceInfoResponse_application_identifier_tag 10
 #define cr_DeviceInfoResponse_endpoints_tag      11
-#define cr_DeviceInfoResponse_proto_version_tag  15
 #define cr_DeviceInfoResponse_sizes_struct_tag   20
 #define cr_ParameterInfoRequest_parameter_key_tag 1
 #define cr_ParameterInfoRequest_parameter_ids_tag 2
@@ -891,7 +889,6 @@ X(a, STATIC,   SINGULAR, UINT32,   services,          8) \
 X(a, STATIC,   SINGULAR, UINT32,   parameter_metadata_hash,   9) \
 X(a, STATIC,   OPTIONAL, BYTES,    application_identifier,  10) \
 X(a, STATIC,   SINGULAR, UINT32,   endpoints,        11) \
-X(a, STATIC,   SINGULAR, UINT32,   proto_version,    15) \
 X(a, STATIC,   SINGULAR, BYTES,    sizes_struct,     20)
 #define cr_DeviceInfoResponse_CALLBACK NULL
 #define cr_DeviceInfoResponse_DEFAULT NULL
@@ -1244,7 +1241,7 @@ extern const pb_msgdesc_t cr_buffer_sizes_msg;
 #define cr_CLIData_size                          198
 #define cr_CommandInfo_size                      31
 #define cr_DeviceInfoRequest_size                6
-#define cr_DeviceInfoResponse_size               188
+#define cr_DeviceInfoResponse_size               182
 #define cr_DiscoverCommandsResult_size           198
 #define cr_DiscoverCommands_size                 0
 #define cr_DiscoverFilesReply_size               212

@@ -130,8 +130,6 @@ message DeviceInfoResponse {
   optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
   uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
 
-  uint32 proto_version                  = 15;
-
   bytes sizes_struct = 20;  // packed. See SizesOffsets
 }
 
