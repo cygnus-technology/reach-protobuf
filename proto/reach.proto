@@ -14,7 +14,8 @@ option java_package = "com.cygnusreach.reachprotocol.proto";
 
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 4;   // update this when you change this file.
+    CURRENT_VERSION  = 5;   // update this when you change this file.
+    // 5: device info extended with sizes structure
 }
 
 enum ReachMessageTypes {
@@ -117,20 +118,18 @@ message DeviceInfoResponse {
   // If there are other FW versions, put them in the parameter repo.
   string firmware_version         = 6;
 
-  // Max Message Length: A characteristic of the communication link.
-  uint32 max_message_size         = 7;
-
   // A bit mask, allowing support for up to 32 services
   uint32 services                 = 8;
 
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  optional bytes application_identifier      = 10;   // A UUID to find a Custom firmware_version
-  uint32 endpoints                  = 11;   // bit mask, non-zero if other endpoints.
-  uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
-  uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
-  uint32 big_data_buffer_size       = 14;   // how many bytes in a file data message
+  optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
+  uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
+
+  uint32 proto_version                  = 15;
+
+  bytes sizes_struct = 20;  // packed. See SizesOffsets
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.services
@@ -472,18 +471,46 @@ enum FileTransferState {
     COMPLETE              = 4;
 }
 
-// so that the clients can see these numbers.
-enum StaticBufferSize {
-    BUFFER_ZERO                     =   0;
-    MESSAGE_PAYLOAD_MAX             = 208;
-    BIG_DATA_BUFFER_LEN             = 194;
-    DEVICE_INFO_LEN                 =  48;
-    LONG_STRING_LEN                 =  32; 
-    MEDIUM_STRING_LEN               =  24; 
-    SHORT_STRING_LEN                =  16;
-    PARAM_INFO_ENUM_COUNT           =  12;
-    SERVICES_COUNT                  =   8;
-    NUM_COMMANDS_IN_RESPONSE        =   6;
-    NUM_MEDIUM_STRUCTS_IN_MESSAGE   =   4;
-    COUNT_PARAM_DESC_IN_RESPONSE    =   2;
+//
+// This data describing the sizes of the structures used
+// in C code is communicated in a packed format in the 
+// device info structure.  Here it's defined in an
+// unpacked (all 32 bit) format.  Use the offsets 
+// defined below (SizesOffsets) to unpack into this.
+//
+message buffer_sizes {
+    uint32  max_message_size             = 1;   // uint16_t
+    uint32  big_data_buffer_size         = 2;   // uint16_t
+    uint32  parameter_buffer_count       = 3;   // uint8_t
+    uint32  num_medium_structs_in_msg    = 4;   // uint8_t
+    uint32  device_info_len              = 5;   // uint8_t
+    uint32  long_string_len              = 6;   // uint8_t
+    uint32  count_param_ids              = 7;   // uint8_t
+    uint32  medium_string_len            = 8;   // uint8_t
+    uint32  short_string_len             = 9;;  // uint8_t
+    uint32  param_info_enum_count        = 10;  // uint8_t
+    uint32  services_count               = 11;  // uint8_t
+    uint32  pi_enum_count                = 12;  // uint8_t
+    uint32  num_commands_in_response     = 13;  // uint8_t
+    uint32  count_param_desc_in_response = 14;  // uint8_t
 }
+
+enum SizesOffsets {
+    MAX_MESSAGE_SIZE_OFFSET              = 0;
+    BIG_DATA_BUFFER_SIZE_OFFSET          = 2;
+    PARAMETER_BUFFER_COUNT_OFFSET        = 4;
+    NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET     = 5;
+    DEVICE_INFO_LEN_OFFSET               = 6;
+    LONG_STRING_LEN_OFFSET               = 7;
+    COUNT_PARAM_IDS_OFFSET               = 8;
+    MEDIUM_STRING_LEN_OFFSET             = 9;
+    SHORT_STRING_LEN_OFFSET              = 10;
+    PARAM_INFO_ENUM_COUNT_OFFSET         = 11;
+    SERVICES_COUNT_OFFSET                = 12;
+    PI_ENUM_COUNT_OFFSET                 = 13;
+    NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;
+    COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;
+    STRUCTURE_SIZE                       = 16;
+}
+
+

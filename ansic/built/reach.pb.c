@@ -126,6 +126,9 @@ PB_BIND(cr_SendCommandResult, cr_SendCommandResult, AUTO)
 PB_BIND(cr_CLIData, cr_CLIData, AUTO)
 
 
+PB_BIND(cr_buffer_sizes, cr_buffer_sizes, AUTO)
+
+
 
 
 
