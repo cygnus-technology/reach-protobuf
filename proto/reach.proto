@@ -12,6 +12,9 @@ option csharp_namespace = "Cygnus.Reach";
 option java_multiple_files = true;
 option java_package = "com.cygnusreach.reachprotocol.proto";
 
+/** Swift options */
+option swift_prefix = "";
+
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
     CURRENT_VERSION  = 4;   // update this when you change this file.
