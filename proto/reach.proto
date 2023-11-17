@@ -121,6 +121,9 @@ message DeviceInfoResponse {
   // If there are other FW versions, put them in the parameter repo.
   string firmware_version         = 6;
 
+  // Max Message Length: A characteristic of the communication link.
+  uint32 max_message_size         = 7;
+
   // A bit mask, allowing support for up to 32 services
   uint32 services                 = 8;
 
@@ -129,6 +132,9 @@ message DeviceInfoResponse {
 
   optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
   uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
+  uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
+  uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
+  uint32 big_data_buffer_size       = 14;   // how many bytes in a file data message
 
   bytes sizes_struct = 20;  // packed. See SizesOffsets
 }
