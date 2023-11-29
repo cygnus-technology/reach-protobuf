@@ -485,7 +485,7 @@ enum FileTransferState {
 // unpacked (all 32 bit) format.  Use the offsets 
 // defined below (SizesOffsets) to unpack into this.
 //
-message buffer_sizes {
+message BufferSizes {
     uint32  max_message_size             = 1;   // uint16_t
     uint32  big_data_buffer_size         = 2;   // uint16_t
     uint32  parameter_buffer_count       = 3;   // uint8_t
