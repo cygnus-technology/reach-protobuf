@@ -368,7 +368,7 @@ typedef struct _cr_DiscoverFiles {
 } cr_DiscoverFiles;
 
 typedef struct _cr_FileInfo {
-    int32_t file_id; /* ID */
+    uint32_t file_id; /* ID */
     char file_name[24]; /* Name */
     cr_AccessLevel access; /* Access Level (Read / Write) */
     int32_t current_size_bytes; /* size in bytes */
@@ -1024,7 +1024,7 @@ X(a, STATIC,   REPEATED, MESSAGE,  file_infos,        1)
 #define cr_DiscoverFilesReply_file_infos_MSGTYPE cr_FileInfo
 
 #define cr_FileInfo_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, INT32,    file_id,           1) \
+X(a, STATIC,   SINGULAR, UINT32,   file_id,           1) \
 X(a, STATIC,   SINGULAR, STRING,   file_name,         2) \
 X(a, STATIC,   SINGULAR, UENUM,    access,            3) \
 X(a, STATIC,   SINGULAR, INT32,    current_size_bytes,   4) \
@@ -1257,12 +1257,12 @@ extern const pb_msgdesc_t cr_buffer_sizes_msg;
 #define cr_DeviceInfoResponse_size               206
 #define cr_DiscoverCommandsResult_size           198
 #define cr_DiscoverCommands_size                 0
-#define cr_DiscoverFilesReply_size               212
+#define cr_DiscoverFilesReply_size               192
 #define cr_DiscoverFiles_size                    0
 #define cr_DiscoverStreamsResponse_size          204
 #define cr_DiscoverStreams_size                  0
 #define cr_ErrorReport_size                      207
-#define cr_FileInfo_size                         51
+#define cr_FileInfo_size                         46
 #define cr_FileTransferDataNotification_size     221
 #define cr_FileTransferData_size                 231
 #define cr_FileTransferInitReply_size            219

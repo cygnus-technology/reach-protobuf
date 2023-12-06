@@ -304,7 +304,7 @@ message DiscoverFilesReply {
 }
 
 message FileInfo {
-  int32 file_id                       = 1;  // ID
+  uint32 file_id                      = 1;  // ID
   string file_name                    = 2;  // Name
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
