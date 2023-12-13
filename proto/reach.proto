@@ -503,20 +503,20 @@ message buffer_sizes {
 }
 
 enum SizesOffsets {
-    MAX_MESSAGE_SIZE_OFFSET              = 0;
-    BIG_DATA_BUFFER_SIZE_OFFSET          = 2;
-    PARAMETER_BUFFER_COUNT_OFFSET        = 4;
-    NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET     = 5;
-    DEVICE_INFO_LEN_OFFSET               = 6;
-    LONG_STRING_LEN_OFFSET               = 7;
-    COUNT_PARAM_IDS_OFFSET               = 8;
-    MEDIUM_STRING_LEN_OFFSET             = 9;
-    SHORT_STRING_LEN_OFFSET              = 10;
-    PARAM_INFO_ENUM_COUNT_OFFSET         = 11;
-    SERVICES_COUNT_OFFSET                = 12;
-    PI_ENUM_COUNT_OFFSET                 = 13;
-    NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;
-    COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;
+    MAX_MESSAGE_SIZE_OFFSET              = 0;   // uint16_t, little endian
+    BIG_DATA_BUFFER_SIZE_OFFSET          = 2;   // uint16_t, little endian
+    PARAMETER_BUFFER_COUNT_OFFSET        = 4;   // uint8_t
+    NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET     = 5;   // uint8_t
+    DEVICE_INFO_LEN_OFFSET               = 6;   // uint8_t
+    LONG_STRING_LEN_OFFSET               = 7;   // uint8_t
+    COUNT_PARAM_IDS_OFFSET               = 8;   // uint8_t
+    MEDIUM_STRING_LEN_OFFSET             = 9;   // uint8_t
+    SHORT_STRING_LEN_OFFSET              = 10;  // uint8_t
+    PARAM_INFO_ENUM_COUNT_OFFSET         = 11;  // uint8_t
+    SERVICES_COUNT_OFFSET                = 12;  // uint8_t
+    PI_ENUM_COUNT_OFFSET                 = 13;  // uint8_t
+    NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;  // uint8_t
+    COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;  // uint8_t
     STRUCTURE_SIZE                       = 16;
 }
 
