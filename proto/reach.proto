@@ -468,6 +468,7 @@ enum ErrorCodes {
     NO_RESPONSE        = 14; // handler signals no response is necessary
     BAD_FILE           = 15; // bad file ID
     PACKET_COUNT_ERR   = 16;
+    ABORT              = 1000; // Operation cancellation
 }
 
 enum FileTransferState {
