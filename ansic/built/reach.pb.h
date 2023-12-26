@@ -116,6 +116,8 @@ typedef enum _cr_ErrorCodes {
     cr_ErrorCodes_NO_RESPONSE = 14, /* handler signals no response is necessary */
     cr_ErrorCodes_BAD_FILE = 15, /* bad file ID */
     cr_ErrorCodes_PACKET_COUNT_ERR = 16,
+    cr_ErrorCodes_CHALLENGE_FAILED = 17,
+    cr_ErrorCodes_PARAMETER_LOCKED = 18,
     cr_ErrorCodes_ABORT = 1000 /* Operation cancellation */
 } cr_ErrorCodes;
 
