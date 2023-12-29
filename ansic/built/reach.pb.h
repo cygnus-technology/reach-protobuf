@@ -13,7 +13,7 @@
 /* Enum definitions */
 typedef enum _cr_ReachProtoVersion {
     cr_ReachProtoVersion_NOT_USED = 0, /* Must have a zero */
-    cr_ReachProtoVersion_CURRENT_VERSION = 5 /* update this when you change this file. */
+    cr_ReachProtoVersion_CURRENT_VERSION = 6 /* update this when you change this file. */
 } cr_ReachProtoVersion;
 
 typedef enum _cr_ReachMessageTypes {
@@ -214,8 +214,6 @@ typedef struct _cr_DeviceInfoResponse {
     /* Each endpoint advertises a "main" FW version.
  If there are other FW versions, put them in the parameter repo. */
     char firmware_version[16];
-    /* Max Message Length: A characteristic of the communication link. */
-    uint32_t max_message_size;
     /* A bit mask, allowing support for up to 32 services */
     uint32_t services;
     /* Used to avoid reloading the parameter descriptions */
@@ -223,9 +221,6 @@ typedef struct _cr_DeviceInfoResponse {
     bool has_application_identifier;
     cr_DeviceInfoResponse_application_identifier_t application_identifier; /* A UUID to find a Custom firmware_version */
     uint32_t endpoints; /* bit mask, non-zero if other endpoints. */
-    uint32_t parameter_buffer_count; /* how many parameter info or reads can be in one request. */
-    uint32_t num_medium_structs_in_msg; /* how many parameter writes can be in one request. */
-    uint32_t big_data_buffer_size; /* how many bytes in a file data message */
     cr_DeviceInfoResponse_sizes_struct_t sizes_struct; /* packed. See SizesOffsets */
 } cr_DeviceInfoResponse;
 
@@ -634,7 +629,7 @@ extern "C" {
 #define cr_PingRequest_init_default              {{0, {0}}}
 #define cr_PingResponse_init_default             {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_default        {0}
-#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, 0, false, {0, {0}}, 0, 0, 0, 0, {0, {0}}}
+#define cr_DeviceInfoResponse_init_default       {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_default     {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_default    {0, {cr_ParameterInfo_init_default, cr_ParameterInfo_init_default}}
 #define cr_ParameterInfo_init_default            {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -675,7 +670,7 @@ extern "C" {
 #define cr_PingRequest_init_zero                 {{0, {0}}}
 #define cr_PingResponse_init_zero                {{0, {0}}, 0}
 #define cr_DeviceInfoRequest_init_zero           {0}
-#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, 0, false, {0, {0}}, 0, 0, 0, 0, {0, {0}}}
+#define cr_DeviceInfoResponse_init_zero          {0, "", "", "", "", 0, 0, false, {0, {0}}, 0, {0, {0}}}
 #define cr_ParameterInfoRequest_init_zero        {0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}
 #define cr_ParameterInfoResponse_init_zero       {0, {cr_ParameterInfo_init_zero, cr_ParameterInfo_init_zero}}
 #define cr_ParameterInfo_init_zero               {0, _cr_ParameterDataType_MIN, 0, "", _cr_AccessLevel_MIN, false, "", "", false, 0, false, 0, false, 0, _cr_StorageLocation_MIN}
@@ -730,14 +725,10 @@ extern "C" {
 #define cr_DeviceInfoResponse_manufacturer_tag   3
 #define cr_DeviceInfoResponse_device_description_tag 4
 #define cr_DeviceInfoResponse_firmware_version_tag 6
-#define cr_DeviceInfoResponse_max_message_size_tag 7
 #define cr_DeviceInfoResponse_services_tag       8
 #define cr_DeviceInfoResponse_parameter_metadata_hash_tag 9
 #define cr_DeviceInfoResponse_application_identifier_tag 10
 #define cr_DeviceInfoResponse_endpoints_tag      11
-#define cr_DeviceInfoResponse_parameter_buffer_count_tag 12
-#define cr_DeviceInfoResponse_num_medium_structs_in_msg_tag 13
-#define cr_DeviceInfoResponse_big_data_buffer_size_tag 14
 #define cr_DeviceInfoResponse_sizes_struct_tag   20
 #define cr_ParameterInfoRequest_parameter_key_tag 1
 #define cr_ParameterInfoRequest_parameter_ids_tag 2
@@ -897,14 +888,10 @@ X(a, STATIC,   SINGULAR, STRING,   device_name,       2) \
 X(a, STATIC,   SINGULAR, STRING,   manufacturer,      3) \
 X(a, STATIC,   SINGULAR, STRING,   device_description,   4) \
 X(a, STATIC,   SINGULAR, STRING,   firmware_version,   6) \
-X(a, STATIC,   SINGULAR, UINT32,   max_message_size,   7) \
 X(a, STATIC,   SINGULAR, UINT32,   services,          8) \
 X(a, STATIC,   SINGULAR, UINT32,   parameter_metadata_hash,   9) \
 X(a, STATIC,   OPTIONAL, BYTES,    application_identifier,  10) \
 X(a, STATIC,   SINGULAR, UINT32,   endpoints,        11) \
-X(a, STATIC,   SINGULAR, UINT32,   parameter_buffer_count,  12) \
-X(a, STATIC,   SINGULAR, UINT32,   num_medium_structs_in_msg,  13) \
-X(a, STATIC,   SINGULAR, UINT32,   big_data_buffer_size,  14) \
 X(a, STATIC,   SINGULAR, BYTES,    sizes_struct,     20)
 #define cr_DeviceInfoResponse_CALLBACK NULL
 #define cr_DeviceInfoResponse_DEFAULT NULL
@@ -1258,7 +1245,7 @@ extern const pb_msgdesc_t cr_BufferSizes_msg;
 #define cr_CLIData_size                          198
 #define cr_CommandInfo_size                      31
 #define cr_DeviceInfoRequest_size                6
-#define cr_DeviceInfoResponse_size               206
+#define cr_DeviceInfoResponse_size               182
 #define cr_DiscoverCommandsResult_size           198
 #define cr_DiscoverCommands_size                 0
 #define cr_DiscoverFilesReply_size               192
