@@ -1,0 +1,68 @@
+image: python:3.8
+
+definitions:
+    steps:
+      - step: &generate-java-kotlin-csharp-cpp-python-proto
+          name: Generate Java, Kotlin, C#, C++ and Python code from .proto files
+          caches:
+            - node
+            - pip
+          script:
+            - apt-get update && apt-get install -y protobuf-compiler  # Install protobuf-compiler
+            - mkdir ./java/generated
+            - cp ./proto/* ./java/generated/
+            - protoc -I=./proto --java_out=./java/generated reach.proto
+            - mkdir ./kotlin/generated
+            - cp ./proto/* ./kotlin/generated/
+            - protoc -I=./proto --kotlin_out=./kotlin/generated reach.proto
+            - mkdir ./csharp/generated
+            - cp ./proto/* ./csharp/generated/
+            - protoc -I=./proto --csharp_out=./csharp/generated reach.proto
+            - mkdir ./cpp/generated
+            - cp ./proto/* ./cpp/generated/
+            - protoc -I=./proto --cpp_out=./cpp/generated reach.proto 
+            - mkdir ./python/generated
+            - cp ./proto/* ./python/generated/
+            - protoc -I=./proto --python_out=./python/generated reach.proto
+          artifacts:
+            - 'java/generated/**'
+            - 'kotlin/generated/**'
+            - 'csharp/generated/**'
+            - 'cpp/generated/**'
+            - 'python/generated/**'
+      - step: &generate-ansic-nanopb
+          name: Generate C code from .proto files
+          script:
+            - pip install protobuf grpcio-tools
+            - git clone https://github.com/nanopb/nanopb.git
+            - mkdir ./ansic/generated
+            - cp ./proto/* ./ansic/generated/
+            - ./nanopb/generator/nanopb_generator.py -I./proto --output-dir=./ansic/generated reach.proto
+          artifacts:
+            - 'ansic/generated/**'
+      - step: &generate-ts-nanopb
+          name: Generate TS code from .proto files
+          script:
+            - apt-get update && apt-get install -y protobuf-compiler nodejs npm
+            - npm install -g ts-proto
+            - cd ts
+            - npm ci
+            - mkdir ./generated
+            - cd ../
+            - cp ./proto/* ./ts/generated/
+            - protoc --plugin=./ts/node_modules/.bin/protoc-gen-ts_proto -I=./proto --ts_proto_out=./ts/generated reach.proto
+          artifacts:
+            - 'ts/generated/**'
+      
+pipelines:
+  branches:
+    dev:
+      - parallel:
+          - step: *generate-java-kotlin-csharp-cpp-python-proto
+          - step: *generate-ansic-nanopb
+          - step: *generate-ts-nanopb
+    master:
+      - parallel:
+          - step: *generate-java-kotlin-csharp-cpp-python-proto
+          - step: *generate-ansic-nanopb
+          - step: *generate-ts-nanopb

@@ -1,0 +1,450 @@
+// A very simple protocol definition, consisting of only
+// one message.
+
+syntax = "proto3";
+
+package cr;
+
+/** C# namespace for generated classes. */
+option csharp_namespace = "Cygnus.Reach";
+
+/** Java package for generated classes. */
+option java_multiple_files = true;
+option java_package = "com.cygnusreach.reachprotocol.proto";
+
+enum ReachMessageTypes {
+  INVALID             = 0;    // No Valid Message
+  ERROR_REPORT        = 1;
+  PING                = 2;    // ping / ping~
+  GET_DEVICE_INFO     = 3;    // gdi / gdi~
+
+  // Parameters
+  DISCOVER_PARAMETERS = 4;    // dp / dp~
+  READ_PARAMETERS     = 5;    // rp / rp~
+  WRITE_PARAMETERS    = 6;    // wp / wp~
+  NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
+
+  // File Transfers
+  DISCOVER_FILES      = 8;    // gfd / gfd~
+  TRANSFER_INIT       = 9;    // Begins a Transfer
+  TRANSFER_DATA       = 10;   // Sends Data
+  // Clears Sender (Client / Service) to Send More Data:
+  TRANSFER_DATA_NOTIFICATION = 11;
+
+  // Streams
+  DISCOVER_STREAMS    = 12;    // gsd / gsd~
+  OPEN_STREAM         = 13;
+  CLOSE_STREAM        = 14;
+  STREAM_DATA_NOTIFICATION = 15;
+
+  DISCOVER_COMMANDS   = 16;    // gcd / gcd~
+  SEND_COMMAND        = 17;    // sc / sc~
+
+  // Command Line Interface
+  CLI_NOTIFICATION    = 21;
+}
+
+//----------------------------
+// Service Routing Message Header
+//----------------------------
+message ReachMessageHeader {
+  // This ID defines the Type of Message being carried in the Envelope / Header
+  uint32 message_type         = 1;
+
+  // (Optional) Routing for endpoints other than zero.
+  uint32 endpoint_id          = 2;
+
+  // To handle sequences of messages required to complete a request
+  uint32   number_of_objects  = 3;
+
+  // Zero when transaction is complete
+  uint32   remaining_objects  = 4;
+
+  // (Optional) An ID for a series of messages
+  uint32 transaction_id       = 5;
+}
+
+message ReachMessage {
+  ReachMessageHeader header = 1;
+  bytes payload = 2;
+}
+
+
+// ERROR_REPORT: Could be sent asynchronously to indicate an error.
+message ErrorReport {
+  int32  result_value     = 1;    // Error Result
+  string result_string    = 2;    // Error String
+}
+
+// Request Object used to Echo Data for testing the Device Communication
+message PingRequest {
+  bytes echo_data         = 1;    // d : Data
+}
+
+// Response Object used to Echo Data for testing the Device Communication
+message PingResponse {
+  bytes echo_data         = 1;   // d : Data
+  int32 signal_strength   = 2;   // rssi : Rssi express in strength so clients don't have to interpret
+}
+
+// ------------------------------------------------------
+// Device Information Request / Response
+// GET_DEVICE_INFO
+// gdi : gdi~
+// ------------------------------------------------------
+message DeviceInfoRequest {
+  // (Optional) Value to Display Prior to Sharing Device Info.
+  // if not accepted, Message Result will Return False.
+  //
+  // Used when native transport does not include security features and local
+  // verification is needed.
+  uint32 challenge_key  = 1;
+}
+
+message DeviceInfoResponse {
+  int32 protocol_version          = 1;    // Supported Protocol Version
+  string device_name              = 2;    // Name, Typically Model Name
+  string manufacturer             = 3;
+  string device_description       = 4;    // Description
+
+  // Each endpoint advertises a "main" FW version.
+  // If there are other FW versions, put them in the parameter repo.
+  string firmware_version         = 6;
+
+  // Max Message Length: A characteristic of the communication link.
+  uint32 max_message_size         = 7;
+
+  // A bit mask, allowing support for up to 32 services
+  uint32 services                 = 8;
+
+  // Used to avoid reloading the parameter descriptions
+  uint32 parameter_metadata_hash  = 9;
+
+  bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
+  uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
+  uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
+  uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
+  uint32 file_data_buffer_size    = 14;   // how many bytes in a file data message
+}
+
+// binary bit masks or'ed together into the DeviceInfoResponse.services
+enum ServiceIds {
+  NO_SVC_ID       = 0;
+  PARAMETER_REPO  = 1;
+  FILES           = 2;
+  STREAMS         = 4;
+  COMMANDS        = 8;
+  CLI             = 16;
+}
+
+// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
+enum EndpointIds { 
+  NO_ENDPOINTS    = 0;
+  ONE             = 1;
+  TWO             = 2;
+  THREE           = 4;
+  FOUR            = 8;
+}
+
+// ------------------------------------------------------
+// Discover ParameterInfo
+// DISCOVER_PARAMETERS
+// dp / dp~
+// ------------------------------------------------------
+message ParameterInfoRequest {
+  uint32 parameter_key          = 1; // Unlock Key
+  repeated uint32 parameter_ids = 2; // ID's to Fetch (Empty to Get All)
+}
+
+message ParameterInfoResponse {
+  repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
+}
+
+message ParameterInfo {
+  uint32 id                         = 1;  // Id
+  ParameterDataType data_type       = 2;  // DataType
+  uint32 size_in_bytes              = 3;  // Unnecessary?
+  string name                       = 4;  // Name
+  AccessLevel access                = 5;  // Access
+  string description                = 6;  // Description
+  string units                      = 7;  // Units
+  double range_min                  = 8;  // Range Max
+  double range_max                  = 9;  // Range Max
+  double default_value              = 10; // Show instead of value if no value.
+  StorageLocation storage_location  = 11; // RAM or NVM or ?
+}
+ 
+
+// ------------------------------------------------------
+// Parameter Reads
+// // rp : rp~
+// ------------------------------------------------------
+message ParameterRead {
+  uint32 parameter_key          = 1;        //	Optional Key for Unlocking
+                                            // Private Parameters
+  repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retrieve All
+  uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
+}
+
+message ParameterReadResult {
+  // The read_timestamp indicates when this param was last read.  
+  // Reading resets this value to now.
+  // 
+  uint32 read_timestamp           = 1;      // Returns timestamp of last read...useful for
+                                            // polling large variable lists.
+  repeated ParameterValue values  = 3;      // Array of Result Values
+}
+
+// ------------------------------------------------------
+// Parameter Writes
+// // wp : wp~
+// ------------------------------------------------------
+message ParameterWrite {
+  uint32 parameter_key            = 1;      // Optional Key for Unlocking Private Parameters
+  repeated ParameterValue values  = 3;      // Array of Write Values
+}
+
+message ParameterWriteResult {
+  int32 result                   = 1;      // err~
+}
+
+// ------------------------------------------------------
+// Parameter Notification 
+// Notification can be enabled or disabled
+// ------------------------------------------------------
+message ParameterNotify {
+  uint32 parameter_key               = 1;    // Optional Key for Unlocking Private Parameters
+  bool enabled                       = 2;    // Enabled or Disabled
+  repeated uint32 parameter_ids      = 3;
+  uint32 minimum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
+  uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
+  float  minimum_delta               = 6;    // notify only if change by this much
+}
+
+message ParameterNotifyResult {
+  int32  result                        = 1; // zero if all OK
+  repeated uint32 failed_parameter_ids = 2; // any paramters that could not be configured to notify.
+}
+
+message ParameterNotification {
+  repeated ParameterValue values     = 2;    // Array of Result Values
+}
+
+
+enum ParameterDataType {
+  UINT32                  = 0;
+  INT32                   = 1;
+  FLOAT32                 = 2;
+  UINT64                  = 3;
+  INT64                   = 4;
+  FLOAT64                 = 5;
+  BOOL                    = 6;
+  STRING                  = 7;  // ASCII or No UTF-8. Null Terminated.
+  ENUMERATION             = 8;
+  BIT_FIELD               = 9;
+  BYTE_ARRAY              = 10;
+}
+
+// --------------------------------------------------------
+// Message for Sending / Receiving a Single Parameter Value
+// Uses OnOf (Union) for Values
+// --------------------------------------------------------
+message ParameterValue {
+  uint32 parameter_id       = 1;  // i: ID
+  uint32 timestamp          = 2;  // ts: Time Stamp for Notification
+  oneof value                     // v: Typed Values Union
+  {                         
+    uint32 uint32_value     = 3;  // Uint / BitField / Enum
+    sint32 sint32_value     = 4;  // Signed Int
+    float  float32_value    = 5;  // Float
+    uint64 uint64_value     = 6;  // Uint / BitField / Enum
+    sint32 sint64_value     = 7;  // Signed Int
+    double float64_value    = 8;  // double
+    bool   bool_value       = 9;  // Bool
+    string string_value     = 10; // String/byte array values (UTF8)
+  }                               
+}
+
+// ------------------------------------------------------
+// Discover Files
+// DISCOVER_FILES
+// gfd : gfd~
+// ------------------------------------------------------
+message DiscoverFiles { }
+
+message DiscoverFilesReply {
+  repeated FileInfo file_infos = 1; // Array of File Infos
+}
+
+message FileInfo {
+  int32 file_id                       = 1;  // ID
+  string file_name                    = 2;  // Name
+  AccessLevel access                  = 3;  // Access Level (Read / Write)
+  int32 current_size_bytes            = 4;  // size in bytes
+  StorageLocation storage_location    = 5; 
+}
+
+// ------------------------------------------------------
+// Begins a File Transfer (Upload / Download)
+// ------------------------------------------------------
+message FileTransferInit {
+  uint32 file_id                = 1;    // File ID
+  uint32 read_write             = 2;    // 0 for read, 1 for write.
+  uint32 request_offset         = 3;    // where to access in the file
+  uint32 transfer_length        = 4;    // bytes to read or write
+  uint32 transfer_id            = 5;    // In case of multiple transfers
+  uint32 messages_per_ack       = 6;    // number of messages before ACK.
+  uint32 timeout_in_ms          = 7;    // ms before abandonment
+}
+
+message FileTransferInitReply {
+  int32 result                  = 1;    // 0 if OK
+  uint32 transfer_id            = 2;    // Transfer ID
+  string error_message          = 3;
+}
+
+// Bi-Directional Message
+message FileTransferData {
+  int32 result                  = 1;    // non-zero for error
+  uint32 transfer_id            = 2;    // Transfer ID
+  uint32 message_number         = 3;    // counts up
+  bytes message_data            = 4;    // Data
+  int32 crc32                   = 5;    // Optional crc for integrity checking
+}
+
+message FileTransferDataNotification {
+  int32  result                 = 1;    // err~
+  string error_message          = 2;
+  bool   is_complete            = 3;
+  uint32 transfer_id            = 4;    // Transfer ID
+}
+
+// ------------------------------------------------------
+// Discover Streams
+// DISCOVER_STREAMS
+// gsd / gsd~
+// ------------------------------------------------------
+message DiscoverStreams {}
+
+message DiscoverStreamsResponse { 
+  repeated StreamInfo streams = 1; 
+}
+
+message StreamInfo {
+  int32 stream_id             = 1;
+  AccessLevel access          = 2;    // Access Level for Stream  Read / Write.
+  string name                 = 3;    // Name of Stream / CLI.
+  int32 max_bytes_per_message = 4;    // Max Size of Messages.
+}
+
+message StreamOpen {
+  int32 stream_id             = 1;    // Stream ID
+  AccessLevel access          = 2;    // Read or Write.
+}
+
+message StreamOpenReply {
+    int32 stream_id           = 1;    // Stream ID
+    int32 result              = 2;    // Carries Success / Result
+}
+
+message StreamClose {
+    int32 stream_id           = 1;    // Stream ID
+}
+
+// Bi-Directional Message
+// STREAM_DATA_NOTIFICATION
+message StreamData {
+  int32 stream_id             = 1;    // Stream ID
+  uint32 roll_count           = 2;    // Message Number (Roll Count)
+  bytes message_data          = 3;    // Data
+  int32 crc32                 = 4;    // Optional for integrity checking
+}
+
+// ------------------------------------------------------
+// Discover Commands
+// DISCOVER_COMMANDS
+// gcd : gcd~
+// ------------------------------------------------------
+message DiscoverCommands {}
+
+message DiscoverCommandsResult {
+  repeated CommandInfo available_commands = 1; // Array of v:n    Values : Names
+}
+
+message CommandInfo {
+  uint32 id     = 1;
+  string name   = 2;    // Descriptive name
+}
+
+// ------------------------------------------------------
+// Send Command
+// // sc : sc~
+// ------------------------------------------------------
+message SendCommand { uint32 command_id = 1; }
+
+message SendCommandResult {
+  int32 result          = 1; // Carries Success / Result
+  string result_message = 2;
+}
+
+// ------------------------------------------------------
+// Discover Command Line Info
+// DISCOVER_CLI
+// gcli : gcli~
+// ------------------------------------------------------
+
+// Bi-Directional Message
+// CLI_DATA
+message CLIData {
+  string message_data = 1;    // Data
+  bool is_complete    = 2;
+}
+
+enum CLIType {
+  NO_CLI  = 0;
+  COMMAND = 1;
+  REPORT  = 2;
+}
+
+enum AccessLevel {
+  NO_ACCESS               = 0;
+  READ                    = 1;
+  WRITE                   = 2;
+  READ_WRITE              = 3;
+}
+
+enum StorageLocation {
+  STORAGE_LOCATION_INVALID  = 0;
+  RAM                       = 1;
+  NONVOLATILE               = 2;
+  RAM_EXTENDED              = 3;
+  NONVOLATILE_EXTENDED      = 4;
+}
+
+enum ErrorCodes {
+    NO_ERROR           = 0;
+    NO_DATA            = 1;  // cr_get_mp_prompt()
+    READ_FAILED        = 2;  //
+    WRITE_FAILED       = 3;  //
+    NOT_IMPLEMENTED    = 4;  // returned by weak implementations
+    MALFORMED_MESSAGE  = 5;  // not yet used
+    NO_SERVICE         = 6;  // not yet used
+    PERMISSION_DENIED  = 7;  //
+    BUFFER_TOO_SMALL   = 8;  //
+    INVALID_PARAMETER  = 9;  //
+    CHECKSUM_MISMATCH  = 10; // not yet used
+    DECODING_FAILED    = 11; //
+    ENCODING_FAILED    = 12; //
+    INVALID_STATE      = 13; //
+    NO_RESPONSE        = 14; // handler signals no response is necessary
+    BAD_FILE           = 15; // bad file ID
+}
+
+enum FileTransferState {
+    FILE_TRANSFER_INVALID = 0;
+    IDLE                  = 1;
+    INIT                  = 2;
+    DATA                  = 3;
+    COMPLETE              = 4;
+}
+

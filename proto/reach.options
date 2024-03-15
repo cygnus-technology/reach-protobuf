@@ -1,0 +1,102 @@
+# This file defines the nanopb-specific options for the messages defined
+# in reach.proto.  It sets compile time sizes for the C language.
+#
+# If you come from high-level programming background, the hardcoded
+# maximum lengths may disgust you. However, if your microcontroller only
+# has a few kB of ram to begin with, setting reasonable limits for
+# filenames is ok.
+#
+# On the other hand, using the callback interface, it is not necessary
+# to set a limit on the number of files in the response.
+
+* include:"sys/types.h"
+* include:"dirent.h"
+
+# #define is a comment here with a matching #define in cr_stack.h
+# For example:
+#define NUM_PARAM_DESC_IN_RESPONSE  2
+# The macro apparently can't be used in the .options file.
+# If you change the .options file, search for and change the matching
+# #define in cr_stack.h.
+
+cr.ReachMessage.payload             max_size: 208
+
+#define ERROR_BUFFER_LEN        194
+cr.ErrorReport.result_string        max_size: 194
+
+cr.PingRequest.echo_data            max_size: 194
+cr.PingResponse.echo_data           max_size: 194
+
+#
+# DeviceInfoResponse 
+#
+cr.DeviceInfoResponse.device_name       max_size: 24
+cr.DeviceInfoResponse.manufacturer      max_size: 24
+cr.DeviceInfoResponse.device_description max_size: 48
+cr.DeviceInfoResponse.firmware_version  max_size: 16
+# application_identifier is a UUID stored as a 128 bit number.
+cr.DeviceInfoResponse.application_identifier  max_size: 16
+#cr.DeviceInfoResponse.services          max_count: 8
+
+#
+# ParameterInfo {
+#
+cr.ParameterInfo.name                               max_size: 24
+cr.ParameterInfo.description                        max_size: 32
+cr.ParameterInfo.units                              max_size: 16
+
+#define NUM_PARAMS_IN_REQUEST       32
+cr.ParameterInfoRequest.parameter_ids               max_count: 32
+
+
+#define NUM_PARAM_DESC_IN_RESPONSE  2
+cr.ParameterInfoResponse.parameter_infos            max_count: 2
+
+#define NUM_PARAMS_IN_REQUEST       32 (also)
+cr.ParameterRead.parameter_ids                      max_count: 32
+
+#define NUM_PARAM_READ_IN_RESPONSE  4
+cr.ParameterReadResult.values                       max_count: 4
+
+#define NUM_PARAM_WRITE_IN_REQUEST  4
+cr.ParameterWrite.values                            max_count: 4
+
+cr.ParameterValue.string_value                      max_size: 32
+
+
+#define NUM_PARAMS_IN_REQUEST       32 (also)
+cr.ParameterNotify.parameter_ids                    max_count: 32
+cr.ParameterNotifyResult.failed_parameter_ids       max_count: 32
+cr.ParameterNotification.values                     max_count: 4
+
+#
+# Files
+#
+cr.DiscoverFilesReply.file_infos                    max_count: 4
+cr.FileInfo.file_name                               max_size: 24
+
+#define BYTES_IN_A_FILE_PACKET  194
+cr.FileTransferData.message_data                    max_size: 194
+cr.FileTransferInitReply.error_message              max_size: 100
+cr.FileTransferDataNotification.error_message       max_size: 100
+
+#
+# Streams
+#
+cr.DiscoverStreamsResponse.streams                  max_count: 4
+cr.StreamInfo.name                                  max_size: 24
+cr.StreamData.message_data                          max_size: 194
+
+#
+# Commands
+#
+#define NUM_COMMANDS_IN_RESPONSE    6
+cr.CommandInfo.name                                 max_size: 24
+cr.DiscoverCommandsResult.available_commands        max_count: 6
+cr.SendCommandResult.result_message                 max_size: 194
+
+#
+# CLI
+#
+cr.CLIData.message_data                             max_size: 194
+
