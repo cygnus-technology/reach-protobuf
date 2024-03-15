@@ -43,28 +43,28 @@ cr.ParameterInfo.description                    max_size: 32
 cr.ParameterInfo.units                          max_size: 16
 cr.ParameterInfoRequest.parameter_ids           max_count: 32
 cr.ParameterInfoResponse.parameter_infos        max_count: 2
-cr.ParameterRead.parameter_ids                  max_count: 32
 
+cr.ParamExKey.name                              max_size: 16
+cr.ParamExInfoResponse.enumerations             max_count: 8
+
+cr.ParameterRead.parameter_ids                  max_count: 32
 cr.ParameterReadResult.values                   max_count: 4
 cr.ParameterWrite.values                        max_count: 4
 
 cr.ParameterValue.string_value                  max_size: 32
 cr.ParameterValue.bytes_value                   max_size: 32
 
-cr.ParameterNotify.parameter_ids                max_count: 32
-cr.ParameterNotifyResult.failed_parameter_ids   max_count: 32
 cr.ParameterNotification.values                 max_count: 4
-cr.ParamExKey.name                             max_size: 16
-cr.ParamExInfoResponse.enumerations            max_count: 8
 
 #
 # Files
 #
-cr.DiscoverFilesReply.file_infos                max_count: 4
+cr.DiscoverFilesResponse.file_infos             max_count: 4
 cr.FileInfo.file_name                           max_size: 24
 cr.FileTransferData.message_data                max_size: 194
-cr.FileTransferInitReply.error_message          max_size: 194
+cr.FileTransferInitResponse.error_message       max_size: 194
 cr.FileTransferDataNotification.error_message   max_size: 194
+cr.FileEraseResponse.error_message              max_size: 194
 
 #
 # Streams
@@ -77,12 +77,19 @@ cr.StreamData.message_data                      max_size: 194
 # Commands
 #
 cr.CommandInfo.name                             max_size: 24
-cr.DiscoverCommandsResult.available_commands    max_count: 6
-cr.SendCommandResult.result_message             max_size: 194
+cr.DiscoverCommandsResponse.available_commands  max_count: 6
+cr.SendCommandResponse.result_message           max_size: 194
 
 #                                               
 # CLI                                           
 #                                               
 
 cr.CLIData.message_data                         max_size: 194
+
+#                                               
+# Time
+#                                               
+
+cr.TimeGetResponse.result_message                 max_size: 194
+cr.TimeSetResponse.result_message                 max_size: 194
 

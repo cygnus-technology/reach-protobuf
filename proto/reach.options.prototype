@@ -43,28 +43,28 @@ cr.ParameterInfo.description                    max_size: REACH_LONG_STRING_LEN
 cr.ParameterInfo.units                          max_size: REACH_SHORT_STRING_LEN
 cr.ParameterInfoRequest.parameter_ids           max_count: REACH_COUNT_PARAM_IDS
 cr.ParameterInfoResponse.parameter_infos        max_count: REACH_COUNT_PARAM_DESC_IN_RESPONSE
-cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
 
+cr.ParamExKey.name                              max_size: REACH_SHORT_STRING_LEN
+cr.ParamExInfoResponse.enumerations             max_count: REACH_PI_ENUM_COUNT
+
+cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
 cr.ParameterReadResult.values                   max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.ParameterWrite.values                        max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 
-cr.ParameterValue.string_value                  max_size: REACH_LONG_STRING_LEN
-cr.ParameterValue.bytes_value                   max_size: REACH_LONG_STRING_LEN
+cr.ParameterValue.string_value                  max_size: REACH_NUM_PARAM_BYTES
+cr.ParameterValue.bytes_value                   max_size: REACH_NUM_PARAM_BYTES
 
-cr.ParameterNotify.parameter_ids                max_count: REACH_COUNT_PARAM_IDS
-cr.ParameterNotifyResult.failed_parameter_ids   max_count: REACH_COUNT_PARAM_IDS
 cr.ParameterNotification.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
-cr.ParamExKey.name                             max_size: REACH_SHORT_STRING_LEN
-cr.ParamExInfoResponse.enumerations            max_count: REACH_PI_ENUM_COUNT
 
 #
 # Files
 #
-cr.DiscoverFilesReply.file_infos                max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.DiscoverFilesResponse.file_infos             max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.FileInfo.file_name                           max_size: REACH_MEDIUM_STRING_LEN
 cr.FileTransferData.message_data                max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.FileTransferInitReply.error_message          max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferInitResponse.error_message       max_size: REACH_BIG_DATA_BUFFER_LEN
 cr.FileTransferDataNotification.error_message   max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileEraseResponse.error_message              max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #
 # Streams
@@ -77,12 +77,19 @@ cr.StreamData.message_data                      max_size: REACH_BIG_DATA_BUFFER_
 # Commands
 #
 cr.CommandInfo.name                             max_size: REACH_MEDIUM_STRING_LEN
-cr.DiscoverCommandsResult.available_commands    max_count: REACH_NUM_COMMANDS_IN_RESPONSE
-cr.SendCommandResult.result_message             max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.DiscoverCommandsResponse.available_commands  max_count: REACH_NUM_COMMANDS_IN_RESPONSE
+cr.SendCommandResponse.result_message           max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #                                               
 # CLI                                           
 #                                               
 
 cr.CLIData.message_data                         max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#                                               
+# Time
+#                                               
+
+cr.TimeGetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.TimeSetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
 

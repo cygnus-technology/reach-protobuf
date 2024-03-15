@@ -41,42 +41,52 @@ option swift_prefix = "";
 
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 6;   // update this when you change this file.
+    CURRENT_VERSION  = 13;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
+    // 7: Added file erase and time service
+    // 10: Skipped up to make incompatible change to BufferSizes
+    // 11: Changes to improve the compatibility of v10
+    // 12: Renamed "reply" messages as "response" messages.
+    // 13: Restored param_info_enum_count
 }
 
 enum ReachMessageTypes {
   INVALID             = 0;    // No Valid Message
   ERROR_REPORT        = 1;
-  PING                = 2;    // ping / ping~
-  GET_DEVICE_INFO     = 3;    // gdi / gdi~
+  PING                = 2;
+  GET_DEVICE_INFO     = 3;
 
   // Parameters
-  DISCOVER_PARAMETERS = 5;    // dp / dp~
-  DISCOVER_PARAM_EX   = 6;    // dp / dp~
-  READ_PARAMETERS     = 7;    // rp / rp~
-  WRITE_PARAMETERS    = 8;    // wp / wp~
-  NOTIFY_PARAMETERS   = 9;    // pnr/ pnr~
+  DISCOVER_PARAMETERS = 5;
+  DISCOVER_PARAM_EX   = 6;
+  READ_PARAMETERS     = 7;
+  WRITE_PARAMETERS    = 8;
+  CONFIG_PARAM_NOTIFY = 9;
+  PARAMETER_NOTIFICATION = 10;
 
   // File Transfers
-  DISCOVER_FILES      = 12;    // gfd / gfd~
+  DISCOVER_FILES      = 12;
   TRANSFER_INIT       = 13;    // Begins a Transfer
-  TRANSFER_DATA       = 14;   // Sends Data
+  TRANSFER_DATA       = 14;    // Sends Data
   // Clears Sender (Client / Service) to Send More Data:
   TRANSFER_DATA_NOTIFICATION = 15;
 
-  DISCOVER_COMMANDS   = 17;    // gcd / gcd~
-  SEND_COMMAND        = 18;    // sc / sc~
+  DISCOVER_COMMANDS   = 17;
+  SEND_COMMAND        = 18;
 
   // Command Line Interface
   CLI_NOTIFICATION    = 20;
 
   // Streams
-  DISCOVER_STREAMS    = 25;    // gsd / gsd~
+  DISCOVER_STREAMS    = 25;
   OPEN_STREAM         = 26;
   CLOSE_STREAM        = 27;
   STREAM_DATA_NOTIFICATION = 28;
+
+  // Time
+  SET_TIME             = 30;
+  GET_TIME             = 31;
 }
 
 //----------------------------
@@ -86,7 +96,7 @@ message ReachMessageHeader {
   // This ID defines the Type of Message being carried in the Envelope / Header
   uint32 message_type         = 1;
 
-  // (Optional) Routing for endpoints other than zero.
+  // Routing for endpoints other than zero.
   uint32 endpoint_id          = 2;
 
   // To handle sequences of messages required to complete a request
@@ -95,7 +105,7 @@ message ReachMessageHeader {
   // Zero when transaction is complete
   uint32   remaining_objects  = 4;
 
-  // (Optional) An ID for a series of messages
+  // An ID for a series of messages
   uint32 transaction_id       = 5;
 }
 
@@ -133,7 +143,7 @@ message DeviceInfoRequest {
   //
   // Used when native transport does not include security features and local
   // verification is needed.
-  uint32 challenge_key  = 1;
+  optional uint32 challenge_key  = 1;
 }
 
 message DeviceInfoResponse {
@@ -172,6 +182,7 @@ enum ServiceIds {
   STREAMS         = 4;
   COMMANDS        = 8;
   CLI             = 16;
+  TIME            = 32;
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.endpoints
@@ -230,7 +241,7 @@ message ParamExInfoResponse {
 // // rp : rp~
 // ------------------------------------------------------
 message ParameterRead {
-  uint32 parameter_key          = 1;        //	Optional Key for Unlocking
+  optional uint32 parameter_key = 1;        //	Optional Key for Unlocking
                                             // Private Parameters
   repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retrieve All
   uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
@@ -250,32 +261,31 @@ message ParameterReadResult {
 // // wp : wp~
 // ------------------------------------------------------
 message ParameterWrite {
-  uint32 parameter_key            = 1;      // Optional Key for Unlocking Private Parameters
+  optional uint32 parameter_key   = 1;      // Optional Key for Unlocking Private Parameters
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
 message ParameterWriteResult {
-  int32 result                   = 1;      // err~
+  int32 result                    = 1;      // 0 if OK
 }
 
 // ------------------------------------------------------
-// Parameter Notification 
+// Parameter Notification configuration
 // Notification can be enabled or disabled
 // ------------------------------------------------------
-message ParameterNotify {
-  uint32 parameter_key               = 1;    // Optional Key for Unlocking Private Parameters
-  bool enabled                       = 2;    // Enabled or Disabled
-  repeated uint32 parameter_ids      = 3;
-  uint32 minimum_notification_period = 4;    // min_ms: Minimum Notification Interval (ms)
-  uint32 maximum_notification_period = 5;    // max_ms: Minimum Notification Interval (ms)
-  float  minimum_delta               = 6;    // notify only if change by this much
+message ParameterNotifyConfig {
+  uint32 parameter_id                = 1;    // Which param
+  bool   enabled                     = 2;    // Enabled or Disabled
+  uint32 minimum_notification_period = 3;    // min_ms: Minimum Notification Interval (ms)
+  uint32 maximum_notification_period = 4;    // max_ms: Minimum Notification Interval (ms)
+  float  minimum_delta               = 5;    // notify only if change by this much
 }
 
-message ParameterNotifyResult {
-  int32  result                        = 1; // zero if all OK
-  repeated uint32 failed_parameter_ids = 2; // any paramters that could not be configured to notify.
+message ParameterNotifyConfigResponse {
+  int32  result                      = 1; // zero if all OK
 }
 
+// when parameters change
 message ParameterNotification {
   repeated ParameterValue values     = 2;    // Array of Result Values
 }
@@ -288,7 +298,7 @@ enum ParameterDataType {
   INT64                   = 4;
   FLOAT64                 = 5;
   BOOL                    = 6;
-  STRING                  = 7;  // ASCII or No UTF-8. Null Terminated.
+  STRING                  = 7;  // ASCII or UTF-8. Null Terminated.
   ENUMERATION             = 8;
   BIT_FIELD               = 9;
   BYTE_ARRAY              = 10;
@@ -324,7 +334,7 @@ message ParameterValue {
 // ------------------------------------------------------
 message DiscoverFiles { }
 
-message DiscoverFilesReply {
+message DiscoverFilesResponse {
   repeated FileInfo file_infos = 1; // Array of File Infos
 }
 
@@ -349,12 +359,13 @@ message FileTransferInit {
   uint32 timeout_in_ms          = 7;    // ms before abandonment
 }
 
-message FileTransferInitReply {
+message FileTransferInitResponse {
   int32 result                  = 1;    // 0 if OK
   uint32 transfer_id            = 2;    // Transfer ID
   uint32 preferred_ack_rate     = 3;    // overrides request
   string error_message          = 4;
 }
+
 
 // Bi-Directional Message
 message FileTransferData {
@@ -362,7 +373,7 @@ message FileTransferData {
   uint32 transfer_id            = 2;    // Transfer ID
   uint32 message_number         = 3;    // counts up
   bytes message_data            = 4;    // Data
-  int32 crc32                   = 5;    // Optional crc for integrity checking
+  optional int32 crc32          = 5;    // Optional crc for integrity checking
 }
 
 message FileTransferDataNotification {
@@ -371,6 +382,15 @@ message FileTransferDataNotification {
   bool   is_complete            = 3;
   uint32 transfer_id            = 4;    // Transfer ID
   uint32 retry_offset           = 5;    // file offset where error occurred
+}
+
+message FileEraseRequest {
+    uint32 file_id                = 1;    // File ID
+}
+message FileEraseResponse {
+    uint32 file_id                = 1;    // File ID
+    int32  result                 = 2;    // err~
+    string error_message          = 3;
 }
 
 // ------------------------------------------------------
@@ -396,7 +416,7 @@ message StreamOpen {
   AccessLevel access          = 2;    // Read or Write.
 }
 
-message StreamOpenReply {
+message StreamOpenResponse {
     int32 stream_id           = 1;    // Stream ID
     int32 result              = 2;    // Carries Success / Result
 }
@@ -421,7 +441,7 @@ message StreamData {
 // ------------------------------------------------------
 message DiscoverCommands {}
 
-message DiscoverCommandsResult {
+message DiscoverCommandsResponse {
   repeated CommandInfo available_commands = 1; // Array of v:n    Values : Names
 }
 
@@ -436,7 +456,7 @@ message CommandInfo {
 // ------------------------------------------------------
 message SendCommand { uint32 command_id = 1; }
 
-message SendCommandResult {
+message SendCommandResponse {
   int32 result          = 1; // Carries Success / Result
   string result_message = 2;
 }
@@ -453,6 +473,33 @@ message CLIData {
   string message_data = 1;    // Data
   bool is_complete    = 2;
 }
+
+// ------------------------------------------------------
+// Time Service
+// The time service is designed to allow the client to 
+// set and adjust the real time clock in a server device.
+// The time is best specified as UTC plus timezone offset.
+// Althouogh the timezone is optional, it's best to use it.
+// ------------------------------------------------------
+message TimeSetRequest {
+  int64   seconds_utc       = 1;  // linux epoch
+  optional int32  timezone  = 2;  // seconds adjustment
+}
+
+message TimeSetResponse {
+  int32 result          = 1; // Carries Success / Result
+  string result_message = 2;
+}
+
+message TimeGetRequest {}
+
+message TimeGetResponse {
+  int32 result              = 1;  // Carries Success / Result
+  string result_message     = 2;
+  int64   seconds_utc       = 3;  // linux epoch       
+  optional int32  timezone  = 4;  // seconds adjustment
+}
+
 
 enum CLIType {
   NO_CLI  = 0;
@@ -495,6 +542,7 @@ enum ErrorCodes {
     PACKET_COUNT_ERR   = 16;
     CHALLENGE_FAILED   = 17;
     PARAMETER_LOCKED   = 18;
+    NO_RESOURCE        = 19; // as in no more param notification slots.
     ABORT              = 1000; // Operation cancellation
 }
 
@@ -507,45 +555,73 @@ enum FileTransferState {
 }
 
 //
-// This data describing the sizes of the structures used
-// in C code is communicated in a packed format in the 
-// device info structure.  Here it's defined in an
-// unpacked (all 32 bit) format.  Use the offsets 
-// defined below (SizesOffsets) to unpack into this.
+// This data describing the sizes of the structures used in C code is 
+// communicated in a packed format in the device info structure.  
+// Here it's defined in an unpacked (all 32 bit) format.  Use the offsets 
+// defined below (SizesOffsets) to unpack into this structure.
+// The file "reach_ble_proto_sizes.h" and the function 
+// populate_device_info_sizes() are good places to look for further info.
 //
+// This structure is updated at proto version 10.  Update earlier code.
 message BufferSizes {
-    uint32  max_message_size             = 1;   // uint16_t
-    uint32  big_data_buffer_size         = 2;   // uint16_t
-    uint32  parameter_buffer_count       = 3;   // uint8_t
-    uint32  num_medium_structs_in_msg    = 4;   // uint8_t
-    uint32  device_info_len              = 5;   // uint8_t
-    uint32  long_string_len              = 6;   // uint8_t
-    uint32  count_param_ids              = 7;   // uint8_t
-    uint32  medium_string_len            = 8;   // uint8_t
-    uint32  short_string_len             = 9;;  // uint8_t
-    uint32  param_info_enum_count        = 10;  // uint8_t
-    uint32  services_count               = 11;  // uint8_t
-    uint32  pi_enum_count                = 12;  // uint8_t
-    uint32  num_commands_in_response     = 13;  // uint8_t
-    uint32  count_param_desc_in_response = 14;  // uint8_t
+    // The largest message that can be communicated (16 bits)
+    uint32  max_message_size             = 1;
+    // The size of the buffer used for the longest strings. (16 bits) 
+    // Examples include the command line and the error string.
+    uint32  big_data_buffer_size         = 2;
+    // The number of parameter buffers kept by the device.
+    // This determines the number of parameters that can be
+    // handled in a single message. (8 bits)
+    uint32  parameter_buffer_count       = 3;
+
+    // num_medium_structs_in_msg is replaced with more descriptive names.
+    // device_info_len is replaced with more descriptive names.
+
+    // The number of parameter values that fit in one message. (8 bits)
+    uint32  num_params_in_response       = 4;
+    // The length of the description field in the device info structure.
+    // Previously known as long_string_len.   (8 bits)
+    uint32  device_description_len       = 6;
+    // The number of bytes in the largest parameter data.  (8 bits)
+    uint32  max_param_bytes              = 7;
+    // The number of bytes in the param info description string  (8 bits)
+    uint32  param_info_description_len   = 10;
+    // The length of most (medium) strings.  (8 bits)
+    // Used for device name, file names, command names.
+    uint32  medium_string_len            = 8;
+    // The number of bytes in short strings like the units label.  (8 bits)
+    // Also the names of enumerations and the version string.
+    uint32  short_string_len             = 9;
+
+    // number of descriptors (stream, file) that fit in one message.  (8 bits)
+    uint32  num_descriptors_in_response  = 5;
+    // Number of parameter notifications supported  (8 bits)
+    uint32  num_param_notifications      = 11;
+    // not currently used  (8 bits)
+    uint32  num_commands_in_response     = 13;
+    // number of param descriptions that can be in one info packet. (8 bits)
+    uint32  count_param_desc_in_response = 14;
+    // number of enums that fit in a parameter EX response
+    // Since the server composes this response, it's not so critical that 
+    // the client knows the max.
+    uint32  param_info_enum_count        = 15;
 }
 
 enum SizesOffsets {
     MAX_MESSAGE_SIZE_OFFSET              = 0;   // uint16_t, little endian
     BIG_DATA_BUFFER_SIZE_OFFSET          = 2;   // uint16_t, little endian
     PARAMETER_BUFFER_COUNT_OFFSET        = 4;   // uint8_t
-    NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET     = 5;   // uint8_t
-    DEVICE_INFO_LEN_OFFSET               = 6;   // uint8_t
-    LONG_STRING_LEN_OFFSET               = 7;   // uint8_t
-    COUNT_PARAM_IDS_OFFSET               = 8;   // uint8_t
+    NUM_PARAMS_IN_RESPONSE_OFFSET        = 5;   // uint8_t
+    DEVICE_DESCRIPTION_LEN_OFFSET        = 6;   // uint8_t
+    MAX_PARAM_BYTES_OFFSET               = 7;   // uint8_t
+    PARAM_INFO_DESCRIPTION_LEN_OFFSET    = 8;   // uint8_t
     MEDIUM_STRING_LEN_OFFSET             = 9;   // uint8_t
     SHORT_STRING_LEN_OFFSET              = 10;  // uint8_t
     PARAM_INFO_ENUM_COUNT_OFFSET         = 11;  // uint8_t
-    SERVICES_COUNT_OFFSET                = 12;  // uint8_t
-    PI_ENUM_COUNT_OFFSET                 = 13;  // uint8_t
+    NUM_DESCRIPTORS_IN_RESPONSE_OFFSET   = 12;  // uint8_t
+    NUM_PARAM_NOTIFICATIONS_OFFSET       = 13;  // uint8_t
     NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;  // uint8_t
     COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;  // uint8_t
     STRUCTURE_SIZE                       = 16;
 }
-
 
