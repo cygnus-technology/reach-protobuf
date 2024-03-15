@@ -8,4 +8,4 @@ cd build
 
 make
 
-
+Or run cmake -G and choose the generator that works for you.  It's common to have path problems.

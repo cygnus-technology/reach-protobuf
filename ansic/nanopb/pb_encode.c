@@ -7,6 +7,10 @@
 #include "pb_encode.h"
 #include "pb_common.h"
 
+#ifdef PROTO_DEBUG
+  #include "i3_log.h"  // for error report
+#endif
+
 /* Use the GCC warn_unused_result attribute to check that all return values
  * are propagated correctly. On other compilers and gcc before 3.4.0 just
  * ignore the annotation.
@@ -914,6 +918,12 @@ static bool checkreturn pb_enc_string(pb_ostream_t *stream, const pb_field_iter_
 
         if (*p != '\0')
         {
+          #ifdef PROTO_DEBUG
+            char badStr[16];
+            strncpy(badStr, str, 16);
+            badStr[15] = 0;
+            i3_log(LOG_MASK_ERROR, "Unterminated string starts: '%s'", badStr);
+          #endif
             PB_RETURN_ERROR(stream, "unterminated string");
         }
     }
