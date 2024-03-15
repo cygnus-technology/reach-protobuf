@@ -1,0 +1,88 @@
+# reach.options is generated from a "reach.options.prototype" file.
+# reach.options defines the nanopb-specific options for the messages defined
+# in reach.proto.  It sets compile time sizes for the C language.
+# A python script is used to replace the size and count macros in the prototype 
+# with numbers.  # The source of the replacement is an H file also used by the C code.
+# The python script is preprocess_options.py. 
+#
+# If you come from high-level programming background, the hardcoded
+# maximum lengths may disgust you. However, if your microcontroller only
+# has a few kB of ram to begin with, setting reasonable limits for
+# filenames is ok.  It avoids calling malloc and free.
+#
+# On the other hand, using the callback interface, it is not necessary
+# to set a limit on the number of files in the response.
+# A device is required to publish these numbers in its device info structure.
+
+* include:"sys/types.h"
+
+cr.ReachMessage.payload                         max_size: REACH_MESSAGE_PAYLOAD_MAX
+
+cr.ErrorReport.result_string                    max_size: REACH_BIG_DATA_BUFFER_LEN
+
+cr.PingRequest.echo_data                        max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.PingResponse.echo_data                       max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#
+# DeviceInfoResponse
+#
+
+cr.DeviceInfoResponse.device_name               max_size: REACH_MEDIUM_STRING_LEN
+cr.DeviceInfoResponse.manufacturer              max_size: REACH_MEDIUM_STRING_LEN
+cr.DeviceInfoResponse.device_description        max_size: REACH_DEVICE_INFO_LEN
+cr.DeviceInfoResponse.firmware_version          max_size: REACH_SHORT_STRING_LEN
+# application_identifier is a UUID stored as a 128 bit number.
+cr.DeviceInfoResponse.application_identifier    max_size: REACH_SHORT_STRING_LEN
+cr.DeviceInfoResponse.sizes_struct              max_size: REACH_SIZE_STRUCT_SIZE
+
+#
+# ParameterInfo {
+#
+cr.ParameterInfo.name                           max_size: REACH_MEDIUM_STRING_LEN
+cr.ParameterInfo.description                    max_size: REACH_LONG_STRING_LEN
+cr.ParameterInfo.units                          max_size: REACH_SHORT_STRING_LEN
+cr.ParameterInfoRequest.parameter_ids           max_count: REACH_COUNT_PARAM_IDS
+cr.ParameterInfoResponse.parameter_infos        max_count: REACH_COUNT_PARAM_DESC_IN_RESPONSE
+cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
+
+cr.ParameterReadResult.values                   max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParameterWrite.values                        max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+
+cr.ParameterValue.string_value                  max_size: REACH_LONG_STRING_LEN
+cr.ParameterValue.bytes_value                   max_size: REACH_LONG_STRING_LEN
+
+cr.ParameterNotify.parameter_ids                max_count: REACH_COUNT_PARAM_IDS
+cr.ParameterNotifyResult.failed_parameter_ids   max_count: REACH_COUNT_PARAM_IDS
+cr.ParameterNotification.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParamExKey.name                             max_size: REACH_SHORT_STRING_LEN
+cr.ParamExInfoResponse.enumerations            max_count: REACH_PI_ENUM_COUNT
+
+#
+# Files
+#
+cr.DiscoverFilesReply.file_infos                max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.FileInfo.file_name                           max_size: REACH_MEDIUM_STRING_LEN
+cr.FileTransferData.message_data                max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferInitReply.error_message          max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferDataNotification.error_message   max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#
+# Streams
+#
+cr.DiscoverStreamsResponse.streams              max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.StreamInfo.name                              max_size: REACH_MEDIUM_STRING_LEN
+cr.StreamData.message_data                      max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#
+# Commands
+#
+cr.CommandInfo.name                             max_size: REACH_MEDIUM_STRING_LEN
+cr.DiscoverCommandsResult.available_commands    max_count: REACH_NUM_COMMANDS_IN_RESPONSE
+cr.SendCommandResult.result_message             max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#                                               
+# CLI                                           
+#                                               
+
+cr.CLIData.message_data                         max_size: REACH_BIG_DATA_BUFFER_LEN
+

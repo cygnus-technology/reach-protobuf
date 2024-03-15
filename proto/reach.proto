@@ -1,5 +1,29 @@
-// A very simple protocol definition, consisting of only
-// one message.
+
+/*
+ * Copyright (c) 2023-2024 i3 Product Development
+ * 
+ * MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+// Protobuf definition of the Reach protocol
 
 syntax = "proto3";
 
@@ -12,6 +36,16 @@ option csharp_namespace = "Cygnus.Reach";
 option java_multiple_files = true;
 option java_package = "com.cygnusreach.reachprotocol.proto";
 
+/** Swift options */
+option swift_prefix = "";
+
+enum ReachProtoVersion {
+    NOT_USED         = 0;   // Must have a zero
+    CURRENT_VERSION  = 6;   // update this when you change this file.
+    // 5: device info extended with sizes structure
+    // 6: device info entries made redundant by sizes are deleted.
+}
+
 enum ReachMessageTypes {
   INVALID             = 0;    // No Valid Message
   ERROR_REPORT        = 1;
@@ -19,29 +53,30 @@ enum ReachMessageTypes {
   GET_DEVICE_INFO     = 3;    // gdi / gdi~
 
   // Parameters
-  DISCOVER_PARAMETERS = 4;    // dp / dp~
-  READ_PARAMETERS     = 5;    // rp / rp~
-  WRITE_PARAMETERS    = 6;    // wp / wp~
-  NOTIFY_PARAMETERS   = 7;    // pnr/ pnr~
+  DISCOVER_PARAMETERS = 5;    // dp / dp~
+  DISCOVER_PARAM_EX   = 6;    // dp / dp~
+  READ_PARAMETERS     = 7;    // rp / rp~
+  WRITE_PARAMETERS    = 8;    // wp / wp~
+  NOTIFY_PARAMETERS   = 9;    // pnr/ pnr~
 
   // File Transfers
-  DISCOVER_FILES      = 8;    // gfd / gfd~
-  TRANSFER_INIT       = 9;    // Begins a Transfer
-  TRANSFER_DATA       = 10;   // Sends Data
+  DISCOVER_FILES      = 12;    // gfd / gfd~
+  TRANSFER_INIT       = 13;    // Begins a Transfer
+  TRANSFER_DATA       = 14;   // Sends Data
   // Clears Sender (Client / Service) to Send More Data:
-  TRANSFER_DATA_NOTIFICATION = 11;
+  TRANSFER_DATA_NOTIFICATION = 15;
 
-  // Streams
-  DISCOVER_STREAMS    = 12;    // gsd / gsd~
-  OPEN_STREAM         = 13;
-  CLOSE_STREAM        = 14;
-  STREAM_DATA_NOTIFICATION = 15;
-
-  DISCOVER_COMMANDS   = 16;    // gcd / gcd~
-  SEND_COMMAND        = 17;    // sc / sc~
+  DISCOVER_COMMANDS   = 17;    // gcd / gcd~
+  SEND_COMMAND        = 18;    // sc / sc~
 
   // Command Line Interface
-  CLI_NOTIFICATION    = 21;
+  CLI_NOTIFICATION    = 20;
+
+  // Streams
+  DISCOVER_STREAMS    = 25;    // gsd / gsd~
+  OPEN_STREAM         = 26;
+  CLOSE_STREAM        = 27;
+  STREAM_DATA_NOTIFICATION = 28;
 }
 
 //----------------------------
@@ -102,7 +137,7 @@ message DeviceInfoRequest {
 }
 
 message DeviceInfoResponse {
-  int32 protocol_version          = 1;    // Supported Protocol Version
+  int32  protocol_version         = 1;    // Supported Protocol Version
   string device_name              = 2;    // Name, Typically Model Name
   string manufacturer             = 3;
   string device_description       = 4;    // Description
@@ -112,7 +147,7 @@ message DeviceInfoResponse {
   string firmware_version         = 6;
 
   // Max Message Length: A characteristic of the communication link.
-  uint32 max_message_size         = 7;
+  // uint32 max_message_size         = 7;
 
   // A bit mask, allowing support for up to 32 services
   uint32 services                 = 8;
@@ -120,11 +155,13 @@ message DeviceInfoResponse {
   // Used to avoid reloading the parameter descriptions
   uint32 parameter_metadata_hash  = 9;
 
-  bytes application_identifier    = 10;   // A UUID to find a Custom firmware_version
-  uint32 endpoints                = 11;   // bit mask, non-zero if other endpoints.
-  uint32 max_num_param_reads      = 12;   // how many parameter info or reads can be in one request.
-  uint32 max_num_param_writes     = 13;   // how many parameter writes can be in one request.
-  uint32 file_data_buffer_size    = 14;   // how many bytes in a file data message
+  optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
+  uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
+  // uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
+  // uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
+  // uint32 big_data_buffer_size       = 14;   // how many bytes in a file data message
+
+  bytes sizes_struct = 20;  // packed. See SizesOffsets
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.services
@@ -166,12 +203,25 @@ message ParameterInfo {
   uint32 size_in_bytes              = 3;  // Unnecessary?
   string name                       = 4;  // Name
   AccessLevel access                = 5;  // Access
-  string description                = 6;  // Description
+  optional string description       = 6;  // Description
   string units                      = 7;  // Units
-  double range_min                  = 8;  // Range Max
-  double range_max                  = 9;  // Range Max
-  double default_value              = 10; // Show instead of value if no value.
+  optional double range_min         = 8;  // Range Max
+  optional double range_max         = 9;  // Range Max
+  optional double default_value     = 10; // Show instead of value if no value.
   StorageLocation storage_location  = 11; // RAM or NVM or ?
+}
+
+// Give names to enums and bitfields
+message ParamExKey {
+    uint32 id               = 1;  // the valud of the enum
+    string name             = 2;  // the name of the enum
+}
+
+// also used for bitfields
+message ParamExInfoResponse {
+    uint32              associated_pid = 1;
+    ParameterDataType   data_type      = 2;
+    repeated ParamExKey enumerations   = 3;
 }
  
 
@@ -230,7 +280,6 @@ message ParameterNotification {
   repeated ParameterValue values     = 2;    // Array of Result Values
 }
 
-
 enum ParameterDataType {
   UINT32                  = 0;
   INT32                   = 1;
@@ -254,14 +303,17 @@ message ParameterValue {
   uint32 timestamp          = 2;  // ts: Time Stamp for Notification
   oneof value                     // v: Typed Values Union
   {                         
-    uint32 uint32_value     = 3;  // Uint / BitField / Enum
+    uint32 uint32_value     = 3;  // Uint
     sint32 sint32_value     = 4;  // Signed Int
     float  float32_value    = 5;  // Float
-    uint64 uint64_value     = 6;  // Uint / BitField / Enum
-    sint32 sint64_value     = 7;  // Signed Int
+    uint64 uint64_value     = 6;  // Uint64
+    sint64 sint64_value     = 7;  // Signed Int 64
     double float64_value    = 8;  // double
     bool   bool_value       = 9;  // Bool
-    string string_value     = 10; // String/byte array values (UTF8)
+    string string_value     = 10; // String values (UTF8)
+    uint32 enum_value       = 11;
+    uint32 bitfield_value   = 12;
+    bytes  bytes_value      = 13; // byte array values
   }                               
 }
 
@@ -277,7 +329,7 @@ message DiscoverFilesReply {
 }
 
 message FileInfo {
-  int32 file_id                       = 1;  // ID
+  uint32 file_id                      = 1;  // ID
   string file_name                    = 2;  // Name
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
@@ -300,7 +352,8 @@ message FileTransferInit {
 message FileTransferInitReply {
   int32 result                  = 1;    // 0 if OK
   uint32 transfer_id            = 2;    // Transfer ID
-  string error_message          = 3;
+  uint32 preferred_ack_rate     = 3;    // overrides request
+  string error_message          = 4;
 }
 
 // Bi-Directional Message
@@ -317,6 +370,7 @@ message FileTransferDataNotification {
   string error_message          = 2;
   bool   is_complete            = 3;
   uint32 transfer_id            = 4;    // Transfer ID
+  uint32 retry_offset           = 5;    // file offset where error occurred
 }
 
 // ------------------------------------------------------
@@ -423,7 +477,7 @@ enum StorageLocation {
 
 enum ErrorCodes {
     NO_ERROR           = 0;
-    NO_DATA            = 1;  // cr_get_mp_prompt()
+    NO_DATA            = 1;  // 
     READ_FAILED        = 2;  //
     WRITE_FAILED       = 3;  //
     NOT_IMPLEMENTED    = 4;  // returned by weak implementations
@@ -438,6 +492,10 @@ enum ErrorCodes {
     INVALID_STATE      = 13; //
     NO_RESPONSE        = 14; // handler signals no response is necessary
     BAD_FILE           = 15; // bad file ID
+    PACKET_COUNT_ERR   = 16;
+    CHALLENGE_FAILED   = 17;
+    PARAMETER_LOCKED   = 18;
+    ABORT              = 1000; // Operation cancellation
 }
 
 enum FileTransferState {
@@ -447,4 +505,47 @@ enum FileTransferState {
     DATA                  = 3;
     COMPLETE              = 4;
 }
+
+//
+// This data describing the sizes of the structures used
+// in C code is communicated in a packed format in the 
+// device info structure.  Here it's defined in an
+// unpacked (all 32 bit) format.  Use the offsets 
+// defined below (SizesOffsets) to unpack into this.
+//
+message BufferSizes {
+    uint32  max_message_size             = 1;   // uint16_t
+    uint32  big_data_buffer_size         = 2;   // uint16_t
+    uint32  parameter_buffer_count       = 3;   // uint8_t
+    uint32  num_medium_structs_in_msg    = 4;   // uint8_t
+    uint32  device_info_len              = 5;   // uint8_t
+    uint32  long_string_len              = 6;   // uint8_t
+    uint32  count_param_ids              = 7;   // uint8_t
+    uint32  medium_string_len            = 8;   // uint8_t
+    uint32  short_string_len             = 9;;  // uint8_t
+    uint32  param_info_enum_count        = 10;  // uint8_t
+    uint32  services_count               = 11;  // uint8_t
+    uint32  pi_enum_count                = 12;  // uint8_t
+    uint32  num_commands_in_response     = 13;  // uint8_t
+    uint32  count_param_desc_in_response = 14;  // uint8_t
+}
+
+enum SizesOffsets {
+    MAX_MESSAGE_SIZE_OFFSET              = 0;   // uint16_t, little endian
+    BIG_DATA_BUFFER_SIZE_OFFSET          = 2;   // uint16_t, little endian
+    PARAMETER_BUFFER_COUNT_OFFSET        = 4;   // uint8_t
+    NUM_MEDIUM_STRUCTS_IN_MSG_OFFSET     = 5;   // uint8_t
+    DEVICE_INFO_LEN_OFFSET               = 6;   // uint8_t
+    LONG_STRING_LEN_OFFSET               = 7;   // uint8_t
+    COUNT_PARAM_IDS_OFFSET               = 8;   // uint8_t
+    MEDIUM_STRING_LEN_OFFSET             = 9;   // uint8_t
+    SHORT_STRING_LEN_OFFSET              = 10;  // uint8_t
+    PARAM_INFO_ENUM_COUNT_OFFSET         = 11;  // uint8_t
+    SERVICES_COUNT_OFFSET                = 12;  // uint8_t
+    PI_ENUM_COUNT_OFFSET                 = 13;  // uint8_t
+    NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;  // uint8_t
+    COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;  // uint8_t
+    STRUCTURE_SIZE                       = 16;
+}
+
 
