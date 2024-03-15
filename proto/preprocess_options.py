@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Specify the file you want to perform replacements on
-input_h_file  ="../../reach-c-stack/reach_ble_proto_sizes.h"
+input_h_file  ="../../reach-c-stack/include/reach_ble_proto_sizes.h"
 input_file  ="reach.options.prototype"
 output_file ="reach.options"
 

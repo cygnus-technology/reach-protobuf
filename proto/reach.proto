@@ -41,7 +41,7 @@ option swift_prefix = "";
 
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 13;  // update this when you change this file.
+    CURRENT_VERSION  = 19;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
     // 7: Added file erase and time service
@@ -49,6 +49,12 @@ enum ReachProtoVersion {
     // 11: Changes to improve the compatibility of v10
     // 12: Renamed "reply" messages as "response" messages.
     // 13: Restored param_info_enum_count
+    // 14: Adding WiFi service
+    // 15: 32 character challenge key
+    // 16: Replaced number_of_objects; with client_id
+    // 17: Add description and timeout to CommandInfo
+    // 18: Generalize device description len to description len
+    // 19: Remove parameter key
 }
 
 enum ReachMessageTypes {
@@ -87,6 +93,10 @@ enum ReachMessageTypes {
   // Time
   SET_TIME             = 30;
   GET_TIME             = 31;
+
+  // WiFi
+  DISCOVER_WIFI        = 40;
+  WIFI_CONNECT         = 41;
 }
 
 //----------------------------
@@ -99,8 +109,8 @@ message ReachMessageHeader {
   // Routing for endpoints other than zero.
   uint32 endpoint_id          = 2;
 
-  // To handle sequences of messages required to complete a request
-  uint32   number_of_objects  = 3;
+  // To support multiple clients
+  uint32   client_id  = 3;
 
   // Zero when transaction is complete
   uint32   remaining_objects  = 4;
@@ -143,7 +153,7 @@ message DeviceInfoRequest {
   //
   // Used when native transport does not include security features and local
   // verification is needed.
-  optional uint32 challenge_key  = 1;
+  optional string challenge_key  = 1;
 }
 
 message DeviceInfoResponse {
@@ -183,6 +193,7 @@ enum ServiceIds {
   COMMANDS        = 8;
   CLI             = 16;
   TIME            = 32;
+  WIFI            = 64;
 }
 
 // binary bit masks or'ed together into the DeviceInfoResponse.endpoints
@@ -200,7 +211,6 @@ enum EndpointIds {
 // dp / dp~
 // ------------------------------------------------------
 message ParameterInfoRequest {
-  uint32 parameter_key          = 1; // Unlock Key
   repeated uint32 parameter_ids = 2; // ID's to Fetch (Empty to Get All)
 }
 
@@ -211,7 +221,7 @@ message ParameterInfoResponse {
 message ParameterInfo {
   uint32 id                         = 1;  // Id
   ParameterDataType data_type       = 2;  // DataType
-  uint32 size_in_bytes              = 3;  // Unnecessary?
+  uint32 size_in_bytes              = 3;  // used by some devices
   string name                       = 4;  // Name
   AccessLevel access                = 5;  // Access
   optional string description       = 6;  // Description
@@ -241,8 +251,6 @@ message ParamExInfoResponse {
 // // rp : rp~
 // ------------------------------------------------------
 message ParameterRead {
-  optional uint32 parameter_key = 1;        //	Optional Key for Unlocking
-                                            // Private Parameters
   repeated uint32 parameter_ids = 2;        // i: ID -  Leave Empty to Retrieve All
   uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
 }
@@ -261,7 +269,6 @@ message ParameterReadResult {
 // // wp : wp~
 // ------------------------------------------------------
 message ParameterWrite {
-  optional uint32 parameter_key   = 1;      // Optional Key for Unlocking Private Parameters
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
@@ -446,8 +453,10 @@ message DiscoverCommandsResponse {
 }
 
 message CommandInfo {
-  uint32 id     = 1;
-  string name   = 2;    // Descriptive name
+  uint32 id                   = 1;
+  string name                 = 2;    // Descriptive name
+  optional string description = 3;    // Optional description of the command
+  optional uint32 timeout     = 4;    // Optional command timeout
 }
 
 // ------------------------------------------------------
@@ -500,6 +509,47 @@ message TimeGetResponse {
   optional int32  timezone  = 4;  // seconds adjustment
 }
 
+// ------------------------------------------------------
+// WiFi Service
+// The WiFi service is intended to simplify the 
+// repetitive task of communicating WiFi credentials 
+// to the deviced.
+// ------------------------------------------------------
+message ConnectionDescription {
+  string ssid                       = 1;  
+  optional int32  signal_strength   = 2;  // dB, RSSI
+  optional WiFiSecurity sec         = 3;  
+  optional WiFiBand band            = 4;
+}
+
+message DiscoverWiFiRequest {
+  WiFiState state                   = 2;  // get the current connection, scanned SSID's
+}
+
+message DiscoverWiFiResponse {
+  int32 result                      = 1;  // 0 for success
+  int32 available_AP                = 2;
+  WiFiState state                   = 3;
+  uint32 connectionId               = 4;  // connected is 0, others increment.
+  optional ConnectionDescription cd = 5;
+}
+
+message WiFiConnectionRequest {
+    WiFiState action                  = 1;  // connect or disconnect
+    optional string password          = 2;  // required to connect
+    optional ConnectionDescription cd = 3;  // required to connect
+    optional bool autoconnect         = 4;  // required to connect
+}
+
+message WiFiConnectionResponse {
+  int32 result                      = 1;  // 0 for success
+  optional int32 signal_strength    = 2;  // RSSI
+  optional string error_message     = 3;  // describes any error
+}
+
+// ------------------------------------------------------
+// Service Independent
+// ------------------------------------------------------
 
 enum CLIType {
   NO_CLI  = 0;
@@ -520,6 +570,25 @@ enum StorageLocation {
   NONVOLATILE               = 2;
   RAM_EXTENDED              = 3;
   NONVOLATILE_EXTENDED      = 4;
+}
+
+enum WiFiSecurity {
+  OPEN = 0;     // No security
+  WEP  = 1;     // WEP
+  WPA  = 2;     // WPA
+  WPA2 = 3;     // WPA2
+  WPA3 = 4;     // WPA3
+}
+
+enum WiFiBand {
+  NO_BAND = 0;  // Not specified
+  BAND_2  = 2;  // 2.4GHz
+  BAND_5  = 5;  // 5GHz
+}
+
+enum WiFiState {
+  NOT_CONNECTED = 0;  // connected, active
+  CONNECTED     = 1;  // disconnected
 }
 
 enum ErrorCodes {
@@ -579,9 +648,9 @@ message BufferSizes {
 
     // The number of parameter values that fit in one message. (8 bits)
     uint32  num_params_in_response       = 4;
-    // The length of the description field in the device info structure.
+    // The length of the description fields in various structures
     // Previously known as long_string_len.   (8 bits)
-    uint32  device_description_len       = 6;
+    uint32  description_len              = 6;
     // The number of bytes in the largest parameter data.  (8 bits)
     uint32  max_param_bytes              = 7;
     // The number of bytes in the param info description string  (8 bits)
@@ -612,7 +681,7 @@ enum SizesOffsets {
     BIG_DATA_BUFFER_SIZE_OFFSET          = 2;   // uint16_t, little endian
     PARAMETER_BUFFER_COUNT_OFFSET        = 4;   // uint8_t
     NUM_PARAMS_IN_RESPONSE_OFFSET        = 5;   // uint8_t
-    DEVICE_DESCRIPTION_LEN_OFFSET        = 6;   // uint8_t
+    DESCRIPTION_LEN_OFFSET               = 6;   // uint8_t
     MAX_PARAM_BYTES_OFFSET               = 7;   // uint8_t
     PARAM_INFO_DESCRIPTION_LEN_OFFSET    = 8;   // uint8_t
     MEDIUM_STRING_LEN_OFFSET             = 9;   // uint8_t

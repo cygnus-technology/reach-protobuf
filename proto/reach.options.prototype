@@ -27,9 +27,10 @@ cr.PingResponse.echo_data                       max_size: REACH_BIG_DATA_BUFFER_
 # DeviceInfoResponse
 #
 
+cr.DeviceInfoRequest.challenge_key              max_size: REACH_LONG_STRING_LEN
 cr.DeviceInfoResponse.device_name               max_size: REACH_MEDIUM_STRING_LEN
 cr.DeviceInfoResponse.manufacturer              max_size: REACH_MEDIUM_STRING_LEN
-cr.DeviceInfoResponse.device_description        max_size: REACH_DEVICE_INFO_LEN
+cr.DeviceInfoResponse.device_description        max_size: REACH_DESCRIPTION_LEN
 cr.DeviceInfoResponse.firmware_version          max_size: REACH_SHORT_STRING_LEN
 # application_identifier is a UUID stored as a 128 bit number.
 cr.DeviceInfoResponse.application_identifier    max_size: REACH_SHORT_STRING_LEN
@@ -77,6 +78,7 @@ cr.StreamData.message_data                      max_size: REACH_BIG_DATA_BUFFER_
 # Commands
 #
 cr.CommandInfo.name                             max_size: REACH_MEDIUM_STRING_LEN
+cr.CommandInfo.description                      max_size: REACH_DESCRIPTION_LEN
 cr.DiscoverCommandsResponse.available_commands  max_count: REACH_NUM_COMMANDS_IN_RESPONSE
 cr.SendCommandResponse.result_message           max_size: REACH_BIG_DATA_BUFFER_LEN
 
@@ -92,4 +94,12 @@ cr.CLIData.message_data                         max_size: REACH_BIG_DATA_BUFFER_
 
 cr.TimeGetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
 cr.TimeSetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
+
+#                                               
+# WiFi
+#                                               
+
+cr.ConnectionDescription.ssid                    max_size: REACH_LONG_STRING_LEN
+cr.WiFiConnectionRequest.password                max_size: REACH_LONG_STRING_LEN
+cr.WiFiConnectionResponse.error_message          max_size: REACH_BIG_DATA_BUFFER_LEN
 
