@@ -27,7 +27,8 @@ This is a submodule to a Cygnus Reach project.
     * mkdir build (or cd into build and rm -r * for clean)
     * Run cmake to generate the build files
       * "cmake ../ ./" will invoke the microsoft compiler by default
-      * Using cygwin, "cmake -G "Unix Makefiles" ../ ./" will invoke gcc by default.  
+      * Using cygwin, "cmake -G "Unix Makefiles" ../ ./" will invoke gcc by default.
+      * Other -G options may be appropriate for you.
     * Build the files:
       * cmake --build ./ builds with what is native, Microsoft on Windows.
       * make builds with Linux Makefiles.
@@ -36,6 +37,4 @@ This is a submodule to a Cygnus Reach project.
 
 ### Contribution guidelines
 
-* Contact the team at i3 Product Development including:
-  * Chuck.Peplinski@i3pd.com
-  * wyatt.drake-buhr@i3pd.com
+* Feel free to post issues.  The team at i3 will try to respond in a timely fashion.
