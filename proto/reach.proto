@@ -478,7 +478,7 @@ message SendCommandResponse {
 // CLI_DATA
 message CLIData {
   string message_data = 1;    // Data
-  bool is_complete    = 2;
+  // bool is_complete    = 2;
 }
 
 // ------------------------------------------------------
