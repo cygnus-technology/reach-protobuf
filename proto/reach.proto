@@ -41,7 +41,7 @@ option swift_prefix = "";
 
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 19;  // update this when you change this file.
+    CURRENT_VERSION  = 20;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
     // 7: Added file erase and time service
@@ -55,6 +55,7 @@ enum ReachProtoVersion {
     // 17: Add description and timeout to CommandInfo
     // 18: Generalize device description len to description len
     // 19: Remove parameter key
+    // 20: Added protocol_version_string, deprecated protocol_version.
 }
 
 enum ReachMessageTypes {
@@ -157,7 +158,7 @@ message DeviceInfoRequest {
 }
 
 message DeviceInfoResponse {
-  int32  protocol_version         = 1;    // Supported Protocol Version
+  int32  protocol_version         = 1;    // Supported Protocol Version (deprecated)
   string device_name              = 2;    // Name, Typically Model Name
   string manufacturer             = 3;
   string device_description       = 4;    // Description
@@ -166,8 +167,8 @@ message DeviceInfoResponse {
   // If there are other FW versions, put them in the parameter repo.
   string firmware_version         = 6;
 
-  // Max Message Length: A characteristic of the communication link.
-  // uint32 max_message_size         = 7;
+  // protocol version as a string
+  string protocol_version_string  = 7;
 
   // A bit mask, allowing support for up to 32 services
   uint32 services                 = 8;
@@ -177,9 +178,6 @@ message DeviceInfoResponse {
 
   optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
   uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
-  // uint32 parameter_buffer_count     = 12;   // how many parameter info or reads can be in one request.
-  // uint32 num_medium_structs_in_msg  = 13;   // how many parameter writes can be in one request.
-  // uint32 big_data_buffer_size       = 14;   // how many bytes in a file data message
 
   bytes sizes_struct = 20;  // packed. See SizesOffsets
 }
@@ -480,7 +478,7 @@ message SendCommandResponse {
 // CLI_DATA
 message CLIData {
   string message_data = 1;    // Data
-  bool is_complete    = 2;
+  // bool is_complete    = 2;
 }
 
 // ------------------------------------------------------

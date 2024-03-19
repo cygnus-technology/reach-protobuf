@@ -32,6 +32,7 @@ cr.DeviceInfoResponse.device_name               max_size: REACH_MEDIUM_STRING_LE
 cr.DeviceInfoResponse.manufacturer              max_size: REACH_MEDIUM_STRING_LEN
 cr.DeviceInfoResponse.device_description        max_size: REACH_DESCRIPTION_LEN
 cr.DeviceInfoResponse.firmware_version          max_size: REACH_SHORT_STRING_LEN
+cr.DeviceInfoResponse.protocol_version_string   max_size: REACH_SHORT_STRING_LEN
 # application_identifier is a UUID stored as a 128 bit number.
 cr.DeviceInfoResponse.application_identifier    max_size: REACH_SHORT_STRING_LEN
 cr.DeviceInfoResponse.sizes_struct              max_size: REACH_SIZE_STRUCT_SIZE

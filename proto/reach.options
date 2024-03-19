@@ -32,6 +32,7 @@ cr.DeviceInfoResponse.device_name               max_size: 24
 cr.DeviceInfoResponse.manufacturer              max_size: 24
 cr.DeviceInfoResponse.device_description        max_size: 48
 cr.DeviceInfoResponse.firmware_version          max_size: 16
+cr.DeviceInfoResponse.protocol_version_string   max_size: 16
 # application_identifier is a UUID stored as a 128 bit number.
 cr.DeviceInfoResponse.application_identifier    max_size: 16
 cr.DeviceInfoResponse.sizes_struct              max_size: 16
