@@ -39,9 +39,10 @@ option java_package = "com.cygnusreach.reachprotocol.proto";
 /** Swift options */
 option swift_prefix = "";
 
+// ReachProtoVersion will be replaced by the MAJOR, MINOR and PATCH, below.
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 20;  // update this when you change this file.
+    CURRENT_VERSION  = 21;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
     // 7: Added file erase and time service
@@ -56,7 +57,20 @@ enum ReachProtoVersion {
     // 18: Generalize device description len to description len
     // 19: Remove parameter key
     // 20: Added protocol_version_string, deprecated protocol_version.
+    // 21: Added separate version numbers for MAJOR, MINOR and PATCH.
 }
+
+enum ReachProto_MAJOR_Version {
+    MAJOR_VERSION  = 0;   // Must have a zero
+}
+enum ReachProto_MINOR_Version {
+    MINOR_VERSION  = 0;   // Must have a zero
+}
+enum ReachProto_PATCH_Version {
+  PATCH_V0         = 0;   // Must have a zero
+  PATCH_VERSION    = 21;  // To be updated by relase script
+}
+
 
 enum ReachMessageTypes {
   INVALID             = 0;    // No Valid Message
