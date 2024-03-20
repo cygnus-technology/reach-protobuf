@@ -1,20 +1,20 @@
 # README
 
-This is a submodule to a Cygnus Reach project. 
+This repository contains the reach.proto file that defines the communication protocol used by Cygnus Reach applications. 
 
 ### What is this repository for?
 
-* Cygnus Reach communicates using protobufs.  This repository contains the protobuf definition files as well as the protobuf tools necessary to generate code for the various client formats.
+* Cygnus Reach communicates using a protocod define in protobufs.  This repository contains the protobuf definition files as well as the protobuf tools used to generate code for the various client formats.
 
 ### How do I get set up?
 
-* Clone or fork the project that contains this repository.  That might be for an embedded device (reacher-pb) or a mobile app or a web page".
-  * Follow any more explicit instructions there.  For instance, the reacher-mp project includes an "update_proto.bat" to rebuild the necessary proto files.
-* The repository contains a prebuilt set of C files in ansic/built.  You can use these directly.  If you need to change the .proto files or otherwise regenerate them you will need to go a little deeper into the world of protobufs.
-* You can regenerate the .pb files using the bitbucket pipeline.  
-  * From the reach_proto project, selec pipeline and select the latest.
-  * Choose "Generate C code from proto files".
-  * Select "Artifacts" and download the resulting files.  Use thse to replace those in the built directory.
+* Clone or fork the project that contains this repository.  That might be for an embedded device (reach-silabs) or a mobile app or a web page.
+  * Follow any more explicit instructions there.  For instance, the reac-silabs project includes an "update_proto.bat" to rebuild the necessary proto files.
+* The ansic folder configures a cmake build to generate the reach.pb.h and reach.pb.c artifacts required for C applications.  
+* Other languages typically use native tools to generate bindings.
+* The reach-c-stack repository contains a prebuilt set of C/H files.  These are normally used directly.  If you need to change the .proto files or otherwise regenerate them you will need to go a little deeper into the world of protobufs.
+  * Use the github pipeline provided, or
+  * Build the files locally.
 * To rebuild the .pb files locally:
   * Install several tools:
     * cmake
@@ -22,6 +22,7 @@ This is a submodule to a Cygnus Reach project.
     * protoc
     * cygwin and gcc, etc.
       * You may need to remove extra junk from the cygwin path.
+    * A working version (0.4.7) of nanopb is included locally
   * To build the C language files:
     * cd into ansic.
     * mkdir build (or cd into build and rm -r * for clean)
