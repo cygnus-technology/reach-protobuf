@@ -269,7 +269,7 @@ message ParameterRead {
   uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
 }
 
-message ParameterReadResult {
+message ParameterReadResponse {
   // The read_timestamp indicates when this param was last read.  
   // Reading resets this value to now.
   // 
@@ -286,7 +286,7 @@ message ParameterWrite {
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
-message ParameterWriteResult {
+message ParameterWriteResponse {
   int32 result                    = 1;      // 0 if OK
   optional string result_message  = 2;      // Error String
 }

@@ -50,9 +50,9 @@ cr.ParamExKey.name                              max_size: 16
 cr.ParamExInfoResponse.enumerations             max_count: 8
 
 cr.ParameterRead.parameter_ids                  max_count: 32
-cr.ParameterReadResult.values                   max_count: 4
+cr.ParameterReadResponse.values                 max_count: 4
 cr.ParameterWrite.values                        max_count: 4
-cr.ParameterWriteResult.result_message          max_size: 194
+cr.ParameterWriteResponse.result_message        max_size: 194
 
 
 cr.ParameterValue.string_value                  max_size: 32
@@ -107,5 +107,5 @@ cr.TimeSetResponse.result_message               max_size: 194
 cr.ConnectionDescription.ssid                    max_size: 32
 cr.WiFiConnectionRequest.password                max_size: 32
 cr.WiFiConnectionResponse.result_message         max_size: 194
-cr.DiscoverWiFiResponse.result_message           max_size: 194
+cr.DiscoverWiFiResponse.result_message           max_size: 48
 

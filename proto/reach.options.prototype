@@ -50,9 +50,9 @@ cr.ParamExKey.name                              max_size: REACH_SHORT_STRING_LEN
 cr.ParamExInfoResponse.enumerations             max_count: REACH_PI_ENUM_COUNT
 
 cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
-cr.ParameterReadResult.values                   max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParameterReadResponse.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.ParameterWrite.values                        max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
-cr.ParameterWriteResult.result_message          max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.ParameterWriteResponse.result_message        max_size: REACH_BIG_DATA_BUFFER_LEN
 
 
 cr.ParameterValue.string_value                  max_size: REACH_NUM_PARAM_BYTES
@@ -107,5 +107,5 @@ cr.TimeSetResponse.result_message               max_size: REACH_BIG_DATA_BUFFER_
 cr.ConnectionDescription.ssid                    max_size: REACH_LONG_STRING_LEN
 cr.WiFiConnectionRequest.password                max_size: REACH_LONG_STRING_LEN
 cr.WiFiConnectionResponse.result_message         max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.DiscoverWiFiResponse.result_message           max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.DiscoverWiFiResponse.result_message           max_size: REACH_DESCRIPTION_LEN
 
