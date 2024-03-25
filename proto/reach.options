@@ -18,7 +18,7 @@
 
 cr.ReachMessage.payload                         max_size: 208
 
-cr.ErrorReport.result_string                    max_size: 194
+cr.ErrorReport.result_message                   max_size: 194
 
 cr.PingRequest.echo_data                        max_size: 194
 cr.PingResponse.echo_data                       max_size: 194
@@ -52,11 +52,14 @@ cr.ParamExInfoResponse.enumerations             max_count: 8
 cr.ParameterRead.parameter_ids                  max_count: 32
 cr.ParameterReadResult.values                   max_count: 4
 cr.ParameterWrite.values                        max_count: 4
+cr.ParameterWriteResult.result_message          max_size: 194
+
 
 cr.ParameterValue.string_value                  max_size: 32
 cr.ParameterValue.bytes_value                   max_size: 32
 
 cr.ParameterNotification.values                 max_count: 4
+cr.ParameterNotifyConfigResponse.result_message max_size: 194
 
 #
 # Files
@@ -64,9 +67,9 @@ cr.ParameterNotification.values                 max_count: 4
 cr.DiscoverFilesResponse.file_infos             max_count: 4
 cr.FileInfo.file_name                           max_size: 24
 cr.FileTransferData.message_data                max_size: 194
-cr.FileTransferInitResponse.error_message       max_size: 194
-cr.FileTransferDataNotification.error_message   max_size: 194
-cr.FileEraseResponse.error_message              max_size: 194
+cr.FileTransferInitResponse.result_message      max_size: 194
+cr.FileTransferDataNotification.result_message  max_size: 194
+cr.FileEraseResponse.result_message             max_size: 194
 
 #
 # Streams
@@ -74,6 +77,7 @@ cr.FileEraseResponse.error_message              max_size: 194
 cr.DiscoverStreamsResponse.streams              max_count: 4
 cr.StreamInfo.name                              max_size: 24
 cr.StreamData.message_data                      max_size: 194
+cr.StreamOpenResponse.result_message            max_size: 194
 
 #
 # Commands
@@ -93,8 +97,8 @@ cr.CLIData.message_data                         max_size: 194
 # Time
 #                                               
 
-cr.TimeGetResponse.result_message                 max_size: 194
-cr.TimeSetResponse.result_message                 max_size: 194
+cr.TimeGetResponse.result_message               max_size: 194
+cr.TimeSetResponse.result_message               max_size: 194
 
 #                                               
 # WiFi
@@ -102,5 +106,6 @@ cr.TimeSetResponse.result_message                 max_size: 194
 
 cr.ConnectionDescription.ssid                    max_size: 32
 cr.WiFiConnectionRequest.password                max_size: 32
-cr.WiFiConnectionResponse.error_message          max_size: 194
+cr.WiFiConnectionResponse.result_message         max_size: 194
+cr.DiscoverWiFiResponse.result_message           max_size: 194
 
