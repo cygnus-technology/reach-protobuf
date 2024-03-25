@@ -40,6 +40,17 @@ cr.DeviceInfoResponse.sizes_struct              max_size: REACH_SIZE_STRUCT_SIZE
 #
 # ParameterInfo {
 #
+cr.Uint32ParameterInfo.units                    max_size: REACH_SHORT_STRING_LEN
+cr.Int32ParameterInfo.units                     max_size: REACH_SHORT_STRING_LEN
+cr.Float32ParameterInfo.units                   max_size: REACH_SHORT_STRING_LEN
+cr.Uint64ParameterInfo.units                    max_size: REACH_SHORT_STRING_LEN
+cr.Int64ParameterInfo.units                     max_size: REACH_SHORT_STRING_LEN
+cr.Float64ParameterInfo.units                   max_size: REACH_SHORT_STRING_LEN
+cr.BoolParameterInfo.off_text                   max_size: REACH_SHORT_STRING_LEN
+cr.BoolParameterInfo.on_text                    max_size: REACH_SHORT_STRING_LEN
+cr.StringParameterInfo.default_value            max_size: REACH_LONG_STRING_LEN
+cr.EnumParameterInfo.units                      max_size: REACH_SHORT_STRING_LEN
+cr.BytearrayParameterInfo.default_value         max_size: REACH_LONG_STRING_LEN
 cr.ParameterInfo.name                           max_size: REACH_MEDIUM_STRING_LEN
 cr.ParameterInfo.description                    max_size: REACH_LONG_STRING_LEN
 cr.ParameterInfo.units                          max_size: REACH_SHORT_STRING_LEN
@@ -47,7 +58,7 @@ cr.ParameterInfoRequest.parameter_ids           max_count: REACH_COUNT_PARAM_IDS
 cr.ParameterInfoResponse.parameter_infos        max_count: REACH_COUNT_PARAM_DESC_IN_RESPONSE
 
 cr.ParamExKey.name                              max_size: REACH_SHORT_STRING_LEN
-cr.ParamExInfoResponse.enumerations             max_count: REACH_PI_ENUM_COUNT
+cr.ParamExInfoResponse.enums_bits               max_count: REACH_PI_ENUM_COUNT
 
 cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
 cr.ParameterReadResult.values                   max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
