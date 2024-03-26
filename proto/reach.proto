@@ -120,7 +120,7 @@ enum ReachMessageTypes {
 //----------------------------
 // Service Routing Message Header
 //----------------------------
-message classic_ReachMessageHeader {
+message ReachMessageHeader {
   // This ID defines the Type of Message being carried in the Envelope / Header
   uint32 message_type         = 1;
 
@@ -142,57 +142,6 @@ message ReachMessage {
   bytes payload = 2;
 }
 
-
-//----------------------------
-// This represents a merger between Ahsoka and Reach for testing.
-// The names and ordinals match Reach.
-// #define AHSOKA_HEADER and rename to ReachMessageHeader to use this.
-//----------------------------
-message ReachMessageHeader
-{
-    // This ID defines the Type of Message being carried in the Envelop / Header
-    // Note: Existing OpenPV / Ahsoka Message Architecture 
-    // Ahsoka calls this transport_id
-    uint32 message_type = 1;
-
-    // (Optional) Routing for Non-Endpoint Style Transports. 
-    // Note: Endpoint 0 is Reserved for Service Discovery for Non-Endpoint Transports
-    // Note: New for OpenPV / Ahsoka Message Architecture 
-    uint32 endpoint_id = 2;
-
-    // (Optional) Unique ID for a Client used in Services that support Multiple Clients (usually autopopulated with GUID)
-    // Note: Part of Existing OpenPV / Ahsoka Message Architecture 
-    // Ahsoka makes this a byte array (16 byte UUID)
-    uint32 client_id = 3;
-
-    // Note:  Added for Reach
-    // Zero when transaction is complete
-    uint32   remaining_objects  = 4;
-
-    // (Optional) This ID defines a unique Message / Response used when out of order messages are needed
-    // usually left empty since OpenPV Endpoints gaurantee message order
-    // Note: Existing OpenPV / Ahsoka Message Architecture 
-    // Ahsoka calls this client_message_id
-    uint32 transaction_id = 5;
-
-    // (Optional) The size of the message payload that follows this header 
-    int32 message_size = 6;
-
-    // The Ahsoka header is larger than the Reach header.
-    // Without the message_size, cr_ReachMessage_size reports 243 bytes.
-    // Adding the message_size, the cr_ReachMessage_size reports 254.
-    // Adding the following bool and two uint32's comes to 268.
-    // Adding two more uint32's causes file read to fail.
-
-    // (Optional) Indicates that the message has used deflate compression in addition to pbuff encoding
-    // Note: New for OpenPV / Ahsoka Message Architecture 
-    // bool is_message_compressed = 7;
-
-    // uint32 add_one_more=8;
-    // uint32 add_two_more=9;
-    // uint32 add_3_more=10;
-    // uint32 add_4_more=11;
-}
 
 //----------------------------
 // For Reference:  This is used in the OpenPV system.

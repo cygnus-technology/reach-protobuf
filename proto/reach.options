@@ -17,6 +17,7 @@
 * include:"sys/types.h"
 
 cr.ReachMessage.payload                         max_size: 208
+cr.AhsokaMessageHeader.client_id                max_size: 4
 
 cr.ErrorReport.result_string                    max_size: 194
 
