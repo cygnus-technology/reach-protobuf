@@ -42,7 +42,7 @@ option swift_prefix = "";
 // ReachProtoVersion is replaced by the MAJOR, MINOR and PATCH, below.
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 0x101;  // update this when you change this file.
+    CURRENT_VERSION  = 0x102;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
     // 7: Added file erase and time service
@@ -59,6 +59,7 @@ enum ReachProtoVersion {
     // 20: Added protocol_version_string, deprecated protocol_version.
     // 21: Added separate version numbers for MAJOR, MINOR and PATCH.
     // 0x101:  starting on ahsoka changes
+    // 0x102:  merging 676 into ahsoka
 }
 
 enum ReachProto_MAJOR_Version {
@@ -71,7 +72,7 @@ enum ReachProto_MINOR_Version {
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 1;   // To be updated by relase script
+  PATCH_VERSION    = 2;   // To be updated by relase script
 }
 
 
@@ -142,10 +143,9 @@ message ReachMessage {
   bytes payload = 2;
 }
 
-
 //----------------------------
-// For Reference:  This is used in the OpenPV system.
-// Service Routing Message Header
+// This Service Routing Message Header is used in the OpenPV system.
+// Reach can speake it.
 // This object represents the Layer 2 Message Format for OpenPV Service Messages.
 //----------------------------
 message AhsokaMessageHeader
@@ -176,12 +176,10 @@ message AhsokaMessageHeader
     bool is_message_compressed = 6;
 }
 
-
-
 // ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
-  int32  result_value     = 1;    // Error Result
-  string result_string    = 2;    // Error String
+  int32  result            = 1;    // Error Result
+  string result_message    = 2;    // Error String
 }
 
 // Request Object used to Echo Data for testing the Device Communication
@@ -305,7 +303,7 @@ message ParameterRead {
   uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
 }
 
-message ParameterReadResult {
+message ParameterReadResponse {
   // The read_timestamp indicates when this param was last read.  
   // Reading resets this value to now.
   // 
@@ -322,8 +320,9 @@ message ParameterWrite {
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
-message ParameterWriteResult {
+message ParameterWriteResponse {
   int32 result                    = 1;      // 0 if OK
+  optional string result_message  = 2;      // Error String
 }
 
 // ------------------------------------------------------
@@ -340,6 +339,7 @@ message ParameterNotifyConfig {
 
 message ParameterNotifyConfigResponse {
   int32  result                      = 1; // zero if all OK
+  optional string result_message  = 2;      // Error String
 }
 
 // when parameters change
@@ -417,10 +417,10 @@ message FileTransferInit {
 }
 
 message FileTransferInitResponse {
-  int32 result                  = 1;    // 0 if OK
-  uint32 transfer_id            = 2;    // Transfer ID
-  uint32 preferred_ack_rate     = 3;    // overrides request
-  string error_message          = 4;
+  int32 result                   = 1;    // 0 if OK
+  uint32 transfer_id             = 2;    // Transfer ID
+  uint32 preferred_ack_rate      = 3;    // overrides request
+  optional string result_message = 4;
 }
 
 
@@ -434,20 +434,20 @@ message FileTransferData {
 }
 
 message FileTransferDataNotification {
-  int32  result                 = 1;    // err~
-  string error_message          = 2;
-  bool   is_complete            = 3;
-  uint32 transfer_id            = 4;    // Transfer ID
-  uint32 retry_offset           = 5;    // file offset where error occurred
+  int32  result                  = 1;    // err~
+  optional string result_message = 2;
+  bool   is_complete             = 3;
+  uint32 transfer_id             = 4;    // Transfer ID
+  uint32 retry_offset            = 5;    // file offset where error occurred
 }
 
 message FileEraseRequest {
     uint32 file_id                = 1;    // File ID
 }
 message FileEraseResponse {
-    uint32 file_id                = 1;    // File ID
-    int32  result                 = 2;    // err~
-    string error_message          = 3;
+    uint32 file_id                 = 1;    // File ID
+    int32  result                  = 2;    // err~
+    optional string result_message = 3;
 }
 
 // ------------------------------------------------------
@@ -476,6 +476,7 @@ message StreamOpen {
 message StreamOpenResponse {
     int32 stream_id           = 1;    // Stream ID
     int32 result              = 2;    // Carries Success / Result
+    optional string result_message = 3;
 }
 
 message StreamClose {
@@ -516,8 +517,8 @@ message CommandInfo {
 message SendCommand { uint32 command_id = 1; }
 
 message SendCommandResponse {
-  int32 result          = 1; // Carries Success / Result
-  string result_message = 2;
+  int32 result                   = 1; // Carries Success / Result
+  optional string result_message = 2;
 }
 
 // ------------------------------------------------------
@@ -545,17 +546,17 @@ message TimeSetRequest {
 }
 
 message TimeSetResponse {
-  int32 result          = 1; // Carries Success / Result
-  string result_message = 2;
+  int32 result                   = 1; // Carries Success / Result
+  optional string result_message = 2;
 }
 
 message TimeGetRequest {}
 
 message TimeGetResponse {
-  int32 result              = 1;  // Carries Success / Result
-  string result_message     = 2;
-  int64   seconds_utc       = 3;  // linux epoch       
-  optional int32  timezone  = 4;  // seconds adjustment
+  int32 result                   = 1;  // Carries Success / Result
+  optional string result_message = 2;
+  int64   seconds_utc            = 3;  // linux epoch       
+  optional int32  timezone       = 4;  // seconds adjustment
 }
 
 // ------------------------------------------------------
@@ -577,10 +578,11 @@ message DiscoverWiFiRequest {
 
 message DiscoverWiFiResponse {
   int32 result                      = 1;  // 0 for success
-  int32 available_AP                = 2;
-  WiFiState state                   = 3;
-  uint32 connectionId               = 4;  // connected is 0, others increment.
-  optional ConnectionDescription cd = 5;
+  optional string result_message    = 2;
+  int32 available_AP                = 3;
+  WiFiState state                   = 4;
+  uint32 connectionId               = 5;  // connected is 0, others increment.
+  optional ConnectionDescription cd = 6;
 }
 
 message WiFiConnectionRequest {
@@ -593,7 +595,7 @@ message WiFiConnectionRequest {
 message WiFiConnectionResponse {
   int32 result                      = 1;  // 0 for success
   optional int32 signal_strength    = 2;  // RSSI
-  optional string error_message     = 3;  // describes any error
+  optional string result_message    = 3;  // describes any error
 }
 
 // ------------------------------------------------------
