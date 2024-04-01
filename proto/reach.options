@@ -28,6 +28,7 @@ cr.PingResponse.echo_data                       max_size: 194
 # DeviceInfoResponse
 #
 
+cr.DeviceInfoRequest.client_protocol_version    max_size: 16
 cr.DeviceInfoRequest.challenge_key              max_size: 32
 cr.DeviceInfoResponse.device_name               max_size: 24
 cr.DeviceInfoResponse.manufacturer              max_size: 24
@@ -68,7 +69,7 @@ cr.ParameterNotifyConfigResponse.result_message max_size: 194
 cr.DiscoverFilesResponse.file_infos             max_count: 4
 cr.FileInfo.file_name                           max_size: 24
 cr.FileTransferData.message_data                max_size: 194
-cr.FileTransferInitResponse.result_message      max_size: 194
+cr.FileTransferResponse.result_message          max_size: 194
 cr.FileTransferDataNotification.result_message  max_size: 194
 cr.FileEraseResponse.result_message             max_size: 194
 

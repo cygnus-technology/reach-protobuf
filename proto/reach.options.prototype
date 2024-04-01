@@ -28,6 +28,7 @@ cr.PingResponse.echo_data                       max_size: REACH_BIG_DATA_BUFFER_
 # DeviceInfoResponse
 #
 
+cr.DeviceInfoRequest.client_protocol_version    max_size: REACH_SHORT_STRING_LEN
 cr.DeviceInfoRequest.challenge_key              max_size: REACH_LONG_STRING_LEN
 cr.DeviceInfoResponse.device_name               max_size: REACH_MEDIUM_STRING_LEN
 cr.DeviceInfoResponse.manufacturer              max_size: REACH_MEDIUM_STRING_LEN
@@ -68,7 +69,7 @@ cr.ParameterNotifyConfigResponse.result_message max_size: REACH_BIG_DATA_BUFFER_
 cr.DiscoverFilesResponse.file_infos             max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.FileInfo.file_name                           max_size: REACH_MEDIUM_STRING_LEN
 cr.FileTransferData.message_data                max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.FileTransferInitResponse.result_message      max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferResponse.result_message          max_size: REACH_BIG_DATA_BUFFER_LEN
 cr.FileTransferDataNotification.result_message  max_size: REACH_BIG_DATA_BUFFER_LEN
 cr.FileEraseResponse.result_message             max_size: REACH_BIG_DATA_BUFFER_LEN
 

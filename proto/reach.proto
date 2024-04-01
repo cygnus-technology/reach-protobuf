@@ -60,6 +60,7 @@ enum ReachProtoVersion {
     // 21: Added separate version numbers for MAJOR, MINOR and PATCH.
     // 0x101:  starting on ahsoka changes
     // 0x102:  merging 676 into ahsoka
+    // 0x103:  Reworked FileTransfer start with checksum and preferred ack rate.
 }
 
 enum ReachProto_MAJOR_Version {
@@ -72,7 +73,7 @@ enum ReachProto_MINOR_Version {
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 2;   // To be updated by relase script
+  PATCH_VERSION    = 3;   // Update when something changes
 }
 
 
@@ -205,6 +206,7 @@ message DeviceInfoRequest {
   // Used when native transport does not include security features and local
   // verification is needed.
   optional string challenge_key  = 1;
+  string client_protocol_version = 2;
 }
 
 message DeviceInfoResponse {
@@ -401,53 +403,55 @@ message FileInfo {
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
   StorageLocation storage_location    = 5; 
+  bool require_checksum               = 6;  // set true to request checksum generation and validation.
 }
 
 // ------------------------------------------------------
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
-message FileTransferInit {
-  uint32 file_id                = 1;    // File ID
-  uint32 read_write             = 2;    // 0 for read, 1 for write.
-  uint32 request_offset         = 3;    // where to access in the file
-  uint32 transfer_length        = 4;    // bytes to read or write
-  uint32 transfer_id            = 5;    // In case of multiple transfers
-  uint32 messages_per_ack       = 6;    // number of messages before ACK.
-  uint32 timeout_in_ms          = 7;    // ms before abandonment
-}
+message FileTransferRequest {
+  uint32 file_id                      = 1;  // File ID
+  uint32 read_write                   = 2;  // 0 for read, 1 for write.
+  uint32 request_offset               = 3;  // where to access in the file
+  uint32 transfer_length              = 4;  // bytes to read or write
+  uint32 transfer_id                  = 5;  // In case of multiple transfers
+  uint32 messages_per_ack             = 6;  // obsolete.  Use requested_ack_rate.
+  uint32 timeout_in_ms                = 7;  // ms before abandonment
+  optional uint32 requested_ack_rate  = 8;  // number of messages before ACK.
+  bool   require_checksum             = 9;  // set true to enable checksum generation and validation.
+}                                           
 
-message FileTransferInitResponse {
-  int32 result                   = 1;    // 0 if OK
-  uint32 transfer_id             = 2;    // Transfer ID
-  uint32 preferred_ack_rate      = 3;    // overrides request
-  optional string result_message = 4;
-}
+message FileTransferResponse {          
+  int32  result                       = 1;  // 0 if OK
+  uint32 transfer_id                  = 2;  // Transfer ID
+  uint32 ack_rate                     = 3;  // confirms or overrides request
+  optional string result_message      = 4;  
+}                                           
 
+// Bi-Directional Message                   
+message FileTransferData {                  
+  int32  result                       = 1;  // non-zero for error
+  uint32 transfer_id                  = 2;  // Transfer ID
+  uint32 message_number               = 3;  // counts up
+  bytes  message_data                 = 4;  // Data
+  optional int32 checksum             = 5;  // Optional RFC 1071 checksum for integrity checking
+}                                           
 
-// Bi-Directional Message
-message FileTransferData {
-  int32 result                  = 1;    // non-zero for error
-  uint32 transfer_id            = 2;    // Transfer ID
-  uint32 message_number         = 3;    // counts up
-  bytes message_data            = 4;    // Data
-  optional int32 crc32          = 5;    // Optional crc for integrity checking
-}
-
-message FileTransferDataNotification {
-  int32  result                  = 1;    // err~
-  optional string result_message = 2;
-  bool   is_complete             = 3;
-  uint32 transfer_id             = 4;    // Transfer ID
-  uint32 retry_offset            = 5;    // file offset where error occurred
+message FileTransferDataNotification {      
+  int32  result                       = 1;  // 0 for success
+  optional string result_message      = 2;  
+  bool   is_complete                  = 3;  
+  uint32 transfer_id                  = 4;  // Transfer ID
+  uint32 retry_offset                 = 5;  // file offset where error occurred
 }
 
 message FileEraseRequest {
-    uint32 file_id                = 1;    // File ID
-}
-message FileEraseResponse {
-    uint32 file_id                 = 1;    // File ID
-    int32  result                  = 2;    // err~
-    optional string result_message = 3;
+  uint32 file_id                      = 1;  // File ID
+}                                           
+message FileEraseResponse {                 
+  uint32 file_id                      = 1;  // File ID
+  int32  result                       = 2;  // err~
+  optional string result_message      = 3;
 }
 
 // ------------------------------------------------------
@@ -489,7 +493,7 @@ message StreamData {
   int32 stream_id             = 1;    // Stream ID
   uint32 roll_count           = 2;    // Message Number (Roll Count)
   bytes message_data          = 3;    // Data
-  int32 crc32                 = 4;    // Optional for integrity checking
+  int32 checksum              = 4;    // Optional for integrity checking
 }
 
 // ------------------------------------------------------
