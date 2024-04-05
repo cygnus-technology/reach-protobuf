@@ -63,6 +63,9 @@ cr.ParameterValue.bytes_value                   max_size: 32
 cr.ParameterNotification.values                 max_count: 4
 cr.ParameterNotifyConfigResponse.result_message max_size: 194
 
+cr.ParameterNotifySetupRequest.parameter_ids    max_count: 32
+cr.ParameterNotifySetupResponse.configs         max_count: 8
+
 #
 # Files
 #
