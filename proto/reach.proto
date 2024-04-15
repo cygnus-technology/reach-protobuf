@@ -341,11 +341,11 @@ message ParameterNotifyConfigResponse {
 // ------------------------------------------------------
 // The client can discover how notifications are setup.
 // ------------------------------------------------------
-message DiscoverParameterNotifySetup {
+message DiscoverParameterNotifications {
   repeated uint32 parameter_ids = 1;        // i: ID -  Leave Empty to Retrieve All
 }
 
-message DiscoverParameterNotifySetupResponse {
+message DiscoverParameterNotificationsResponse {
   repeated ParameterNotifyConfig configs = 1;
 }
 
