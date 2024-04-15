@@ -17,8 +17,9 @@
 * include:"sys/types.h"
 
 cr.ReachMessage.payload                         max_size: REACH_MESSAGE_PAYLOAD_MAX
+cr.AhsokaMessageHeader.client_id                max_size: 4
 
-cr.ErrorReport.result_string                    max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.ErrorReport.result_message                   max_size: REACH_BIG_DATA_BUFFER_LEN
 
 cr.PingRequest.echo_data                        max_size: REACH_BIG_DATA_BUFFER_LEN
 cr.PingResponse.echo_data                       max_size: REACH_BIG_DATA_BUFFER_LEN
@@ -27,6 +28,7 @@ cr.PingResponse.echo_data                       max_size: REACH_BIG_DATA_BUFFER_
 # DeviceInfoResponse
 #
 
+cr.DeviceInfoRequest.client_protocol_version    max_size: REACH_SHORT_STRING_LEN
 cr.DeviceInfoRequest.challenge_key              max_size: REACH_LONG_STRING_LEN
 cr.DeviceInfoResponse.device_name               max_size: REACH_MEDIUM_STRING_LEN
 cr.DeviceInfoResponse.manufacturer              max_size: REACH_MEDIUM_STRING_LEN
@@ -61,13 +63,16 @@ cr.ParamExKey.name                              max_size: REACH_SHORT_STRING_LEN
 cr.ParamExInfoResponse.enums_bits               max_count: REACH_PI_ENUM_COUNT
 
 cr.ParameterRead.parameter_ids                  max_count: REACH_COUNT_PARAM_IDS
-cr.ParameterReadResult.values                   max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParameterReadResponse.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.ParameterWrite.values                        max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParameterWriteResponse.result_message        max_size: REACH_BIG_DATA_BUFFER_LEN
+
 
 cr.ParameterValue.string_value                  max_size: REACH_NUM_PARAM_BYTES
 cr.ParameterValue.bytes_value                   max_size: REACH_NUM_PARAM_BYTES
 
 cr.ParameterNotification.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.ParameterNotifyConfigResponse.result_message max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #
 # Files
@@ -75,9 +80,9 @@ cr.ParameterNotification.values                 max_count: REACH_NUM_MEDIUM_STRU
 cr.DiscoverFilesResponse.file_infos             max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.FileInfo.file_name                           max_size: REACH_MEDIUM_STRING_LEN
 cr.FileTransferData.message_data                max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.FileTransferInitResponse.error_message       max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.FileTransferDataNotification.error_message   max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.FileEraseResponse.error_message              max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferResponse.result_message          max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileTransferDataNotification.result_message  max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.FileEraseResponse.result_message             max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #
 # Streams
@@ -85,6 +90,7 @@ cr.FileEraseResponse.error_message              max_size: REACH_BIG_DATA_BUFFER_
 cr.DiscoverStreamsResponse.streams              max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.StreamInfo.name                              max_size: REACH_MEDIUM_STRING_LEN
 cr.StreamData.message_data                      max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.StreamOpenResponse.result_message            max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #
 # Commands
@@ -104,8 +110,8 @@ cr.CLIData.message_data                         max_size: REACH_BIG_DATA_BUFFER_
 # Time
 #                                               
 
-cr.TimeGetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.TimeSetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.TimeGetResponse.result_message               max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.TimeSetResponse.result_message               max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #                                               
 # WiFi
@@ -113,5 +119,6 @@ cr.TimeSetResponse.result_message                 max_size: REACH_BIG_DATA_BUFFE
 
 cr.ConnectionDescription.ssid                    max_size: REACH_LONG_STRING_LEN
 cr.WiFiConnectionRequest.password                max_size: REACH_LONG_STRING_LEN
-cr.WiFiConnectionResponse.error_message          max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.WiFiConnectionResponse.result_message         max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.DiscoverWiFiResponse.result_message           max_size: REACH_DESCRIPTION_LEN
 

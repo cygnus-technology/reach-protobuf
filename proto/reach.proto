@@ -39,10 +39,10 @@ option java_package = "com.cygnusreach.reachprotocol.proto";
 /** Swift options */
 option swift_prefix = "";
 
-// ReachProtoVersion will be replaced by the MAJOR, MINOR and PATCH, below.
+// ReachProtoVersion is replaced by the MAJOR, MINOR and PATCH, below.
 enum ReachProtoVersion {
     NOT_USED         = 0;   // Must have a zero
-    CURRENT_VERSION  = 21;  // update this when you change this file.
+    CURRENT_VERSION  = 0x102;  // update this when you change this file.
     // 5: device info extended with sizes structure
     // 6: device info entries made redundant by sizes are deleted.
     // 7: Added file erase and time service
@@ -58,17 +58,22 @@ enum ReachProtoVersion {
     // 19: Remove parameter key
     // 20: Added protocol_version_string, deprecated protocol_version.
     // 21: Added separate version numbers for MAJOR, MINOR and PATCH.
+    // 0x101:  starting on ahsoka changes
+    // 0x102:  merging 676 into ahsoka
+    // 0x103:  Reworked FileTransfer start with checksum and preferred ack rate.
 }
 
 enum ReachProto_MAJOR_Version {
-    MAJOR_VERSION  = 0;   // Must have a zero
+    // MAJOR_V0       = 0;   // Must have a zero
+    MAJOR_VERSION  = 0;
 }
 enum ReachProto_MINOR_Version {
-    MINOR_VERSION  = 0;   // Must have a zero
+    MINOR_V0       = 0;   // Must have a zero
+    MINOR_VERSION  = 1;   // Update at a release
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 21;  // To be updated by relase script
+  PATCH_VERSION    = 3;   // Update when something changes
 }
 
 
@@ -139,11 +144,43 @@ message ReachMessage {
   bytes payload = 2;
 }
 
+//----------------------------
+// This Service Routing Message Header is used in the OpenPV system.
+// Reach can speake it.
+// This object represents the Layer 2 Message Format for OpenPV Service Messages.
+//----------------------------
+message AhsokaMessageHeader
+{
+    // This ID defines the Type of Message being carried in the Envelop / Header
+    // Note: Existing OpenPV / Ahsoka Message Architecture 
+    int32 transport_id = 1;
+
+    // (Optional) This ID defines a unique Message / Response used when out of order messages are needed
+    // usually left empty since OpenPV Endpoints gaurantee message order
+    // Note: Existing OpenPV / Ahsoka Message Architecture 
+    int32 client_message_id = 2;
+
+    // (Optional) Unique ID for a Client used in Services that support Multiple Clients (usually autopopulated with GUID)
+    // Note: Part of Existing OpenPV / Ahsoka Message Architecture 
+    bytes client_id = 3;
+
+    // (Optional) The size of the message payload that follows this header 
+    int32 message_size = 4;
+
+    // (Optional) Routing for Non-Endpoint Style Transports. 
+    // Note: Endpoint 0 is Reserved for Service Discovery for Non-Endpoint Transports
+    // Note: New for OpenPV / Ahsoka Message Architecture 
+    uint32 endpoint_id = 5;
+
+    // (Optional) Indicates that the message has used deflate compression in addition to pbuff encoding
+    // Note: New for OpenPV / Ahsoka Message Architecture 
+    bool is_message_compressed = 6;
+}
 
 // ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
-  int32  result_value     = 1;    // Error Result
-  string result_string    = 2;    // Error String
+  int32  result            = 1;    // Error Result
+  string result_message    = 2;    // Error String
 }
 
 // Request Object used to Echo Data for testing the Device Communication
@@ -169,6 +206,7 @@ message DeviceInfoRequest {
   // Used when native transport does not include security features and local
   // verification is needed.
   optional string challenge_key  = 1;
+  string client_protocol_version = 2;
 }
 
 message DeviceInfoResponse {
@@ -340,7 +378,7 @@ message ParameterRead {
   uint32 read_after_timestamp   = 3;        // Allows for retrieval of only new / changed values.
 }
 
-message ParameterReadResult {
+message ParameterReadResponse {
   // The read_timestamp indicates when this param was last read.  
   // Reading resets this value to now.
   // 
@@ -357,8 +395,9 @@ message ParameterWrite {
   repeated ParameterValue values  = 3;      // Array of Write Values
 }
 
-message ParameterWriteResult {
+message ParameterWriteResponse {
   int32 result                    = 1;      // 0 if OK
+  optional string result_message  = 2;      // Error String
 }
 
 // ------------------------------------------------------
@@ -375,6 +414,7 @@ message ParameterNotifyConfig {
 
 message ParameterNotifyConfigResponse {
   int32  result                      = 1; // zero if all OK
+  optional string result_message  = 2;      // Error String
 }
 
 // when parameters change
@@ -436,53 +476,55 @@ message FileInfo {
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
   StorageLocation storage_location    = 5; 
+  bool require_checksum               = 6;  // set true to request checksum generation and validation.
 }
 
 // ------------------------------------------------------
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
-message FileTransferInit {
-  uint32 file_id                = 1;    // File ID
-  uint32 read_write             = 2;    // 0 for read, 1 for write.
-  uint32 request_offset         = 3;    // where to access in the file
-  uint32 transfer_length        = 4;    // bytes to read or write
-  uint32 transfer_id            = 5;    // In case of multiple transfers
-  uint32 messages_per_ack       = 6;    // number of messages before ACK.
-  uint32 timeout_in_ms          = 7;    // ms before abandonment
-}
+message FileTransferRequest {
+  uint32 file_id                      = 1;  // File ID
+  uint32 read_write                   = 2;  // 0 for read, 1 for write.
+  uint32 request_offset               = 3;  // where to access in the file
+  uint32 transfer_length              = 4;  // bytes to read or write
+  uint32 transfer_id                  = 5;  // In case of multiple transfers
+  uint32 messages_per_ack             = 6;  // obsolete.  Use requested_ack_rate.
+  uint32 timeout_in_ms                = 7;  // ms before abandonment
+  optional uint32 requested_ack_rate  = 8;  // number of messages before ACK.
+  bool   require_checksum             = 9;  // set true to enable checksum generation and validation.
+}                                           
 
-message FileTransferInitResponse {
-  int32 result                  = 1;    // 0 if OK
-  uint32 transfer_id            = 2;    // Transfer ID
-  uint32 preferred_ack_rate     = 3;    // overrides request
-  string error_message          = 4;
-}
+message FileTransferResponse {          
+  int32  result                       = 1;  // 0 if OK
+  uint32 transfer_id                  = 2;  // Transfer ID
+  uint32 ack_rate                     = 3;  // confirms or overrides request
+  optional string result_message      = 4;  
+}                                           
 
+// Bi-Directional Message                   
+message FileTransferData {                  
+  int32  result                       = 1;  // non-zero for error
+  uint32 transfer_id                  = 2;  // Transfer ID
+  uint32 message_number               = 3;  // counts up
+  bytes  message_data                 = 4;  // Data
+  optional int32 checksum             = 5;  // Optional RFC 1071 checksum for integrity checking
+}                                           
 
-// Bi-Directional Message
-message FileTransferData {
-  int32 result                  = 1;    // non-zero for error
-  uint32 transfer_id            = 2;    // Transfer ID
-  uint32 message_number         = 3;    // counts up
-  bytes message_data            = 4;    // Data
-  optional int32 crc32          = 5;    // Optional crc for integrity checking
-}
-
-message FileTransferDataNotification {
-  int32  result                 = 1;    // err~
-  string error_message          = 2;
-  bool   is_complete            = 3;
-  uint32 transfer_id            = 4;    // Transfer ID
-  uint32 retry_offset           = 5;    // file offset where error occurred
+message FileTransferDataNotification {      
+  int32  result                       = 1;  // 0 for success
+  optional string result_message      = 2;  
+  bool   is_complete                  = 3;  
+  uint32 transfer_id                  = 4;  // Transfer ID
+  uint32 retry_offset                 = 5;  // file offset where error occurred
 }
 
 message FileEraseRequest {
-    uint32 file_id                = 1;    // File ID
-}
-message FileEraseResponse {
-    uint32 file_id                = 1;    // File ID
-    int32  result                 = 2;    // err~
-    string error_message          = 3;
+  uint32 file_id                      = 1;  // File ID
+}                                           
+message FileEraseResponse {                 
+  uint32 file_id                      = 1;  // File ID
+  int32  result                       = 2;  // err~
+  optional string result_message      = 3;
 }
 
 // ------------------------------------------------------
@@ -511,6 +553,7 @@ message StreamOpen {
 message StreamOpenResponse {
     int32 stream_id           = 1;    // Stream ID
     int32 result              = 2;    // Carries Success / Result
+    optional string result_message = 3;
 }
 
 message StreamClose {
@@ -523,7 +566,7 @@ message StreamData {
   int32 stream_id             = 1;    // Stream ID
   uint32 roll_count           = 2;    // Message Number (Roll Count)
   bytes message_data          = 3;    // Data
-  int32 crc32                 = 4;    // Optional for integrity checking
+  int32 checksum              = 4;    // Optional for integrity checking
 }
 
 // ------------------------------------------------------
@@ -551,8 +594,8 @@ message CommandInfo {
 message SendCommand { uint32 command_id = 1; }
 
 message SendCommandResponse {
-  int32 result          = 1; // Carries Success / Result
-  string result_message = 2;
+  int32 result                   = 1; // Carries Success / Result
+  optional string result_message = 2;
 }
 
 // ------------------------------------------------------
@@ -565,7 +608,6 @@ message SendCommandResponse {
 // CLI_DATA
 message CLIData {
   string message_data = 1;    // Data
-  // bool is_complete    = 2;
 }
 
 // ------------------------------------------------------
@@ -581,17 +623,17 @@ message TimeSetRequest {
 }
 
 message TimeSetResponse {
-  int32 result          = 1; // Carries Success / Result
-  string result_message = 2;
+  int32 result                   = 1; // Carries Success / Result
+  optional string result_message = 2;
 }
 
 message TimeGetRequest {}
 
 message TimeGetResponse {
-  int32 result              = 1;  // Carries Success / Result
-  string result_message     = 2;
-  int64   seconds_utc       = 3;  // linux epoch       
-  optional int32  timezone  = 4;  // seconds adjustment
+  int32 result                   = 1;  // Carries Success / Result
+  optional string result_message = 2;
+  int64   seconds_utc            = 3;  // linux epoch       
+  optional int32  timezone       = 4;  // seconds adjustment
 }
 
 // ------------------------------------------------------
@@ -613,10 +655,11 @@ message DiscoverWiFiRequest {
 
 message DiscoverWiFiResponse {
   int32 result                      = 1;  // 0 for success
-  int32 available_AP                = 2;
-  WiFiState state                   = 3;
-  uint32 connectionId               = 4;  // connected is 0, others increment.
-  optional ConnectionDescription cd = 5;
+  optional string result_message    = 2;
+  int32 available_AP                = 3;
+  WiFiState state                   = 4;
+  uint32 connectionId               = 5;  // connected is 0, others increment.
+  optional ConnectionDescription cd = 6;
 }
 
 message WiFiConnectionRequest {
@@ -629,7 +672,7 @@ message WiFiConnectionRequest {
 message WiFiConnectionResponse {
   int32 result                      = 1;  // 0 for success
   optional int32 signal_strength    = 2;  // RSSI
-  optional string error_message     = 3;  // describes any error
+  optional string result_message    = 3;  // describes any error
 }
 
 // ------------------------------------------------------
