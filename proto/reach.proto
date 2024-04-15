@@ -308,28 +308,27 @@ message Float64ParameterInfo {
 }
 message BoolParameterInfo {
   optional bool default_value = 1;
-  optional string off_text = 2;
-  optional string on_text = 3;
+  optional uint32 pei_id = 2;
 }
 message StringParameterInfo {
   optional string default_value = 1;
-  optional uint32 max_size = 2;
+  uint32 max_size = 2;
 }
 message EnumParameterInfo {
   optional uint32 range_min = 1;
   optional uint32 range_max = 2;
   optional uint32 default_value = 3;
-  optional uint32 definition_id = 4;
+  optional uint32 pei_id = 4;
   optional string units = 5;
 }
 message BitfieldParameterInfo {
   optional uint64 default_value = 1;
-  optional uint32 bits_available = 2;
-  optional uint32 definition_id = 3;
+  uint32 bits_available = 2;
+  optional uint32 pei_id = 3;
 }
-message BytearrayParameterInfo {
+message ByteArrayParameterInfo {
   optional bytes default_value = 1;
-  optional uint32 max_size = 2;
+  uint32 max_size = 2;
 }
 
 
@@ -351,21 +350,21 @@ message ParameterInfo {
     StringParameterInfo string_desc = 13;
     EnumParameterInfo enum_desc = 14;
     BitfieldParameterInfo bitfield_desc = 15;
-    BytearrayParameterInfo bytearray_desc = 16;
+    ByteArrayParameterInfo bytearray_desc = 16;
   }
 }
 
-// Give names to enums and bitfields
+// Give names to enums, bitfields, and booleans
 message ParamExKey {
     uint32 id               = 1;  // the value of the enum or the bit position of the bitfield
     string name             = 2;  // the name of the enum/bit
 }
 
-// Used for enums and bitfields
+// Describes enum, bitfield, and boolean labels
 message ParamExInfoResponse {
-    uint32              enum_bitfield_id = 1;
-	ParameterDataType   data_type        = 2;
-    repeated ParamExKey enums_bits       = 3;
+    uint32              pei_id    = 1;
+	ParameterDataType   data_type = 2;
+    repeated ParamExKey keys      = 3;
 }
  
 
@@ -474,9 +473,10 @@ message FileInfo {
   uint32 file_id                      = 1;  // ID
   string file_name                    = 2;  // Name
   AccessLevel access                  = 3;  // Access Level (Read / Write)
-  int32 current_size_bytes            = 4;  // size in bytes
-  StorageLocation storage_location    = 5; 
-  bool require_checksum               = 6;  // set true to request checksum generation and validation.
+  optional uint32 max_size_bytes      = 4;  // Maximum file size allowed (for writing)
+  int32 current_size_bytes            = 5;  // Current size, expected to update if the file changes
+  StorageLocation storage_location    = 6;
+  bool require_checksum               = 7;  // set true to request checksum generation and validation.
 }
 
 // ------------------------------------------------------
@@ -498,7 +498,8 @@ message FileTransferResponse {
   int32  result                       = 1;  // 0 if OK
   uint32 transfer_id                  = 2;  // Transfer ID
   uint32 ack_rate                     = 3;  // confirms or overrides request
-  optional string result_message      = 4;  
+  uint32 transfer_length              = 4;  // If the file is smaller than the requested offset + length, this will reflect how much data can be transferred
+  optional string result_message      = 5;
 }                                           
 
 // Bi-Directional Message                   

@@ -48,19 +48,16 @@ cr.Float32ParameterInfo.units                   max_size: 16
 cr.Uint64ParameterInfo.units                    max_size: 16
 cr.Int64ParameterInfo.units                     max_size: 16
 cr.Float64ParameterInfo.units                   max_size: 16
-cr.BoolParameterInfo.off_text                   max_size: 16
-cr.BoolParameterInfo.on_text                    max_size: 16
 cr.StringParameterInfo.default_value            max_size: 32
 cr.EnumParameterInfo.units                      max_size: 16
-cr.BytearrayParameterInfo.default_value         max_size: 32
+cr.ByteArrayParameterInfo.default_value         max_size: 32
 cr.ParameterInfo.name                           max_size: 24
 cr.ParameterInfo.description                    max_size: 32
-cr.ParameterInfo.units                          max_size: 16
 cr.ParameterInfoRequest.parameter_ids           max_count: 32
 cr.ParameterInfoResponse.parameter_infos        max_count: 2
 
 cr.ParamExKey.name                              max_size: 16
-cr.ParamExInfoResponse.enums_bits               max_count: 8
+cr.ParamExInfoResponse.keys                     max_count: 8
 
 cr.ParameterRead.parameter_ids                  max_count: 32
 cr.ParameterReadResponse.values                 max_count: 4
