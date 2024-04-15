@@ -62,6 +62,7 @@ enum ReachProtoVersion {
     // 0x102:  merging 676 into ahsoka
     // 0x103:  Reworked FileTransfer start with checksum and preferred ack rate.
     // 0x104:  Added discover notifications.
+    // 0x105:  Renamed discover notifications.
 }
 
 enum ReachProto_MAJOR_Version {
@@ -74,7 +75,7 @@ enum ReachProto_MINOR_Version {
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 4;   // Update when something changes
+  PATCH_VERSION    = 5;   // Update when something changes
 }
 
 
@@ -182,12 +183,12 @@ message ErrorReport {
 
 // Request Object used to Echo Data for testing the Device Communication
 message PingRequest {
-  bytes echo_data         = 1;    // d : Data
+  bytes echo_data         = 1;    // Data which should be echoed in the response
 }
 
 // Response Object used to Echo Data for testing the Device Communication
 message PingResponse {
-  bytes echo_data         = 1;   // d : Data
+  bytes echo_data         = 1;   // The same data sent in the request
   int32 signal_strength   = 2;   // rssi : Rssi express in strength so clients don't have to interpret
 }
 
@@ -340,11 +341,11 @@ message ParameterNotifyConfigResponse {
 // ------------------------------------------------------
 // The client can discover how notifications are setup.
 // ------------------------------------------------------
-message ParameterNotifySetupRequest {
+message DiscoverParameterNotifySetup {
   repeated uint32 parameter_ids = 1;        // i: ID -  Leave Empty to Retrieve All
 }
 
-message ParameterNotifySetupResponse {
+message DiscoverParameterNotifySetupResponse {
   repeated ParameterNotifyConfig configs = 1;
 }
 

@@ -63,8 +63,8 @@ cr.ParameterValue.bytes_value                   max_size: REACH_NUM_PARAM_BYTES
 cr.ParameterNotification.values                 max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.ParameterNotifyConfigResponse.result_message max_size: REACH_BIG_DATA_BUFFER_LEN
 
-cr.ParameterNotifySetupRequest.parameter_ids    max_count: REACH_COUNT_PARAM_IDS
-cr.ParameterNotifySetupResponse.configs         max_count: REACH_PARAM_NOTE_SETUP_COUNT
+cr.DiscoverParameterNotifySetup.parameter_ids   max_count: REACH_COUNT_PARAM_IDS
+cr.DiscoverParameterNotifySetupResponse.configs max_count: REACH_PARAM_NOTE_SETUP_COUNT
 
 #
 # Files
