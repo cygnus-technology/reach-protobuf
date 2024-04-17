@@ -63,6 +63,7 @@ enum ReachProtoVersion {
     // 0x103:  Reworked FileTransfer start with checksum and preferred ack rate.
     // 0x104:  Added discover notifications.
     // 0x105:  Renamed discover notifications.
+    // 0x106:  Changed CONFIG_PARAM_NOTIFY handling to expect an array of up to 8.
 }
 
 enum ReachProto_MAJOR_Version {
@@ -71,11 +72,11 @@ enum ReachProto_MAJOR_Version {
 }
 enum ReachProto_MINOR_Version {
     MINOR_V0       = 0;   // Must have a zero
-    MINOR_VERSION  = 1;   // Update at a release
+    MINOR_VERSION  = 1;   // Update at a release or a big change
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 5;   // Update when something changes
+  PATCH_VERSION    = 6;   // Update when something changes
 }
 
 
@@ -90,7 +91,7 @@ enum ReachMessageTypes {
   DISCOVER_PARAM_EX   = 6;
   READ_PARAMETERS     = 7;
   WRITE_PARAMETERS    = 8;
-  CONFIG_PARAM_NOTIFY = 9;      // setup parameter notification
+  CONFIG_PARAM_NOTIFY = 9;      // setup parameter notifications
   PARAMETER_NOTIFICATION = 10;  // A parameter has changed
   DISCOVER_NOTIFICATIONS = 11;  // find out how notifications are setup
 
@@ -289,6 +290,8 @@ message ParamExInfoResponse {
     uint32              associated_pid = 1;
     ParameterDataType   data_type      = 2;
     repeated ParamExKey enumerations   = 3;
+    uint32              pei_id         = 4;
+
 }
  
 
@@ -333,9 +336,13 @@ message ParameterNotifyConfig {
   float  minimum_delta               = 5;    // notify only if change by this much
 }
 
+message ParameterConfigureNotifications {
+  repeated ParameterNotifyConfig  configs = 1;
+}
+
 message ParameterNotifyConfigResponse {
-  int32  result                      = 1; // zero if all OK
-  optional string result_message  = 2;      // Error String
+  int32  result                       = 1;   // zero if all OK
+  optional string result_message      = 2;   // Error String
 }
 
 // ------------------------------------------------------
