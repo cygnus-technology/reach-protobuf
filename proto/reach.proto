@@ -728,10 +728,9 @@ message BufferSizes {
     uint32  num_commands_in_response     = 13;
     // number of param descriptions that can be in one info packet. (8 bits)
     uint32  count_param_desc_in_response = 14;
-    // number of enums that fit in a parameter EX response
-    // Since the server composes this response, it's not so critical that 
-    // the client knows the max.
-    uint32  param_info_enum_count        = 15;
+    // The max number of parameter notification configurations 
+    // that a client will provide. 
+    uint32  param_notify_config_count    = 15;
 }
 
 enum SizesOffsets {
@@ -744,7 +743,7 @@ enum SizesOffsets {
     PARAM_INFO_DESCRIPTION_LEN_OFFSET    = 8;   // uint8_t
     MEDIUM_STRING_LEN_OFFSET             = 9;   // uint8_t
     SHORT_STRING_LEN_OFFSET              = 10;  // uint8_t
-    PARAM_INFO_ENUM_COUNT_OFFSET         = 11;  // uint8_t
+    PARAM_NOTIFY_CONFIG_COUNT_OFFSET     = 11;  // uint8_t
     NUM_DESCRIPTORS_IN_RESPONSE_OFFSET   = 12;  // uint8_t
     NUM_PARAM_NOTIFICATIONS_OFFSET       = 13;  // uint8_t
     NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;  // uint8_t
