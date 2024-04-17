@@ -63,7 +63,7 @@ cr.ParameterValue.bytes_value                   max_size: 32
 cr.ParameterNotification.values                 max_count: 4
 cr.ParameterNotifyConfigResponse.result_message max_size:  194
 cr.ParameterEnableNotifications.configs         max_count: 8
-cr.ParameterDisableNotifications.pids           max_count: 32
+cr.ParameterDisableNotifications.parameter_ids  max_count: 32
 
 cr.DiscoverParameterNotifications.parameter_ids   max_count: 32
 cr.DiscoverParameterNotificationsResponse.configs max_count: 8

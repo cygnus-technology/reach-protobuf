@@ -341,11 +341,11 @@ message ParameterNotifyConfig {
 message ParameterEnableNotifications {
   repeated ParameterNotifyConfig  configs = 1;
   bool     disable_all_first              = 2;
-}
+}                                         
 
-message ParameterDisableNotifications {
-  repeated uint32 pids                    = 1;
-}
+message ParameterDisableNotifications {   
+  repeated uint32 parameter_ids           = 1;
+}                                         
 
 message ParameterNotifyConfigResponse {
   int32  result                       = 1;   // zero if all OK
