@@ -64,6 +64,7 @@ enum ReachProtoVersion {
     // 0x104:  Added discover notifications.
     // 0x105:  Renamed discover notifications.
     // 0x106:  Changed CONFIG_PARAM_NOTIFY handling to expect an array of up to 8.
+    // 0x107:  Replaced CONFIG_PARAM_NOTIFY with ENABLE and DISABLE
 }
 
 enum ReachProto_MAJOR_Version {
@@ -76,11 +77,12 @@ enum ReachProto_MINOR_Version {
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 6;   // Update when something changes
+  PATCH_VERSION    = 7;   // Update when something changes
 }
 
 
 enum ReachMessageTypes {
+  reserved  9;  // obsolete CONFIG_PARAM_NOTIFY
   INVALID             = 0;    // No Valid Message
   ERROR_REPORT        = 1;
   PING                = 2;
@@ -91,9 +93,10 @@ enum ReachMessageTypes {
   DISCOVER_PARAM_EX   = 6;
   READ_PARAMETERS     = 7;
   WRITE_PARAMETERS    = 8;
-  CONFIG_PARAM_NOTIFY = 9;      // setup parameter notifications
-  PARAMETER_NOTIFICATION = 10;  // A parameter has changed
-  DISCOVER_NOTIFICATIONS = 11;  // find out how notifications are setup
+  PARAMETER_NOTIFICATION = 10;   // A parameter has changed
+  DISCOVER_NOTIFICATIONS = 11;   // find out how notifications are setup
+  PARAM_ENABLE_NOTIFY    = 50;   // setup parameter notifications
+  PARAM_DISABLE_NOTIFY   = 51;   // disable parameter notifications
 
   // File Transfers
   DISCOVER_FILES      = 12;
@@ -330,14 +333,18 @@ message ParameterWriteResponse {
 // ------------------------------------------------------
 message ParameterNotifyConfig {
   uint32 parameter_id                = 1;    // Which param
-  bool   enabled                     = 2;    // Enabled or Disabled
-  uint32 minimum_notification_period = 3;    // min_ms: Minimum Notification Interval (ms)
-  uint32 maximum_notification_period = 4;    // max_ms: Minimum Notification Interval (ms)
-  float  minimum_delta               = 5;    // notify only if change by this much
+  uint32 minimum_notification_period = 2;    // min_ms: Minimum Notification Interval (ms)
+  uint32 maximum_notification_period = 3;    // max_ms: Minimum Notification Interval (ms)
+  float  minimum_delta               = 4;    // notify only if change by this much
 }
 
-message ParameterConfigureNotifications {
+message ParameterEnableNotifications {
   repeated ParameterNotifyConfig  configs = 1;
+  bool     disable_all_first              = 2;
+}
+
+message ParameterDisableNotifications {
+  repeated uint32 pids                    = 1;
 }
 
 message ParameterNotifyConfigResponse {
@@ -413,6 +420,7 @@ message FileInfo {
   string file_name                    = 2;  // Name
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
+  uint32 maximum_size_bytes           = 7;  // Determined by storage space
   StorageLocation storage_location    = 5; 
   bool require_checksum               = 6;  // set true to request checksum generation and validation.
 }
