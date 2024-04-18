@@ -1,9 +1,20 @@
 #!/usr/bin/env python
+import argparse
+
+parser = argparse.ArgumentParser(
+                    description='Updates a reach.options file based on a prototype file and associated .h file')
+parser.add_argument('-i', '--h-file-location', help="The .h file with size defines to use",
+                    default="../../reach-c-stack/include/reach_ble_proto_sizes.h")
+parser.add_argument('-p', '--prototype-location', help="The prototype file to use", default="reach.options.prototype")
+parser.add_argument('-o', '--options-location', help="The path for the generated .options file", default="reach.options")
+
+args = parser.parse_args()
+
 
 # Specify the file you want to perform replacements on
-input_h_file  ="../../reach-c-stack/include/reach_ble_proto_sizes.h"
-input_file  ="reach.options.prototype"
-output_file ="reach.options"
+input_h_file = args.h_file_location
+input_file  = args.prototype_location
+output_file =  args.options_location
 
 print("preprocess_options.py creates the reach.options file")
 print("by replacing size macros in a prototype.")

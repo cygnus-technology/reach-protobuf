@@ -66,6 +66,7 @@ enum ReachProtoVersion {
     // 0x106:  Changed CONFIG_PARAM_NOTIFY handling to expect an array of up to 8.
     // 0x107:  Replaced CONFIG_PARAM_NOTIFY with ENABLE and DISABLE
     // 0x108:  Removed and reserved obsolete messages_per_ack
+    // 0x200:  Unionzed Parameter Descriptions
 }
 
 enum ReachProto_MAJOR_Version {
@@ -74,11 +75,11 @@ enum ReachProto_MAJOR_Version {
 }
 enum ReachProto_MINOR_Version {
     MINOR_V0       = 0;   // Must have a zero
-    MINOR_VERSION  = 1;   // Update at a release or a big change
+    MINOR_VERSION  = 2;   // Update at a release or a big change
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 8;   // Update when something changes
+  PATCH_VERSION    = 1;   // Update when something changes
 }
 
 
@@ -269,33 +270,105 @@ message ParameterInfoResponse {
   repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
 }
 
+message Uint32ParameterInfo {
+  optional uint32 range_min = 1;
+  optional uint32 range_max = 2;
+  optional uint32 default_value = 3;
+  optional string units = 4;
+}
+message Int32ParameterInfo {
+  optional int32 range_min = 1;
+  optional int32 range_max = 2;
+  optional int32 default_value = 3;
+  optional string units = 4;
+}
+message Float32ParameterInfo {
+  optional float range_min = 1;
+  optional float range_max = 2;
+  optional float default_value = 3;
+  optional uint32 precision = 4;
+  optional string units = 5;
+}
+message Uint64ParameterInfo {
+  optional uint64 range_min = 1;
+  optional uint64 range_max = 2;
+  optional uint64 default_value = 3;
+  optional string units = 4;
+}
+message Int64ParameterInfo {
+  optional int64 range_min = 1;
+  optional int64 range_max = 2;
+  optional int64 default_value = 3;
+  optional string units = 4;
+}
+message Float64ParameterInfo {
+  optional double range_min = 1;
+  optional double range_max = 2;
+  optional double default_value = 3;
+  optional uint32 precision = 4;
+  optional string units = 5;
+}
+message BoolParameterInfo {
+  optional bool default_value = 1;
+  optional uint32 pei_id = 2;
+}
+message StringParameterInfo {
+  optional string default_value = 1;
+  uint32 max_size = 2;
+}
+message EnumParameterInfo {
+  optional uint32 range_min = 1;
+  optional uint32 range_max = 2;
+  optional uint32 default_value = 3;
+  optional uint32 pei_id = 4;
+  optional string units = 5;
+}
+message BitfieldParameterInfo {
+  optional uint64 default_value = 1;
+  uint32 bits_available = 2;
+  optional uint32 pei_id = 3;
+}
+message ByteArrayParameterInfo {
+  optional bytes default_value = 1;
+  uint32 max_size = 2;
+}
+
+
 message ParameterInfo {
   uint32 id                         = 1;  // Id
-  ParameterDataType data_type       = 2;  // DataType
-  uint32 size_in_bytes              = 3;  // used by some devices
-  string name                       = 4;  // Name
-  AccessLevel access                = 5;  // Access
-  optional string description       = 6;  // Description
-  string units                      = 7;  // Units
-  optional double range_min         = 8;  // Range Max
-  optional double range_max         = 9;  // Range Max
-  optional double default_value     = 10; // Show instead of value if no value.
-  StorageLocation storage_location  = 11; // RAM or NVM or ?
+  string name                       = 2;  // Name
+  optional string description       = 3;  // Description
+  AccessLevel access                = 4;  // Access
+  StorageLocation storage_location  = 5; // RAM or NVM or ?
+  oneof desc
+  {
+    Uint32ParameterInfo uint32_desc = 6;
+    Int32ParameterInfo int32_desc   = 7;
+    Float32ParameterInfo float32_desc = 8;
+    Uint64ParameterInfo uint64_desc = 9;
+    Int64ParameterInfo int64_desc   = 10;
+    Float64ParameterInfo float64_desc = 11;
+    BoolParameterInfo bool_desc = 12;
+    StringParameterInfo string_desc = 13;
+    EnumParameterInfo enum_desc = 14;
+    BitfieldParameterInfo bitfield_desc = 15;
+    ByteArrayParameterInfo bytearray_desc = 16;
+  }
 }
 
-// Give names to enums and bitfields
+// Give names to enums, bitfields, and booleans
 message ParamExKey {
-    uint32 id               = 1;  // the valud of the enum
-    string name             = 2;  // the name of the enum
+    uint32 id               = 1;  // the value of the enum or the bit position of the bitfield
+    string name             = 2;  // the name of the enum/bit
 }
 
-// also used for bitfields
+// Describes enum, bitfield, and boolean labels
 message ParamExInfoResponse {
-    uint32              associated_pid = 1;
+  reserved 1;
+    // uint32              associated_pid = 1;  // deprecated
     ParameterDataType   data_type      = 2;
-    repeated ParamExKey enumerations   = 3;
+    repeated ParamExKey keys           = 3;
     uint32              pei_id         = 4;
-
 }
  
 
@@ -400,8 +473,8 @@ message ParameterValue {
     double float64_value    = 8;  // double
     bool   bool_value       = 9;  // Bool
     string string_value     = 10; // String values (UTF8)
-    uint32 enum_value       = 11;
-    uint32 bitfield_value   = 12;
+    uint32 enum_value       = 11; // Enumeration value
+    uint64 bitfield_value   = 12; // Bitfield value
     bytes  bytes_value      = 13; // byte array values
   }                               
 }
@@ -421,7 +494,7 @@ message FileInfo {
   string file_name                    = 2;  // Name
   AccessLevel access                  = 3;  // Access Level (Read / Write)
   int32 current_size_bytes            = 4;  // size in bytes
-  uint32 maximum_size_bytes           = 7;  // Determined by storage space
+  optional uint32 maximum_size_bytes  = 7;  // Determined by storage space
   StorageLocation storage_location    = 5; 
   bool require_checksum               = 6;  // set true to request checksum generation and validation.
 }
@@ -446,7 +519,8 @@ message FileTransferResponse {
   int32  result                       = 1;  // 0 if OK
   uint32 transfer_id                  = 2;  // Transfer ID
   uint32 ack_rate                     = 3;  // confirms or overrides request
-  optional string result_message      = 4;  
+  uint32 transfer_length              = 4;  // If the file is smaller than the requested offset + length, this will reflect how much data can be transferred
+  optional string result_message      = 5;
 }                                           
 
 // Bi-Directional Message                   
