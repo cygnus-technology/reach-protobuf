@@ -65,6 +65,7 @@ enum ReachProtoVersion {
     // 0x105:  Renamed discover notifications.
     // 0x106:  Changed CONFIG_PARAM_NOTIFY handling to expect an array of up to 8.
     // 0x107:  Replaced CONFIG_PARAM_NOTIFY with ENABLE and DISABLE
+    // 0x108:  Removed and reserved obsolete messages_per_ack
 }
 
 enum ReachProto_MAJOR_Version {
@@ -77,7 +78,7 @@ enum ReachProto_MINOR_Version {
 }
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   // Must have a zero
-  PATCH_VERSION    = 7;   // Update when something changes
+  PATCH_VERSION    = 8;   // Update when something changes
 }
 
 
@@ -429,12 +430,13 @@ message FileInfo {
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
 message FileTransferRequest {
+  reserved 6;
   uint32 file_id                      = 1;  // File ID
   uint32 read_write                   = 2;  // 0 for read, 1 for write.
   uint32 request_offset               = 3;  // where to access in the file
   uint32 transfer_length              = 4;  // bytes to read or write
   uint32 transfer_id                  = 5;  // In case of multiple transfers
-  uint32 messages_per_ack             = 6;  // obsolete.  Use requested_ack_rate.
+  // uint32 messages_per_ack             = 6;  // obsolete.  Use requested_ack_rate.
   uint32 timeout_in_ms                = 7;  // ms before abandonment
   optional uint32 requested_ack_rate  = 8;  // number of messages before ACK.
   bool   require_checksum             = 9;  // set true to enable checksum generation and validation.
