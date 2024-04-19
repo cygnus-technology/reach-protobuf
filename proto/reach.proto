@@ -85,48 +85,48 @@ enum ReachProto_PATCH_Version {
 
 enum ReachMessageTypes {
   reserved  9;  // obsolete CONFIG_PARAM_NOTIFY
-  INVALID             = 0;        ///> No Valid Message
-  ERROR_REPORT        = 1;        ///> Inform client of an error condition
-  PING                = 2;        ///> Test the link to the server
-  GET_DEVICE_INFO     = 3;        ///> Open the communication with a server
+  INVALID                     = 0;   ///> No Valid Message
+  ERROR_REPORT                = 1;   ///> Inform client of an error condition
+  PING                        = 2;   ///> Test the link to the server
+  GET_DEVICE_INFO             = 3;   ///> Open the communication with a server
 
   /// Parameters
-  DISCOVER_PARAMETERS = 5;        ///> Get a list of all of the parameters in the repository
-  DISCOVER_PARAM_EX   = 6;        ///> An extension to discover used by verbose parameters
-  READ_PARAMETERS     = 7;        ///> Get the values of a set of parameters
-  WRITE_PARAMETERS    = 8;        ///> Change the values of a set of parameters
-  PARAMETER_NOTIFICATION = 10;    ///> Sent from the server to the client when a parameter has changed
-  DISCOVER_NOTIFICATIONS = 11;    ///> Find out how notifications are setup
-  PARAM_ENABLE_NOTIFY    = 50;    ///> setup parameter notifications
-  PARAM_DISABLE_NOTIFY   = 51;    ///> disable parameter notifications
+  DISCOVER_PARAMETERS         = 5;   ///> Get a list of all of the parameters in the repository
+  DISCOVER_PARAM_EX           = 6;   ///> An extension to discover used by verbose parameters
+  READ_PARAMETERS             = 7;   ///> Get the values of a set of parameters
+  WRITE_PARAMETERS            = 8;   ///> Change the values of a set of parameters
+  PARAMETER_NOTIFICATION   =   10;   ///> Sent from the server to the client when a parameter has changed
+  DISCOVER_NOTIFICATIONS   =   11;   ///> Find out how notifications are setup
+  PARAM_ENABLE_NOTIFY      =   50;   ///> setup parameter notifications
+  PARAM_DISABLE_NOTIFY     =   51;   ///> disable parameter notifications
 
   /// File Transfers
-  DISCOVER_FILES      = 12;       ///> Get a list of supported files
-  TRANSFER_INIT       = 13;       ///> Begin a file transfer
-  TRANSFER_DATA       = 14;       ///> (bi-directional) sends the requested data 
-  TRANSFER_DATA_NOTIFICATION = 15;  ///> (bi-directional) Clears Sender to Send More Data
-  DELETE_FILE = 16;               ///> Delete a file
+  DISCOVER_FILES              = 12;  ///> Get a list of supported files
+  TRANSFER_INIT               = 13;  ///> Begin a file transfer
+  TRANSFER_DATA               = 14;  ///> (bi-directional) sends the requested data 
+  TRANSFER_DATA_NOTIFICATION  = 15;  ///> (bi-directional) Clears Sender to Send More Data
+  ERASE_FILE                  = 16;  ///> Set file size to zero.
 
   /// Commands
-  DISCOVER_COMMANDS   = 17;       ///> Get a list of supported commands
-  SEND_COMMAND        = 18;       ///> Reqeuest excecution of a command
+  DISCOVER_COMMANDS           = 17;  ///> Get a list of supported commands
+  SEND_COMMAND                = 18;  ///> Reqeuest excecution of a command
 
   // Command Line Interface
-  CLI_NOTIFICATION    = 20;       ///> Inform the other side (bi-directional) of a command line.
+  CLI_NOTIFICATION            = 20;  ///> Inform the other side (bi-directional) of a command line.
 
   // Streams
-  DISCOVER_STREAMS    = 25;       ///> Get a list of supported streams
-  OPEN_STREAM         = 26;       ///> Open a stream
-  CLOSE_STREAM        = 27;       ///> Close a stream
-  STREAM_DATA_NOTIFICATION = 28;  ///> Inform the other side (bi-directional) of data on a stream.
+  DISCOVER_STREAMS            = 25;  ///> Get a list of supported streams
+  OPEN_STREAM                 = 26;  ///> Open a stream
+  CLOSE_STREAM                = 27;  ///> Close a stream
+  STREAM_DATA_NOTIFICATION    = 28;  ///> Inform the other side (bi-directional) of data on a stream.
 
   // Time
-  SET_TIME             = 30;       ///> Set the real time clock
-  GET_TIME             = 31;       ///> Read the real time clock
+  SET_TIME                    = 30;  ///> Set the real time clock
+  GET_TIME                    = 31;  ///> Read the real time clock
 
   // WiFi
-  DISCOVER_WIFI        = 40;       ///> Get a list of WiFi acces points
-  WIFI_CONNECT         = 41;       ///> Connect or disconnect to an access point
+  DISCOVER_WIFI               = 40;  ///> Get a list of WiFi acces points
+  WIFI_CONNECT                = 41;  ///> Connect or disconnect to an access point
 }
 
 ///----------------------------
@@ -141,10 +141,10 @@ message ReachMessageHeader {
   uint32 endpoint_id          = 2;
 
   /// To support multiple clients
-  uint32   client_id  = 3;
+  uint32 client_id            = 3;
 
   /// Zero when transaction is complete
-  uint32   remaining_objects  = 4;
+  uint32 remaining_objects    = 4;
 
   /// An ID for a series of messages
   uint32 transaction_id       = 5;
@@ -193,21 +193,21 @@ message AhsokaMessageHeader
     bool is_message_compressed = 6;
 }
 
-// ERROR_REPORT: Could be sent asynchronously to indicate an error.
+/// ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
-  int32  result            = 1;    // Error Result
-  string result_message    = 2;    // Error String
+  int32  result            = 1;    ///< The integer error code being reported, preferrably from the ErrorCodes enum.
+  string result_message    = 2;    ///< A human readable string describing the error.
 }
 
 // Request Object used to Echo Data for testing the Device Communication
 message PingRequest {
-  bytes echo_data         = 1;    // Data which should be echoed in the response
+  bytes echo_data         = 1;    ///< Data which should be echoed in the response
 }
 
 // Response Object used to Echo Data for testing the Device Communication
 message PingResponse {
-  bytes echo_data         = 1;   // The same data sent in the request
-  int32 signal_strength   = 2;   // rssi : Rssi express in strength so clients don't have to interpret
+  bytes echo_data         = 1;   ///< The same data sent in the request
+  int32 signal_strength   = 2;   ///< rssi : The server's received signal strength expressed in dB.
 }
 
 // ------------------------------------------------------
@@ -215,71 +215,60 @@ message PingResponse {
 // Reach sessions are opened with the device info request and response.  
 // ------------------------------------------------------
 message DeviceInfoRequest {
-  // The request can include a challenge key to grant or deny access to parts of the system.
-  optional string challenge_key  = 1;
-  // The client shares its version to enable backward compatibility.
-  string client_protocol_version = 2;
+  optional string challenge_key  = 1;  ///< The request can include a challenge key to grant or deny access to parts of the system.
+  string client_protocol_version = 2;  ///< The client shares its version to enable backward compatibility.
 }
 
 message DeviceInfoResponse {
-  int32  protocol_version         = 1;    // Supported Protocol Version (deprecated)
-  string device_name              = 2;    // Name, Typically Model Name
-  string manufacturer             = 3;
-  string device_description       = 4;    // Description
-
-  // Each endpoint advertises a "main" FW version.
-  // If there are other FW versions, put them in the parameter repo.
+  reserved 1; // deprecated protocol_version as an integer
+  string device_name              = 2;    ///< Human readable name of the device
+  string manufacturer             = 3;    ///< Human readable name of the manufacturer
+  string device_description       = 4;    ///< A longer human readable description.
+  /// Each endpoint advertises a "main" FW version.
+  /// If there are other FW versions, put them in the parameter repo.
   string firmware_version         = 6;
-
-  // protocol version as a string
-  string protocol_version_string  = 7;
-
-  // A bit mask, allowing support for up to 32 services
-  uint32 services                 = 8;
-
-  // Used to avoid reloading the parameter descriptions
-  uint32 parameter_metadata_hash  = 9;
-
-  optional bytes application_identifier = 10;   // A UUID to find a Custom firmware_version
-  uint32 endpoints                      = 11;   // bit mask, non-zero if other endpoints.
-
-  bytes sizes_struct = 20;  // packed. See SizesOffsets
+  string protocol_version_string  = 7;    //< The protocol version as a string against which this device is built.
+  uint32 services                 = 8;    ///< A bit mask, allowing support for up to 32 services
+  uint32 parameter_metadata_hash  = 9;    ///< Used to avoid reloading the parameter descriptions
+  optional bytes application_identifier = 10;   ///< A UUID to find a custom user interface
+  uint32 endpoints                      = 11;   ///< A bit mask, non-zero if the device supports more than one endpoint.
+  bytes sizes_struct = 20;  ///< A packed structure informing the client of the size limitations of the server. See SizesOffsets for descriptions.
 }
 
-// binary bit masks or'ed together into the DeviceInfoResponse.services
+/// binary bit masks or'ed together into the DeviceInfoResponse.services
 enum ServiceIds {
-  NO_SVC_ID       = 0;
-  PARAMETER_REPO  = 1;
-  FILES           = 2;
-  STREAMS         = 4;
-  COMMANDS        = 8;
-  CLI             = 16;
-  TIME            = 32;
-  WIFI            = 64;
+  NO_SVC_ID       = 0;  ///< No services.  Device info service is required.
+  PARAMETER_REPO  = 1;  ///< Set this bit when the device supports the parameter service
+  FILES           = 2;  ///< Set this bit when the device supports the file service
+  STREAMS         = 4;  ///< Set this bit when the device supports the stream service
+  COMMANDS        = 8;  ///< Set this bit when the device supports the command service
+  CLI             = 16; ///< Set this bit when the device supports the command line interface
+  TIME            = 32; ///< Set this bit when the device supports the time service
+  WIFI            = 64; ///< Set this bit when the device supports the WiFi service
 }
 
-// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
+/// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
 enum EndpointIds { 
-  NO_ENDPOINTS    = 0;
-  ONE             = 1;
-  TWO             = 2;
-  THREE           = 4;
-  FOUR            = 8;
+  NO_ENDPOINTS    = 0;  ///< No other endpoints
+  ONE             = 1;  ///< This is the first of multiple endpoints.
+  TWO             = 2;  ///< This is the second of multiple endpoints. 
+  THREE           = 4;  ///< This is the third of multiple endpoints.
+  FOUR            = 8;  ///< This is the fourth of multiple endpoints.
 }
 
-// ------------------------------------------------------
-// Parameter Service
-// Parameters provide a simple key:value database. The key is an ID number.  
-// The value can be of various common types up to (typically) 32 bytes.  
-// Parameterssupport a robust description which can be const, stored in flash.  
-// Parameters can be configured to support notifying the client.
-// ------------------------------------------------------
+/// ------------------------------------------------------
+/// Parameter Service
+/// Parameters provide a simple key:value database. The key is an ID number.  
+/// The value can be of various common types up to (typically) 32 bytes.  
+/// Parameterssupport a robust description which can be const, stored in flash.  
+/// Parameters can be configured to support notifying the client.
+/// ------------------------------------------------------
 message ParameterInfoRequest {
-  repeated uint32 parameter_ids = 2; // ID's to Fetch (Empty to Get All)
+  repeated uint32 parameter_ids = 2; ///< ID's to Fetch (Empty to Get All)
 }
 
 message ParameterInfoResponse {
-  repeated ParameterInfo parameter_infos = 1; // Array of Param Infos
+  repeated ParameterInfo parameter_infos = 1; ///< An array of Param Info structures
 }
 
 message Uint32ParameterInfo {
@@ -502,63 +491,62 @@ message DiscoverFilesResponse {
 }
 
 message FileInfo {
-  uint32 file_id                      = 1;  // ID
-  string file_name                    = 2;  // Name
-  AccessLevel access                  = 3;  // Access Level (Read / Write)
-  int32 current_size_bytes            = 4;  // size in bytes
-  optional uint32 maximum_size_bytes  = 7;  // Determined by storage space
-  StorageLocation storage_location    = 5; 
-  bool require_checksum               = 6;  // set true to request checksum generation and validation.
+  uint32 file_id                      = 1;  ///< ID by which this file is referenced
+  string file_name                    = 2;  ///< Human readable file name
+  AccessLevel access                  = 3;  ///< Access Level (Read / Write)
+  int32 current_size_bytes            = 4;  ///< size in bytes
+  optional uint32 maximum_size_bytes  = 7;  ///< Determined by storage space
+  StorageLocation storage_location    = 5;  ///< NVM or RAM
+  bool require_checksum               = 6;  ///< set true to request checksum generation and validation.
 }
 
 // ------------------------------------------------------
 // Begins a File Transfer (Upload / Download)
 // ------------------------------------------------------
 message FileTransferRequest {
-  reserved 6;
-  uint32 file_id                      = 1;  // File ID
-  uint32 read_write                   = 2;  // 0 for read, 1 for write.
-  uint32 request_offset               = 3;  // where to access in the file
-  uint32 transfer_length              = 4;  // bytes to read or write
-  uint32 transfer_id                  = 5;  // In case of multiple transfers
-  // uint32 messages_per_ack             = 6;  // obsolete.  Use requested_ack_rate.
-  uint32 timeout_in_ms                = 7;  // ms before abandonment
-  optional uint32 requested_ack_rate  = 8;  // number of messages before ACK.
-  bool   require_checksum             = 9;  // set true to enable checksum generation and validation.
+  reserved 6;  // obsolete messages_per_ack
+  uint32 file_id                      = 1;  ///< ID by which this file is referenced
+  uint32 read_write                   = 2;  ///< 0 for read, 1 for write.
+  uint32 request_offset               = 3;  ///< where to access in the file, in bytes
+  uint32 transfer_length              = 4;  ///< number of bytes to read or write
+  uint32 transfer_id                  = 5;  ///< Copied from the header, the same for the continuued transfer.
+  uint32 timeout_in_ms                = 7;  ///< ms before abandonment
+  optional uint32 requested_ack_rate  = 8;  ///< number of messages before ACK.
+  bool   require_checksum             = 9;  ///< set true to enable checksum generation and validation.
 }                                           
 
 message FileTransferResponse {          
-  int32  result                       = 1;  // 0 if OK
-  uint32 transfer_id                  = 2;  // Transfer ID
-  uint32 ack_rate                     = 3;  // confirms or overrides request
-  uint32 transfer_length              = 4;  // If the file is smaller than the requested offset + length, this will reflect how much data can be transferred
-  optional string result_message      = 5;
+  int32  result                       = 1;  ///< 0 if OK
+  uint32 transfer_id                  = 2;  ///< Echos the request.
+  uint32 ack_rate                     = 3;  ///< confirms or overrides request
+  optional string result_message      = 4;  ///< In case of error, a human readable explanation.
+  uint32 transfer_length              = 5;  ///< If the file is smaller than the requested offset + length, this will reflect how much data can be transferred
 }                                           
 
 // Bi-Directional Message                   
 message FileTransferData {                  
-  int32  result                       = 1;  // non-zero for error
-  uint32 transfer_id                  = 2;  // Transfer ID
-  uint32 message_number               = 3;  // counts up
-  bytes  message_data                 = 4;  // Data
-  optional int32 checksum             = 5;  // Optional RFC 1071 checksum for integrity checking
+  int32  result                       = 1;  ///< non-zero for error
+  uint32 transfer_id                  = 2;  ///< Unchanged during the continuued transfer.
+  uint32 message_number               = 3;  ///< counts up from 1 in the first transfer
+  bytes  message_data                 = 4;  ///< Data
+  optional int32 checksum             = 5;  ///< Optional RFC 1071 checksum for integrity checking
 }                                           
 
 message FileTransferDataNotification {      
-  int32  result                       = 1;  // 0 for success
-  optional string result_message      = 2;  
-  bool   is_complete                  = 3;  
-  uint32 transfer_id                  = 4;  // Transfer ID
-  uint32 retry_offset                 = 5;  // file offset where error occurred
+  int32  result                       = 1;  ///< 0 for success
+  optional string result_message      = 2;  ///< Provides more information if an error occurs.
+  bool   is_complete                  = 3;  ///< Set to true when all data has been trasnferred.
+  uint32 transfer_id                  = 4;  ///< Unchanged during the continuued transfer.
+  uint32 retry_offset                 = 5;  ///< If there is an error, this gives the offset at which a new transfer should start with good data.
 }
 
 message FileEraseRequest {
-  uint32 file_id                      = 1;  // File ID
+  uint32 file_id                      = 1;  ///< File ID to be erased
 }                                           
 message FileEraseResponse {                 
-  uint32 file_id                      = 1;  // File ID
-  int32  result                       = 2;  // err~
-  optional string result_message      = 3;
+  uint32 file_id                      = 1;  ///< File ID that has been erased
+  int32  result                       = 2;  ///< 0 on success
+  optional string result_message      = 3;  ///< Provides more information if an error occurs.
 }
 
 // ------------------------------------------------------
