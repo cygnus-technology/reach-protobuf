@@ -54,7 +54,7 @@ cr.ByteArrayParameterInfo.default_value         max_size: REACH_LONG_STRING_LEN
 cr.ParameterInfo.name                           max_size: REACH_MEDIUM_STRING_LEN
 cr.ParameterInfo.description                    max_size: REACH_LONG_STRING_LEN
 cr.ParameterInfoRequest.parameter_ids           max_count: REACH_COUNT_PARAM_IDS
-cr.ParameterInfoResponse.parameter_infos        max_count: REACH_COUNT_PARAM_DESC_IN_RESPONSE
+cr.ParameterInfoResponse.parameter_infos        max_count: REACH_NUM_LARGE_STRUCTS_IN_MESSAGE
 
 cr.ParamExKey.name                              max_size: REACH_SHORT_STRING_LEN
 cr.ParamExInfoResponse.keys                     max_count: REACH_NUM_SMALL_STRUCTS_IN_MESSAGE
@@ -89,10 +89,11 @@ cr.FileEraseResponse.result_message             max_size: REACH_BIG_DATA_BUFFER_
 #
 # Streams
 #
-cr.DiscoverStreamsResponse.streams              max_count: REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
+cr.DiscoverStreamsResponse.streams              max_count: REACH_NUM_LARGE_STRUCTS_IN_MESSAGE
 cr.StreamInfo.name                              max_size: REACH_MEDIUM_STRING_LEN
+cr.StreamInfo.description                       max_size: REACH_DESCRIPTION_LEN
 cr.StreamData.message_data                      max_size: REACH_BIG_DATA_BUFFER_LEN
-cr.StreamOpenResponse.result_message            max_size: REACH_BIG_DATA_BUFFER_LEN
+cr.StreamResponse.result_message                max_size: REACH_BIG_DATA_BUFFER_LEN
 
 #
 # Commands

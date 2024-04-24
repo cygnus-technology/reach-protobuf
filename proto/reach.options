@@ -89,10 +89,11 @@ cr.FileEraseResponse.result_message             max_size: 194
 #
 # Streams
 #
-cr.DiscoverStreamsResponse.streams              max_count: 4
+cr.DiscoverStreamsResponse.streams              max_count: 2
 cr.StreamInfo.name                              max_size: 24
+cr.StreamInfo.description                       max_size: 48
 cr.StreamData.message_data                      max_size: 194
-cr.StreamOpenResponse.result_message            max_size: 194
+cr.StreamResponse.result_message                max_size: 194
 
 #
 # Commands

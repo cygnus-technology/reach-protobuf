@@ -65,6 +65,7 @@ option swift_prefix = "";
     // 0x108:  Removed and reserved obsolete messages_per_ack
     // 0.2.1:  Unionzed Parameter Descriptions
     // 0.2.2:  File erase, removed integer proto version
+    // 0.2.3:  Stream support
 
 /// The major version generally changes to signal a break in compatibility
 enum ReachProto_MAJOR_Version {
@@ -79,7 +80,7 @@ enum ReachProto_MINOR_Version {
 /// The patch version changes every time a hex file goes out the door.
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   ///< Must have a zero
-  PATCH_VERSION    = 2;   ///< Update when something changes
+  PATCH_VERSION    = 3;   ///< Update when something changes
 }
 
 /// These values identify the type of the Reach message.
@@ -554,18 +555,18 @@ message DiscoverStreamsResponse {
 /// A structure describing a stream
 message StreamInfo {
   int32 stream_id             = 1;  ///< The ID by which this stream is addressed.
-  AccessLevel access          = 2;  ///< Access Level for Stream  (Read / Write).
+  AccessLevel access          = 2;  ///< Read:  The stream flows from the device.  Write:  The stream flows to the device.
   string name                 = 3;  ///< A human readable name for this stream.
+  string description          = 4;  ///< A longer human readable description of this stream.
 }
 
 /// A structure requesting to open a stream
 message StreamOpen {
   int32 stream_id             = 1;  ///< The ID by which this stream is addressed.
-  AccessLevel access          = 2;  ///< Read or write access
 }
 
-/// The response to a StreamOpen request
-message StreamOpenResponse {
+/// The response to StreamOpen and StreamClose requests
+message StreamResponse {
     int32 stream_id                 = 1;  ///< The ID by which this stream is addressed.
     int32 result                    = 2;  ///< A result of zero indicates OK                                       
     optional string result_message  = 3;  ///< Allows to provide a human readable explanation in case of an error. 
@@ -658,16 +659,12 @@ message ConnectionDescription {
   optional WiFiBand band            = 5;  ///< The RF band used by this connection
 }
 
-/// Commands the server to initiate a scan for WiFi access points.
-/// As this may take some time, issue it and check the response later.
-message ScanWiFi { }                      
-
 /// A request to provide a list access points
 message DiscoverWiFi { }
 
 /// response to DiscoverWiFi
 message DiscoverWiFiResponse {
-  bool scan_is_valid                = 1;   ///< true if a recent scan is complete.
+  int32 result                      = 1;  ///< A result of zero indicates completed OK. The "INCOMPLETE" result means the operation must be retried.
   repeated ConnectionDescription cd = 2;   ///< An array of available access points
 }
 
@@ -682,9 +679,10 @@ message WiFiConnectionRequest {
 
 /// Describes the response to a WiFi connection request
 message WiFiConnectionResponse {
-  int32 result                      = 1;  ///< A result of zero indicates OK                                      
+  int32 result                      = 1;  ///< A result of zero indicates completed OK. The "INCOMPLETE" result means the operation must be retried.
+  bool connected                    = 2;  ///< true if the requested connection is valid.
   optional string result_message    = 3;  ///< Allows to provide a human readable explanation in case of an error.
-  optional int32 signal_strength    = 2;  ///< RSSI
+  optional int32 signal_strength    = 4;  ///< RSSI
 }
 
 /// permissions
@@ -743,6 +741,7 @@ enum ErrorCodes {
     RESERVED_3         = 18; ///< not yet used
     NO_RESOURCE        = 19; ///< Some required resource is not available.
     INVALID_ID         = 20;  ///< The ID provided is not valid
+    INCOMPLETE         = 21;  ///< The requested operation is incomplete and must be retried.
     ABORT              = 1000; ///< Operation cancellation
 }
 
