@@ -554,7 +554,7 @@ message DiscoverStreamsResponse {
 
 /// A structure describing a stream
 message StreamInfo {
-  int32 stream_id             = 1;  ///< The ID by which this stream is addressed.
+  uint32 stream_id            = 1;  ///< The ID by which this stream is addressed.
   AccessLevel access          = 2;  ///< Read:  The stream flows from the device.  Write:  The stream flows to the device.
   string name                 = 3;  ///< A human readable name for this stream.
   string description          = 4;  ///< A longer human readable description of this stream.
@@ -562,24 +562,24 @@ message StreamInfo {
 
 /// A structure requesting to open a stream
 message StreamOpen {
-  int32 stream_id             = 1;  ///< The ID by which this stream is addressed.
+  uint32 stream_id            = 1;  ///< The ID by which this stream is addressed.
 }
 
 /// The response to StreamOpen and StreamClose requests
 message StreamResponse {
-    int32 stream_id                 = 1;  ///< The ID by which this stream is addressed.
+    uint32 stream_id                = 1;  ///< The ID by which this stream is addressed.
     int32 result                    = 2;  ///< A result of zero indicates OK                                       
     optional string result_message  = 3;  ///< Allows to provide a human readable explanation in case of an error. 
 }
 
 /// A structure requesting to close a stream
 message StreamClose {
-    int32 stream_id           = 1;    ///< The ID by which this stream is addressed. 
+    uint32 stream_id          = 1;    ///< The ID by which this stream is addressed. 
 }
 
 /// Bi-Directional message used to asynchronously send stream data to the other side.
 message StreamData {
-  int32 stream_id             = 1;  ///< The ID by which this stream is addressed.
+  uint32 stream_id            = 1;  ///< The ID by which this stream is addressed.
   uint32 roll_count           = 2;  ///< Message Number.  Increases with each send.  As stream transmission may be less relaible, allows for continuity checking.
   bytes message_data          = 3;  ///< An array of bytes representing the streami data.
   optional int32 checksum     = 4;  ///< Optional RFC 1071 checksum for integrity checking
