@@ -121,6 +121,7 @@ cr.TimeSetResponse.result_message               max_size: REACH_BIG_DATA_BUFFER_
 #                                               
 
 cr.ConnectionDescription.ssid                    max_size: REACH_LONG_STRING_LEN
+cr.WiFiConnectionRequest.ssid                    max_size: REACH_LONG_STRING_LEN
 cr.DiscoverWiFiResponse.cd                       max_count:REACH_NUM_MEDIUM_STRUCTS_IN_MESSAGE
 cr.WiFiConnectionRequest.ssid                    max_size: REACH_LONG_STRING_LEN
 cr.WiFiConnectionRequest.password                max_size: REACH_LONG_STRING_LEN

@@ -121,6 +121,7 @@ cr.TimeSetResponse.result_message               max_size: 194
 #                                               
 
 cr.ConnectionDescription.ssid                    max_size: 32
+cr.WiFiConnectionRequest.ssid                    max_size: 32
 cr.DiscoverWiFiResponse.cd                       max_count:4
 cr.WiFiConnectionRequest.ssid                    max_size: 32
 cr.WiFiConnectionRequest.password                max_size: 32

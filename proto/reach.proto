@@ -66,6 +66,7 @@ option swift_prefix = "";
     // 0.2.1:  Unionzed Parameter Descriptions
     // 0.2.2:  File erase, removed integer proto version
     // 0.2.3:  Stream support
+    // 0.2.4:  Added a data type to streams
 
 /// The major version generally changes to signal a break in compatibility
 enum ReachProto_MAJOR_Version {
@@ -80,7 +81,7 @@ enum ReachProto_MINOR_Version {
 /// The patch version changes every time a hex file goes out the door.
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   ///< Must have a zero
-  PATCH_VERSION    = 3;   ///< Update when something changes
+  PATCH_VERSION    = 4;   ///< Update when something changes
 }
 
 /// These values identify the type of the Reach message.
@@ -558,6 +559,7 @@ message StreamInfo {
   AccessLevel access          = 2;  ///< Read:  The stream flows from the device.  Write:  The stream flows to the device.
   string name                 = 3;  ///< A human readable name for this stream.
   string description          = 4;  ///< A longer human readable description of this stream.
+  ParameterDataType dataType  = 5;  ///< The type of the data in the stream
 }
 
 /// A structure requesting to open a stream
@@ -583,6 +585,7 @@ message StreamData {
   uint32 roll_count           = 2;  ///< Message Number.  Increases with each send.  As stream transmission may be less relaible, allows for continuity checking.
   bytes message_data          = 3;  ///< An array of bytes representing the streami data.
   optional int32 checksum     = 4;  ///< Optional RFC 1071 checksum for integrity checking
+  ParameterDataType dataType  = 5;  ///< The type of the data in the stream
 }
 
 /// The (optional) Command Service allows actions to be triggered from the Reach UI.
