@@ -57,6 +57,5 @@ CMakeCache.txt
 Makefile
 *.a
 ansic/build/
-
-
+*.swift
 
