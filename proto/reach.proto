@@ -66,6 +66,7 @@ option swift_prefix = "";
     // 0.2.1:  Unionzed Parameter Descriptions
     // 0.2.2:  File erase, removed integer proto version
     // 0.2.3:  Stream support
+    // 0.2.4:  J1939 CAN support
 
 /// The major version generally changes to signal a break in compatibility
 enum ReachProto_MAJOR_Version {
@@ -80,7 +81,7 @@ enum ReachProto_MINOR_Version {
 /// The patch version changes every time a hex file goes out the door.
 enum ReachProto_PATCH_Version {
   PATCH_V0         = 0;   ///< Must have a zero
-  PATCH_VERSION    = 3;   ///< Update when something changes
+  PATCH_VERSION    = 4;   ///< Update when something changes
 }
 
 /// These values identify the type of the Reach message.
@@ -128,6 +129,13 @@ enum ReachMessageTypes {
   // WiFi
   DISCOVER_WIFI               = 40;  ///< Get a list of WiFi acces points
   WIFI_CONNECT                = 41;  ///< Connect or disconnect to an access point
+
+  // CAN
+  CAN_SET_MSG_LIST            = 50;  ///< Sets the CAN IDs to listen for on the CAN bus.
+  CAN_GET_MSG_LIST            = 51;  ///< Gets the CAN IDs that are being handled on the CAN bus.
+  CAN_NOTIFICATION            = 52;  ///< Notification of CAN messages received on the CAN bus.
+  CAN_ENABLE_NOTIFY           = 53;  ///< Enable CAN message notification
+  CAN_DISABLE_NOTIFY          = 54;  ///< Disable CAN message notification
 }
 
 /// This is the "classic" Reach service routing message header.  
@@ -225,14 +233,15 @@ message DeviceInfoResponse {
 
 /// binary bit masks or'ed together into the DeviceInfoResponse.services
 enum ServiceIds {
-  NO_SVC_ID       = 0;  ///< No services.  Device info service is required.
-  PARAMETER_REPO  = 1;  ///< Set this bit when the device supports the parameter service
-  FILES           = 2;  ///< Set this bit when the device supports the file service
-  STREAMS         = 4;  ///< Set this bit when the device supports the stream service
-  COMMANDS        = 8;  ///< Set this bit when the device supports the command service
-  CLI             = 16; ///< Set this bit when the device supports the command line interface
-  TIME            = 32; ///< Set this bit when the device supports the time service
-  WIFI            = 64; ///< Set this bit when the device supports the WiFi service
+  NO_SVC_ID       = 0;    ///< No services.  Device info service is required.
+  PARAMETER_REPO  = 1;    ///< Set this bit when the device supports the parameter service
+  FILES           = 2;    ///< Set this bit when the device supports the file service
+  STREAMS         = 4;    ///< Set this bit when the device supports the stream service
+  COMMANDS        = 8;    ///< Set this bit when the device supports the command service
+  CLI             = 16;   ///< Set this bit when the device supports the command line interface
+  TIME            = 32;   ///< Set this bit when the device supports the time service
+  WIFI            = 64;   ///< Set this bit when the device supports the WiFi service
+  CAN             = 128;  ///< Set this bit when the device supports the CAN service
 }
 
 /// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
@@ -685,6 +694,41 @@ message WiFiConnectionResponse {
   optional int32 signal_strength    = 4;  ///< RSSI
 }
 
+/// The optional J1939 service allows for receiving J1939 messages on the CAN bus.
+
+/// Set the list of CAN IDs to listen for on the CAN bus.
+message CanSetMsgList {
+  repeated uint32 can_id            = 1;  ///< The CAN IDs to listen for.
+}
+
+/// Requests the list of CAN IDs that are being listened for on the CAN bus.
+message CanGetMsgList {}
+
+/// The response to the request for CAN IDs that are being listened for on the CAN bus.
+message CanGetMsgListResponse {
+  repeated uint32 can_id            = 1;  ///< The CAN IDs that are being listened for.
+}
+
+/// CAN message on the CAN bus
+message CanMessage {
+  uint32 can_id                     = 1;  ///< The CAN ID of the message
+  bytes data                        = 2;  ///< The CAN data
+}
+
+/// Notification of CAN messages on the CAN bus
+message CanNotification {
+  repeated CanMessage               = 1;  ///< CAN messages received on the CAN bus.
+}
+
+/// Enables the notification of CAN messages.
+message CanEnableNotifications {
+  uint32 period                     = 1;  ///< Period in ms to be notified the CAN messages.
+}
+
+/// Disables the notification of CAN messages.
+message CanDisableNotifications {}
+
+
 /// permissions
 enum AccessLevel {
   NO_ACCESS   = 0;  ///< No permission
@@ -801,6 +845,8 @@ message BufferSizes {
     /// The max number of parameter notification configurations 
     /// that a client will provide. 
     uint32  param_notify_config_count    = 15;
+    /// The max number of CAN messages that can be listened for on the CAN bus.
+    uint32 can_max_messages              = 16;
 }
 
 /// This describes the offset of each member of the BufferSizes message when packed for transmission 
@@ -819,6 +865,7 @@ enum SizesOffsets {
     NUM_PARAM_NOTIFICATIONS_OFFSET       = 13;  ///< uint8_t
     NUM_COMMANDS_IN_RESPONSE_OFFSET      = 14;  ///< uint8_t
     COUNT_PARAM_DESC_IN_RESPONSE_OFFSET  = 15;  ///< uint8_t
-    STRUCTURE_SIZE                       = 16;  ///< just the size
+    CAN_MAX_MESSAGES_OFFSET              = 16;  ///< uint8_t
+    STRUCTURE_SIZE                       = 17;  ///< just the size
 }
 
