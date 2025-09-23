@@ -131,11 +131,11 @@ enum ReachMessageTypes {
   WIFI_CONNECT                = 41;  ///< Connect or disconnect to an access point
 
   // CAN
-  CAN_SET_MSG_LIST            = 50;  ///< Sets the CAN IDs to listen for on the CAN bus.
-  CAN_GET_MSG_LIST            = 51;  ///< Gets the CAN IDs that are being handled on the CAN bus.
-  CAN_NOTIFICATION            = 52;  ///< Notification of CAN messages received on the CAN bus.
-  CAN_ENABLE_NOTIFY           = 53;  ///< Enable CAN message notification
-  CAN_DISABLE_NOTIFY          = 54;  ///< Disable CAN message notification
+  CAN_SET_MSG_LIST            = 60;  ///< Sets the CAN IDs to listen for on the CAN bus.
+  CAN_GET_MSG_LIST            = 61;  ///< Gets the CAN IDs that are being handled on the CAN bus.
+  CAN_NOTIFICATION            = 62;  ///< Notification of CAN messages received on the CAN bus.
+  CAN_ENABLE_NOTIFY           = 63;  ///< Enable CAN message notification
+  CAN_DISABLE_NOTIFY          = 64;  ///< Disable CAN message notification
 }
 
 /// This is the "classic" Reach service routing message header.  
@@ -717,7 +717,7 @@ message CanMessage {
 
 /// Notification of CAN messages on the CAN bus
 message CanNotification {
-  repeated CanMessage               = 1;  ///< CAN messages received on the CAN bus.
+  repeated CanMessage messages      = 1;  ///< CAN messages received on the CAN bus.
 }
 
 /// Enables the notification of CAN messages.
@@ -728,6 +728,10 @@ message CanEnableNotifications {
 /// Disables the notification of CAN messages.
 message CanDisableNotifications {}
 
+/// The response to enable and disable notifications
+message CanNotifyConfigResponse {
+  int32  result                       = 1;      ///< A result of zero indicates OK                                       
+}
 
 /// permissions
 enum AccessLevel {
