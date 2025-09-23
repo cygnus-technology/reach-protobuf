@@ -94,7 +94,7 @@ enum ReachMessageTypes {
 
   /// Parameters
   DISCOVER_PARAMETERS         = 5;   ///< Get a list of all of the parameters in the repository
-  DISCOVER_PARAM_EX f          = 6;   ///< An extension to discover used by verbose parameters
+  DISCOVER_PARAM_EX           = 6;   ///< An extension to discover used by verbose parameters
   READ_PARAMETERS             = 7;   ///< Get the values of a set of parameters
   WRITE_PARAMETERS            = 8;   ///< Change the values of a set of parameters
   PARAMETER_NOTIFICATION   =   10;   ///< Sent from the server to the client when a parameter has changed
