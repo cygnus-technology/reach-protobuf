@@ -85,6 +85,7 @@ enum ReachProto_PATCH_Version {
 }
 
 /// These values identify the type of the Reach message.
+/// TODO give a clear numbering scheme for different services; for example, we've started using 50s for extending Parameters service
 enum ReachMessageTypes {
   reserved  9;  // obsolete CONFIG_PARAM_NOTIFY
   INVALID                     = 0;   ///< No Valid Message
