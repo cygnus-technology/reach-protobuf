@@ -851,7 +851,7 @@ message BufferSizes {
     /// that a client will provide. 
     uint32  param_notify_config_count    = 15;
     /// The max number of CAN messages that can be listened for on the CAN bus.
-    uint32 can_max_messages              = 16;
+    optional uint32 can_max_messages     = 16;
 }
 
 /// This describes the offset of each member of the BufferSizes message when packed for transmission 
