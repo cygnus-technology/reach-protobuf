@@ -155,6 +155,7 @@ message ReachMessage {
   bytes payload = 2;              ///< The encoded payload
 }
 
+/* NOTE: BMG (May. 21, 2024) This is commented out to prevent double definitions of it since we already define it.
 /// This Service Routing Message Header is used in the OpenPV system.
 /// Reach can speak it.
 /// This object represents the Layer 2 Message Format for OpenPV Service Messages.
@@ -190,6 +191,7 @@ message AhsokaMessageHeader
     /// In OpenPV, indicates that the message has used deflate compression in addition to pbuff encoding
     bool is_message_compressed = 6;
 }
+*/
 
 /// ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
@@ -769,29 +771,31 @@ enum WiFiBand {
 
 /// Reach uses these error codes.
 enum ErrorCodes {
-    NO_ERROR           = 0;  ///< Normal conclusion, no problem.
-    NO_DATA            = 1;  ///< No data was produced
-    READ_FAILED        = 2;  ///< The read failed.
-    WRITE_FAILED       = 3;  ///< The write failed.
-    NOT_IMPLEMENTED    = 4;  ///< returned by weak implementations
-    RESERVED_1         = 5;  ///< not yet used
-    RESERVED_2         = 6;  ///< not yet used
-    PERMISSION_DENIED  = 7;  ///< access not allowed
-    BUFFER_TOO_SMALL   = 8;  ///< Requested a size larger than the buffer.
-    INVALID_PARAMETER  = 9;  ///< Some function parameter is out of range
-    CHECKSUM_MISMATCH  = 10; ///< Received data does not match checksum
-    DECODING_FAILED    = 11; ///< Protobuf decoding failed
-    ENCODING_FAILED    = 12; ///< Protobuf encoding failed
-    INVALID_STATE      = 13; ///< The current state machine does not handle this case.
-    NO_RESPONSE        = 14; ///< handler signals no response is necessary
-    BAD_FILE           = 15; ///< bad file ID
-    PACKET_COUNT_ERR   = 16; ///< A received packet has an unexpected serial number
-    CHALLENGE_FAILED   = 17; ///< Access denied due to challenge key
-    RESERVED_3         = 18; ///< not yet used
-    NO_RESOURCE        = 19; ///< Some required resource is not available.
-    INVALID_ID         = 20;  ///< The ID provided is not valid
-    INCOMPLETE         = 21;  ///< The requested operation is incomplete and must be retried.
-    ABORT              = 1000; ///< Operation cancellation
+    NO_ERROR           = 0;     ///< Normal conclusion, no problem.
+    NO_DATA            = 1;     ///< No data was produced
+    READ_FAILED        = 2;     ///< The read failed.
+    WRITE_FAILED       = 3;     ///< The write failed.
+    NOT_IMPLEMENTED    = 4;     ///< returned by weak implementations
+    RESERVED_1         = 5;     ///< not yet used
+    RESERVED_2         = 6;     ///< not yet used
+    PERMISSION_DENIED  = 7;     ///< access not allowed
+    BUFFER_TOO_SMALL   = 8;     ///< Requested a size larger than the buffer.
+    INVALID_PARAMETER  = 9;     ///< Some function parameter is out of range
+    CHECKSUM_MISMATCH  = 10;    ///< Received data does not match checksum
+    DECODING_FAILED    = 11;    ///< Protobuf decoding failed
+    ENCODING_FAILED    = 12;    ///< Protobuf encoding failed
+    INVALID_STATE      = 13;    ///< The current state machine does not handle this case.
+    NO_RESPONSE        = 14;    ///< handler signals no response is necessary
+    BAD_FILE           = 15;    ///< bad file ID
+    PACKET_COUNT_ERR   = 16;    ///< A received packet has an unexpected serial number
+    CHALLENGE_FAILED   = 17;    ///< Access denied due to challenge key
+    RESERVED_3         = 18;    ///< not yet used
+    NO_RESOURCE        = 19;    ///< Some required resource is not available.
+    INVALID_ID         = 20;    ///< The ID provided is not valid
+    INCOMPLETE         = 21;    ///< The requested operation is incomplete and must be retried.
+    INVALID_CAN_PERIOD = 22;    ///< Invalid period set for CAN notifications.
+    NO_CAN_IDS         = 23;    ///< Indicates that there are no CAN IDs to listen for.
+    ABORT              = 1000;  ///< Operation cancellation
 }
 
 /// Describes file transfer state machine
