@@ -155,7 +155,6 @@ message ReachMessage {
   bytes payload = 2;              ///< The encoded payload
 }
 
-/* NOTE: BMG (May. 21, 2024) This is commented out to prevent double definitions of it since we already define it.
 /// This Service Routing Message Header is used in the OpenPV system.
 /// Reach can speak it.
 /// This object represents the Layer 2 Message Format for OpenPV Service Messages.
@@ -191,7 +190,6 @@ message AhsokaMessageHeader
     /// In OpenPV, indicates that the message has used deflate compression in addition to pbuff encoding
     bool is_message_compressed = 6;
 }
-*/
 
 /// ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
