@@ -219,9 +219,8 @@ message DeviceInfoResponse {
   uint32 services                 = 8;    ///< A bit mask, allowing support for up to 32 services
   uint32 parameter_metadata_hash  = 9;    ///< Used to avoid reloading the parameter descriptions
   optional bytes application_identifier = 10;   ///< A UUID to find a custom user interface
-  uint32 endpoints                      = 11;   ///< A bit mask, non-zero if the device supports more than one endpoint (the first endpoint being this device).
-                                                ///  Endpoint id is defined by the bit position. The 1st bit (index 0) represents Endpoint id 1, 2nd bit (index 1) for id 2, and so on.
-                                                ///  Endpoint id may be used in passing information to/from devices other devices known by this device.
+  uint32 endpoints                      = 11;   ///< A bit mask, non-zero if the device supports additional endpoints beyond itself.
+                                                ///  The bit position of non-zero bits describes the ID of the endpoint within the device.
   bytes sizes_struct = 20;  ///< A packed structure informing the client of the size limitations of the server. See SizesOffsets for descriptions.
 }
 
