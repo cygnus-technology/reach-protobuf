@@ -219,7 +219,8 @@ message DeviceInfoResponse {
   uint32 services                 = 8;    ///< A bit mask, allowing support for up to 32 services
   uint32 parameter_metadata_hash  = 9;    ///< Used to avoid reloading the parameter descriptions
   optional bytes application_identifier = 10;   ///< A UUID to find a custom user interface
-  uint32 endpoints                      = 11;   ///< A bit mask, non-zero if the device supports more than one endpoint.
+  uint32 endpoints                      = 11;   ///< A bit mask, non-zero if the device supports additional endpoints beyond itself.
+                                                ///  The bit position of non-zero bits describes the ID of the endpoint within the device.
   bytes sizes_struct = 20;  ///< A packed structure informing the client of the size limitations of the server. See SizesOffsets for descriptions.
 }
 
@@ -233,15 +234,6 @@ enum ServiceIds {
   CLI             = 16; ///< Set this bit when the device supports the command line interface
   TIME            = 32; ///< Set this bit when the device supports the time service
   WIFI            = 64; ///< Set this bit when the device supports the WiFi service
-}
-
-/// binary bit masks or'ed together into the DeviceInfoResponse.endpoints
-enum EndpointIds { 
-  NO_ENDPOINTS    = 0;  ///< No other endpoints
-  ONE             = 1;  ///< This is the first of multiple endpoints.
-  TWO             = 2;  ///< This is the second of multiple endpoints. 
-  THREE           = 4;  ///< This is the third of multiple endpoints.
-  FOUR            = 8;  ///< This is the fourth of multiple endpoints.
 }
 
 /// 
