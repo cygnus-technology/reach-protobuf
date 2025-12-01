@@ -718,7 +718,7 @@ enum ErrorCodes {
     WRITE_FAILED       = 3;  ///< The write failed.
     NOT_IMPLEMENTED    = 4;  ///< returned by weak implementations
     RESERVED_1         = 5;  ///< not yet used
-    COMPLETE           = 6;  ///< The operation is complete.
+    RESERVED_2         = 6;  ///< "complete" is removed
     PERMISSION_DENIED  = 7;  ///< access not allowed
     BUFFER_TOO_SMALL   = 8;  ///< Requested a size larger than the buffer.
     INVALID_PARAMETER  = 9;  ///< Some function parameter is out of range
