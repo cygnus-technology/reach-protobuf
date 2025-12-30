@@ -59,3 +59,6 @@ Makefile
 ansic/build/
 *.swift
 
+# For VSCode Users
+.vscode/settings.json
+
