@@ -63,7 +63,7 @@ option swift_prefix = "";
     // 0x106:  Changed CONFIG_PARAM_NOTIFY handling to expect an array of up to 8.
     // 0x107:  Replaced CONFIG_PARAM_NOTIFY with ENABLE and DISABLE
     // 0x108:  Removed and reserved obsolete messages_per_ack
-    // 0.2.1:  Unionzed Parameter Descriptions
+    // 0.2.1:  Unionized Parameter Descriptions
     // 0.2.2:  File erase, removed integer proto version
     // 0.2.3:  Stream support
 
@@ -110,7 +110,7 @@ enum ReachMessageTypes {
 
   /// Commands
   DISCOVER_COMMANDS           = 17;  ///< Get a list of supported commands
-  SEND_COMMAND                = 18;  ///< Reqeuest excecution of a command
+  SEND_COMMAND                = 18;  ///< Request execution of a command
 
   // Command Line Interface
   CLI_NOTIFICATION            = 20;  ///< Inform the other side (bi-directional) of a command line.
@@ -126,7 +126,7 @@ enum ReachMessageTypes {
   GET_TIME                    = 31;  ///< Read the real time clock
 
   // WiFi
-  DISCOVER_WIFI               = 40;  ///< Get a list of WiFi acces points
+  DISCOVER_WIFI               = 40;  ///< Get a list of WiFi access points
   WIFI_CONNECT                = 41;  ///< Connect or disconnect to an access point
 }
 
@@ -149,7 +149,7 @@ message ReachMessage {
 /// This Service Routing Message Header is used in the OpenPV system.
 /// Reach can speak it.
 /// This object represents the Layer 2 Message Format for OpenPV Service Messages.
-/// The ordinals are presereved but the names are changed to match 
+/// The ordinals are preserved but the names are changed to match 
 message AhsokaMessageHeader
 {
     /// This ID defines the Type of Message being carried in the Envelope / Header
@@ -169,7 +169,7 @@ message AhsokaMessageHeader
     /// Called message_size in the OpenPV system.
     /// Called remaining_objects in Reach terms
     /// In Reach it defines the number of objects that remain to be 
-    /// transmitted in a continuued transaction.
+    /// transmitted in a continued transaction.
     /// The size of the message payload (in packets) that follows this header
     int32 remaining_objects  = 4;
 
@@ -184,7 +184,7 @@ message AhsokaMessageHeader
 
 /// ERROR_REPORT: Could be sent asynchronously to indicate an error.
 message ErrorReport {
-  int32  result            = 1;    ///< The integer error code being reported, preferrably from the ErrorCodes enum.
+  int32  result            = 1;    ///< The integer error code being reported, preferably from the ErrorCodes enum.
   string result_message    = 2;    ///< A human readable string describing the error.
 }
 
@@ -319,7 +319,7 @@ message EnumParameterInfo {
 /// A member of a union (oneof) that describes a bitfield
 message BitfieldParameterInfo {
   optional uint64 default_value = 1;  ///< The (optional) default value for this parameter.
-  uint32 bits_available = 2;          ///< How many bits of this bifield are valid
+  uint32 bits_available = 2;          ///< How many bits of this bitfield are valid
   optional uint32 pei_id = 3;         ///< The (optional) ID of the extended description that names the bits.
 }
 /// A member of a union (oneof) that describes a byte array
@@ -346,7 +346,7 @@ message ParameterInfo {
     Float64ParameterInfo   float64_desc   = 11;   ///< If float64
     BoolParameterInfo      bool_desc      = 12;   ///< If a boolean
     StringParameterInfo    string_desc    = 13;   ///< If a string
-    EnumParameterInfo      enum_desc      = 14;   ///< If an enumeated type
+    EnumParameterInfo      enum_desc      = 14;   ///< If an enumerated type
     BitfieldParameterInfo  bitfield_desc  = 15;   ///< If a bitfield
     ByteArrayParameterInfo bytearray_desc = 16;   ///< If a byte array
   }
@@ -449,7 +449,7 @@ enum ParameterDataType {
 message ParameterValue {
   uint32 parameter_id       = 1;  ///< The integer ID of this parameter.
   uint32 timestamp          = 2;  ///< The time at which this was last read or written.  Used for notifications.
-  oneof value                     ///< A union is used to conventiently describe parameters in limited space.
+  oneof value                     ///< A union is used to conveniently describe parameters in limited space.
   {                         
     uint32 uint32_value     = 3;  ///< Unsigned 32 bit integer.                                      
     sint32  int32_value     = 4;  ///< Signed 32 bit integer.                                        
@@ -465,7 +465,7 @@ message ParameterValue {
   }                               
 }
 
-/// The optional file service provides a method of efficiently transfering large blocks of data.
+/// The optional file service provides a method of efficiently transferring large blocks of data.
 message DiscoverFiles { }
 
 /// The response to discover files
@@ -491,7 +491,7 @@ message FileTransferRequest {
   uint32 read_write                   = 2;  ///< 0 for read, 1 for write.
   uint32 request_offset               = 3;  ///< where to access in the file, in bytes
   uint32 transfer_length              = 4;  ///< number of bytes to read or write
-  uint32 transfer_id                  = 5;  ///< Copied from the header, the same for the continuued transfer.
+  uint32 transfer_id                  = 5;  ///< Copied from the header, the same for the continued transfer.
   uint32 timeout_in_ms                = 7;  ///< ms before abandonment
   optional uint32 requested_ack_rate  = 8;  ///< number of messages before ACK.
   bool   require_checksum             = 9;  ///< set true to enable checksum generation and validation.
@@ -509,7 +509,7 @@ message FileTransferResponse {
 /// A bidirectional message describing a packet of file data                  
 message FileTransferData {
   int32  result                       = 1;  ///< non-zero for error
-  uint32 transfer_id                  = 2;  ///< Unchanged during the continuued transfer.
+  uint32 transfer_id                  = 2;  ///< Unchanged during the continued transfer.
   uint32 message_number               = 3;  ///< counts up from 1 in the first transfer
   bytes  message_data                 = 4;  ///< Data
   optional int32 checksum             = 5;  ///< Optional RFC 1071 checksum for integrity checking
@@ -519,8 +519,8 @@ message FileTransferData {
 message FileTransferDataNotification {
   int32  result                       = 1;  ///< 0 for success
   optional string result_message      = 2;  ///< Provides more information if an error occurs.
-  bool   is_complete                  = 3;  ///< Set to true when all data has been trasnferred.
-  uint32 transfer_id                  = 4;  ///< Unchanged during the continuued transfer.
+  bool   is_complete                  = 3;  ///< Set to true when all data has been transferred.
+  uint32 transfer_id                  = 4;  ///< Unchanged during the continued transfer.
   uint32 retry_offset                 = 5;  ///< If there is an error, this gives the offset at which a new transfer should start with good data.
 }
 
@@ -572,8 +572,8 @@ message StreamClose {
 /// Bi-Directional message used to asynchronously send stream data to the other side.
 message StreamData {
   uint32 stream_id            = 1;  ///< The ID by which this stream is addressed.
-  uint32 roll_count           = 2;  ///< Message Number.  Increases with each send.  As stream transmission may be less relaible, allows for continuity checking.
-  bytes message_data          = 3;  ///< An array of bytes representing the streami data.
+  uint32 roll_count           = 2;  ///< Message Number.  Increases with each send.  As stream transmission may be less reliable, allows for continuity checking.
+  bytes message_data          = 3;  ///< An array of bytes representing the stream data.
   optional int32 checksum     = 4;  ///< Optional RFC 1071 checksum for integrity checking
 }
 
@@ -604,10 +604,10 @@ message SendCommandResponse {
   optional string result_message = 2;      ///< Allows to provide a human readable explanation in case of an error. 
 }
 
-/// The optional Command Line Interface (CLI) service allows command line messages to be transfered
+/// The optional Command Line Interface (CLI) service allows command line messages to be transferred
 /// between the client and the server.  Messages can travel in both directions.  Messages are asynchronous.
 /// The client can send a command line and the server can respond.
-/// The server can also asynchrously send strings representing the output of the device. 
+/// The server can also asynchronously send strings representing the output of the device. 
 /// The CLIData message is used in both directions.
 message CLIData {
   string message_data = 1;  ///< The command line as a null terminated string.
@@ -620,7 +620,7 @@ message CLIData {
 /// TimeSetRequest requests setting the server device time to this value.
 message TimeSetRequest {
   int64   seconds_utc       = 1;  ///< linux epoch, since 1970
-  optional int32  timezone  = 2;  ///< An adjustmeent in seconds to UTC time respresenting the local timezone.
+  optional int32  timezone  = 2;  ///< An adjustment in seconds to UTC time representing the local timezone.
 }
 
 /// The response to the TimeSetRequest
@@ -637,7 +637,7 @@ message TimeGetResponse {
   int32 result                   = 1;   ///< A result of zero indicates OK                                       
   optional string result_message = 2;   ///< Allows to provide a human readable explanation in case of an error. 
   int64   seconds_utc            = 3;   ///< linux epoch, since 1970                                                
-  optional int32  timezone       = 4;   ///< An adjustmeent in seconds to UTC time respresenting the local timezone.
+  optional int32  timezone       = 4;   ///< An adjustment in seconds to UTC time representing the local timezone.
 }
 
 /// A structure describing a WiFi connection or access point
